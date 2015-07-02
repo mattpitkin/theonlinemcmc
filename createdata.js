@@ -316,6 +316,8 @@ from numpy import pi, sin, cos, tan, exp, log, log10, arccos, arcsin, arctan, ar
 from scipy.special import erf, gamma\n\
 from scipy.misc import factorial\n\n"
 
+    var theta = []; // array for unpacking variables that require fitting
+
     // get all parameters requiring fitting and put them in an object
     var fitarray = {};
     for( index=0; index < variables.length; index++ ){
@@ -323,6 +325,8 @@ from scipy.misc import factorial\n\n"
       var typeval = $(idvartype).val();
 
       if ( typeval == "Variable" ){
+        theta.push(variables[index]);
+
         fitarray[variables[index]] = {priortype: "", minval: 0., maxval: 0., meanval: 0., sigmaval: 0.}; // object is an object that will contain prior info
 
         // fill in prior info
@@ -353,12 +357,42 @@ from scipy.misc import factorial\n\n"
       }
     }
 
-    // TODO: check for fit parameters in likelihood function i.e. fitting a sigma value
+    // check for fit parameters in likelihood function i.e. fitting a sigma value
+    var gausstype = $('#id_gauss_like_type').val();
+    if ( gausstype == "Fit" ){
+      var idpriortype = "#sigma_gauss_prior";
+      var priortype = $(idpriortype).val();
 
-    pyfile += "# define the model to fit to the data\n";
-    pyfile += "def mymodel(";
+      variables.push("sigma_gauss"); // add sigma_gauss (parameter for fitting sigma) to variables array
+      theta.push("sigma_gauss");
 
-    var theta = "  "; // string for unpacking variables
+      fitarray["sigma_gauss"] = {priortype: "", minval: "", maxval: "", meanval: "", sigmaval: ""}; // object is an object that will contain prior info
+      fitarray["sigma_gauss"].priortype = priortype;
+
+      if ( priortype == "Uniform" || priortype == "LogUniform" ){
+        // get min/max values
+        var idminval = "#sigma_gauss_prior_min";
+        var idmaxval = "#sigma_gauss_prior_max";
+        var minmaxvals = getMinMaxValues(idminval, idmaxval);
+
+        fitarray["sigma_gauss"].minval = minmaxvals[0];
+        fitarray[variables[index]].maxval = minmaxvals[1];
+      }
+
+      if ( priortype == "Gaussian" ){
+        // get mean/standard deviation values
+        var idmeanval = "#sigma_gauss_prior_mean";
+        var idsigmaval = "#sigma_gauss_prior_sigma";
+        var meanstdvals = getGaussianValues(idmeanval, idsigmaval);
+
+        fitarray["sigma_gauss"].meanval = meanstdvals[0];
+        fitarray["sigma_gauss"].sigmaval = meanstdvals[1];
+      }
+    }
+
+    // write model function
+    var modelfunction = "# define the model to fit to the data\ndef mymodel(";
+
     var conststrings = "";
     var abscissastring = "";
     for (index=0; index < variables.length; index++){
@@ -379,151 +413,89 @@ from scipy.misc import factorial\n\n"
           }
         }
       }
-      else{
-        if ( typeval == "Variable" ){
-          theta += variables[index];
-        }
-        if ( typeval == "Abscissa" ){
-          abscissastring = variables[index];
-        }
 
-        pyfile += variables[index];
+      if ( typeval == "Abscissa" ){
+        abscissastring = variables[index];
+      }
+    }
+    
+    modelfunction += variables.join() + ", " + abscissastring;
+    modelfunction += "):\n";
+    modelfunction += conststring; // include constant values
+    modelfunction += "  return ";
+    modelfunction += modeleq.replace(/[ \t\n\r]+/, ""); // add model equation
+    modelfunction += "\n\n";
 
-        if ( index < variables.length-1 ){
-          pyfile += ", ";
-          theta += ", ";
-        }
-        else{
-          pyfile += "):\n  ";
-          theta += "= theta\n";
-        }
+    pyfile += modelfunction; // add to python file
+
+    var gauss_like_sigma = ", ";
+    if ( ("#likelihood_input_type").val() == "Gaussian" ){
+      if ( ("#id_gauss_like_type").val().search("Known") != -1 ){
+        gauss_like_sigma += "sigma_gauss";
       }
     }
 
-    pyfile += conststring; // include constant values
-
-    pyfile += "  return ";
-    pyfile += modeleq.replace(/[ \t\n\r]+/, "");
-    pyfile += "\n\n";
-
     // create log posterior function
-    pyfile += "# define the log posterior function\n";
-    pyfile += "def lnprob(theta, " + abscissastring + "):\n";
-    pyfile += "  lp = lnprior(theta)\n\
+    var posteriorfunction + "# define the log posterior function\n";
+    posteriorfunction += "def lnprob(theta, " + abscissastring + gauss_like_sigma;   
+    posteriorfunction += ", data):\n  lp = lnprior(theta)\n\
   if not np.isfinite(lp):\n\
     return -np.inf\n\n\
-  return lp + lnlike(theta, " + abscissastring + ")\n\n"
+  return lp + lnlike(theta, " + abscissastring + gauss_like_sigma + ")\n\n";
 
+    pyfile += posteriorfunction; // add to python file
+    
     // create log prior function
-    pyfile += "# define the log prior function\n";
-    pyfile += "def lnprior(theta):\n";
-    pyfile += "  lp = 0.\n" + theta; 
+    var priorfunction = "# define the log prior function\n";
+    priorfunction += "def lnprior(theta):\n";
+    priorfunction += "  lp = 0.\n";
+    priorfunction += "  " + theta.join() + " = theta\n\n"; // unpack variables 
 
-    for (index=0; index < variables.length; index++){
-      var idvartype = "#id_vartype_" + variables[index];      
-      var typeval = $(idvartype).val();
+    // loop through fit array object
+    for ( var priorvar in fitarray ){
+      var priortype = fitarray[priorvar].priortype;
 
-      if( typeval == "Variable" ){
-        var idpriortype = "#id_priortype_" + variables[index];
-        var priortype = $(idpriortype).val();
-
-        if ( priortype == "Uniform" || priortype == "LogUniform" ){
-          // get min/max values
-          var idminval = "#minval_" + variables[index];
-          var idmaxval = "#maxval_" + variables[index];
-
-          var minval = $(idminval).val();
-          if ( minval != "Min." ){
-            if ( isNumber(minval) ){
-              pyfile += "  if ";
-
-              if ( priortype == "Uniform" ){ pyfile += minval; }
-              if ( priortype == "LogUniform" ){ 
-                if ( parseFloat(minval) <= 0. ){
-                  alert("For loguniform prior the range must be positive.");
-                }
-                pyfile += "log("+minval+")"; 
-              }
-              pyfile += "< " + variables[index] + " < ";
-            }
-            else{
-              alert("Minimum value is not a number");
-            }
-          }
-          else{
-            alert("Minimum value not specified for " + variables[index]);
-          }
+      if ( priortype == "Uniform" || priortype == "LogUniform" ){
+        priorfunction += "  if ";
         
-          var maxval = $(idmaxval).val();
-          if ( maxval != "Max." ){
-            if ( isNumber(maxval) ){
-              // check max val is greater than min val
-              if ( parseFloat( maxval ) < parseFloat( minval ) ){
-                alert("Maximum value is less than minimum value!");
-              }
+        if ( priortype == "Uniform" ){ priorfunction += fitarray[priorvar].minval + " < " + priorvar + " < " + fitarray[priorvar].maxval + ":\n"; }
+        if ( priortype == "LogUniform" ){ priorfunction += "log(" + fitarray[priorvar].minval + ") < " + priorvar + " < log(" + fitarray[priorvar].maxval + "):\n"; }
 
-              if ( priortype == "Uniform" ){ pyfile += maxval; }
-              if ( priortype == "LogUniform" ){ pyfile += "log("+maxval+")"; }
-              pyfile += "\n    lp = 0.\n";
-              pyfile += "  else:\n";
-              pyfile += "    return -np.inf\n\n";
-            }
-            else{
-              alert("Maximum value is not a number");
-            }
-          }
-          else{
-            alert("Maximum value not specified for " + variables[index]);
-          }
-        }
-
-        if ( priortype == "Gaussian" ){
-          // get min/max values
-          var idmeanval = "#meanval_" + variables[index];
-          var idsigmaval = "#sigmaval_" + variables[index];
-
-          var meanval = $(idmeanval).val();
-          var sigmaval = $(idsigmaval).val();
-
-          // check and get mean and sigma values
-          if ( meanval != "Mean" ){          
-            if ( isNumber( meanval ) ){
-              if ( sigmaval != "Standard deviation" ){
-                if ( isNumber( sigmaval ) ){
-                  pyfile
-                }
-                else{
-                  alert("Standard deviation value is not a number");
-                }
-              }
-              else{
-                alert("Standard deviation value not specified for Gaussian prior on " + variables[index]);
-              }
-            }
-            else{
-              alert("Mean value is not a number");
-            }
-          }
-          else{
-            alert("Mean value not specified for Gaussian prior on " + variables[index]);
-          }
-
-          // set Gaussian prior
-        }
-
-        // maybe have other prior type (exponential?) (plus hyperparameters?)
+        priorfunction += "    lp = 0\n  else:\n    return -np.inf\n\n";
       }
+
+      if ( priortype == "Gaussian" ){
+        priorfunction += "  lp -= 0.5*("+ priorvar + " - " + fitarray[priorvar].meanval + ")**2/" + fitarray[priorvar].sigmaval + "\n\n";
+      }
+
+      // maybe have other prior type (exponential?) (plus hyperparameters?)
     }
 
     // add condition in prior (should check that the condition actually contains the given variables)
     var conditions = $("#id_conditions").val();
     if ( conditions != "Conditions (e.g. x < 0 && y > z)" ){ // the default value
-      pyfile += "  if not (" + conditions + "):\n";
-      pyfile += "    return -np.inf\n\n";
+      priorfunction += "  if not (" + conditions + "):\n";
+      priorfunction += "    return -np.inf\n\n";
     }
 
+    priorfunction += "  return lp\n\n";
+
+    pyfile += priorfunction;
+
     // create log likelihood function
-    // need to add inputs for likelihoods
+    var likefunction = "# define log likelihood function\n";
+    likefunction += "def lnlike(theta, " + abscissastring + gauss_like_sigma + ", data):\n";
+    likefunction += "  " + theta.join() + " theta\n"; // unpack theta
+    likefunction += "  md = mymodel(" + variables.join() + "," + abscissastring + ")\n"; // get model
+    if ( ("#likelihood_input_type").val() == "Gaussian" ){
+      likefunction += "  return -0.5*np.sum(((md - data)/sigma_gauss)**2)\n\n";
+    }
+    else if( ("#likelihood_input_type").val() == "Studentst" ){
+      likefunction += "  nu = 0.5*len(md) # number of degrees of freedom\n";
+      likefunction += "  return -nu*log(np.sum((md - data)**2))\n\n";
+    }
+
+    pyfile += likefunction;
 
     // read in input data
 
@@ -562,7 +534,7 @@ from scipy.misc import factorial\n\n"
       }
     }
     else{
-      alert("Minimum value not specified for " + variables[index]);
+      alert("Minimum value not specified");
     }
 
     var maxval = $(idmaxval).val();
@@ -578,7 +550,7 @@ from scipy.misc import factorial\n\n"
       }
     }
     else{
-      alert("Maximum value not specified for " + variables[index]);
+      alert("Maximum value not specified");
     }
 
     return [minval, maxval];
@@ -611,7 +583,7 @@ from scipy.misc import factorial\n\n"
       }
     }
     else{
-      alert("Mean value not specified for Gaussian prior on " + variables[index]);
+      alert("Mean value not specified for Gaussian prior");
     }
 
     return [meanval, sigmaval];
