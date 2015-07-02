@@ -9,26 +9,111 @@ var returncode = "";
 var data_form_id = ""; // the id that the data input form will have (there are two possibilities)
 
 $(document).ready(function() {
+  // change data input form type
+  $('#data_input_type').change(function(){
+    var vartype = $(this).val();
+
+    if ( vartype == "Input" ){
+      $("#id_submit_data_upload").prop("type", "hidden"); // make sure other option is re-hidden if things change
+      $("#id_submit_data_form").css("display", "");
+      data_form_id = "#id_submit_data_form";
+    }
+    if ( vartype == "Upload" ){
+      $("#id_submit_data_form").css("display", "none"); // make sure other option is re-hidden if things change
+      $("#id_submit_data_upload").prop("type", "file");
+      data_form_id = "#id_submit_data_upload";
+    }
+  });
+
+  // change likelihood type
+  $('#likelihood_input_type').change(function(){
+    var liketablerow = document.getElementById("like_row");
+    // delete any extra cells from previous choices
+    while ( liketablerow.cells.length > 1 ){
+      liketablerow.deleteCell(-1);
+    }
+
+    if ( $(this).val() == "Gaussian" ){
+      var newcell = liketablerow.insertCell(-1);
+      newcell.innerHTML = "<select id=\"id_gauss_like_type\">\
+  <option value=\"\">--Type--</option>\
+  <option value=\"Known1\">Input &sigma; value</option>\
+  <option value=\"Known2\">Input &sigma; values</option>\
+  <option value=\"Fit\">Fit &sigma; value</option>\
+</select>";
+
+      $('#id_gauss_like_type').change(function(){
+        while ( liketablerow.cells.length > 2 ){
+          liketablerow.deleteCell(-1);
+        }
+
+        var gausstype = $(this).val();
+        var newcell2 = liketablerow.insertCell(-1);
+    
+        if ( gausstype == "Known1" ){  
+          newcell2.innerHTML = "<input type=\"text\" id=\"id_gauss_known\" value=\"&sigma;\">";
+        }
+        if ( gausstype == "Known2" ){
+          newcell2.innerHTML = "<select id=\"id_gauss_known2_type\">\
+  <option value=\"\">--Type--</option>\
+  <option value=\"Input\">Input</option>\
+  <option value=\"Upload\">Upload</option>\
+</select>";
+            
+          $('#id_gauss_known2_type').change(function(){
+            while ( liketablerow.cells.length > 3 ){
+              liketablerow.deleteCell(-1);
+            }
+
+            var newcell3 = liketablerow.insertCell(-1);
+
+            if ( $(this).val() == "Input" ){
+              newcell3.innerHTML = "<textarea rows=\"1\" cols=\"20\" id=\"id_gauss_like_sigma_input\"></textarea>";
+            }
+            if ( $(this).val() == "Upload" ){
+              newcell3.innerHTML = "<input type=\"file\" id=\"id_gauss_like_sigma_upload\">";
+            }
+          });
+        }
+
+        if ( gausstype == "Fit" ){
+          newcell2.innerHTML = "<select id=\"sigma_gauss_prior\">\
+  <option value=\"\">--Prior type--</option>\
+  <option value=\"Uniform\">Uniform</option>\
+  <option value=\"LogUniform\">Log(Uniform)</option>\
+  <option value=\"Gaussian\">Gaussian</option>\
+</select>";
+            
+          $('#sigma_gauss_prior').change(function(){
+            while ( liketablerow.cells.length > 3 ){
+              liketablerow.deleteCell(-1);
+            }
+
+            if ( $(this).val() == "Uniform" || $(this).val() == "LogUniform" ){
+              var newcell3 = liketablerow.insertCell(-1);
+              newcell3.innerHTML = "<input type=\"text\" id=\"sigma_gauss_prior_min\" value=\"Min.\">";
+              newcell3 = liketablerow.insertCell(-1);
+              newcell3.innerHTML = "<input type=\"text\" id=\"sigma_gauss_prior_max\" value=\"Max.\">";
+            }
+
+            if ( $(this).val() == "Gaussian" ){
+              var newcell3 = liketablerow.insertCell(-1);
+              newcell3.innerHTML = "<input type=\"text\" id=\"sigma_gauss_prior_mean\" value=\"Mean\">";
+              newcell3 = liketablerow.insertCell(-1);
+              newcell3.innerHTML = "<input type=\"text\" id=\"sigma_gauss_prior_sigma\" value=\"Standard deviation\">";
+            }
+          });
+        }
+      });
+    }
+  });
+
   $("#id_model_button").click(function(){
     // add input header
     document.getElementById("id_input_header").innerHTML = "Parameter inputs";
 
     // un-hide conditions field
     $("#id_conditions").prop("type", "text");
-
-    // add input data field
-    inputData();
-
-    // add likelihood input header
-    document.getElementById("id_likelihood_header").innerHTML = "Likelihood input";
-    inputLikelihood();
-
-    // add MCMC value input header
-    document.getElementById("id_mcmc_header").innerHTML = "MCMC inputs";
-    inputMCMC();
-
-    // un-hide the form submission button
-    $("#id_submit_variables").prop("type", "submit");
 
     // get model equation from form
     modeleq = $('#modeleq').val();
@@ -70,108 +155,6 @@ $(document).ready(function() {
     makeTable();
   });
 
-  function inputLikelihood(){
-    document.getElementById("id_likelihood_div").innerHTML = "<table id=\"like_table\">\
-<tr id=\"like_row\"><td>\
-<select id=\"likelihood_input_type\">\
-  <option value=\"\">--Type--</option>\
-  <option value=\"Gaussian\">Gaussian</option>\
-  <option value=\"Studentst\">Students t</option>\
-</select>\
-</td></tr></table>\
-<br>";
-
-    $('#likelihood_input_type').change(function(){
-      var liketablerow = document.getElementById("like_row");
-      // delete any extra cells from previous choices
-      while ( liketablerow.cells.length > 1 ){
-        liketablerow.deleteCell(-1);
-      }
-
-      if ( $(this).val() == "Gaussian" ){
-        var newcell = liketablerow.insertCell(-1);
-        newcell.innerHTML = "<select id=\"id_gauss_like_type\">\
-  <option value=\"\">--Type--</option>\
-  <option value=\"Known1\">Input &sigma; value</option>\
-  <option value=\"Known2\">Input &sigma; values</option>\
-  <option value=\"Fit\">Fit &sigma; value</option>\
-</select>";
-
-        $('#id_gauss_like_type').change(function(){
-          while ( liketablerow.cells.length > 2 ){
-            liketablerow.deleteCell(-1);
-          }
-
-          var gausstype = $(this).val();
-          var newcell2 = liketablerow.insertCell(-1);
-          
-          if ( gausstype == "Known1" ){  
-            newcell2.innerHTML = "<input type=\"text\" id=\"id_gauss_known\" value=\"&sigma;\">";
-          }
-          if ( gausstype == "Known2" ){
-            newcell2.innerHTML = "<select id=\"id_gauss_known2_type\">\
-  <option value=\"\">--Type--</option>\
-  <option value=\"Input\">Input</option>\
-  <option value=\"Upload\">Upload</option>\
-</select>";
-            
-            $('#id_gauss_known2_type').change(function(){
-              while ( liketablerow.cells.length > 3 ){
-                liketablerow.deleteCell(-1);
-              }
-
-              var newcell3 = liketablerow.insertCell(-1);
-
-              if ( $(this).val() == "Input" ){
-                newcell3.innerHTML = "<textarea rows=\"1\" cols=\"20\" id=\"id_gauss_like_sigma_input\"></textarea>";
-              }
-              if ( $(this).val() == "Upload" ){
-                newcell3.innerHTML = "<input type=\"file\" id=\"id_gauss_like_sigma_upload\">";
-              }
-            });
-          }
-
-          if ( gausstype == "Fit" ){
-            newcell2.innerHTML = "<select id=\"sigma_gauss_prior\">\
-  <option value=\"\">--Prior type--</option>\
-  <option value=\"Uniform\">Uniform</option>\
-  <option value=\"LogUniform\">Log(Uniform)</option>\
-  <option value=\"Gaussian\">Gaussian</option>\
-</select>";
-            
-            $('#sigma_gauss_prior').change(function(){
-              while ( liketablerow.cells.length > 3 ){
-                liketablerow.deleteCell(-1);
-              }
-
-              if ( $(this).val() == "Uniform" || $(this).val() == "LogUniform" ){
-                var newcell3 = liketablerow.insertCell(-1);
-                newcell3.innerHTML = "<input type=\"text\" id=\"sigma_gauss_prior_min\" value=\"Min.\">";
-                newcell3 = liketablerow.insertCell(-1);
-                newcell3.innerHTML = "<input type=\"text\" id=\"sigma_gauss_prior_max\" value=\"Max.\">";
-              }
-
-              if ( $(this).val() == "Gaussian" ){
-                var newcell3 = liketablerow.insertCell(-1);
-                newcell3.innerHTML = "<input type=\"text\" id=\"sigma_gauss_prior_mean\" value=\"Mean\">";
-                newcell3 = liketablerow.insertCell(-1);
-                newcell3.innerHTML = "<input type=\"text\" id=\"sigma_gauss_prior_sigma\" value=\"Standard deviation\">";
-              }
-            });
-          }
-        });
-      }
-    });
-  }
-
-  function inputMCMC(){
-    document.getElementById("id_mcmc_div").innerHTML = "<table id=\"mcmc_table\">\
-  <tr><td>Number of ensemble points (default: 100)</td><td><input type=\"text\" id=\"mcmc_nensemble\" value=\"100\"></td></tr>\
-  <tr><td>Number of MCMC interations (default: 1000)</td><td><input type=\"text\" id=\"mcmc_niteration\" value=\"1000\"></td></tr>\
-  <tr><td>Number of MCMC burn-in interations (default: 1000)</td><td><input type=\"text\" id=\"mcmc_nburnin\" value=\"1000\"></td></tr>\
-</table><br>";
-  }
-
   function makeTable(){
     if ( variables.length > 0 ){
       var tableel = document.getElementById("table_id");
@@ -193,32 +176,6 @@ $(document).ready(function() {
         createSelection(row, variables[index]);
       }
     }
-  }
-
-  function inputData(){
-    document.getElementById("id_data_header").innerHTML = "Data input";
-
-    // add input data selection
-    document.getElementById("id_data_div").innerHTML = "<select id=\"data_input_type\">\
-   <option value=\"\">--Type--</option>\
-   <option value=\"Input\">Input</option>\
-   <option value=\"Upload\">Upload</option>\
-</select><br><br>";
-
-    $('#data_input_type').change(function(){
-      var vartype = $(this).val();
-
-      if ( vartype == "Input" ){
-        $("#id_submit_data_upload").prop("type", "hidden"); // make sure other option is re-hidden if things change
-        $("#id_submit_data_form").css("display", "");
-        data_form_id = "#id_submit_data_form";
-      }
-      if ( vartype == "Upload" ){
-       $("#id_submit_data_form").css("display", "none"); // make sure other option is re-hidden if things change
-       $("#id_submit_data_upload").prop("type", "file");
-       data_form_id = "#id_submit_data_upload";
-      }
-    });
   }
 
   function createSelection(row, variable){

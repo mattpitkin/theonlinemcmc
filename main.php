@@ -96,18 +96,51 @@ values [in the future xls or ods could be used])</li>
 <input type="hidden" id="id_conditions" value="Conditions (e.g. x < 0 && y > z)" size="30">
 </div>
 
-<h2 id="id_data_header"></h2>
-<div id="id_data_div"></div>
+<h2 id="id_data_header">Data input</h2>
+<div id="id_data_div">
+<select id="data_input_type">
+  <option value="">--Type--</option>
+  <option value="Input">Input</option>
+  <option value="Upload">Upload</option>
+</select>
+<br>
+</div>
 <input type="hidden" id="id_submit_data_upload">
 <textarea style="display:none" id="id_submit_data_form"></textarea>
 
-<h2 id="id_likelihood_header"></h2>
-<div id="id_likelihood_div"></div>
+<h2 id="id_likelihood_header">Likelihood input</h2>
+<div id="id_likelihood_div">
+  <table id="like_table">
+    <tr id="like_row"><td>
+      <select id="likelihood_input_type">
+        <option value="">--Type--</option>
+        <option value="Gaussian">Gaussian</option>
+        <option value="Studentst">Student's t</option>
+      </select></td>
+    </tr>
+</table>
+</div>
 
-<h2 id="id_mcmc_header"></h2>
-<div id="id_mcmc_div"></div>
+<h2 id="id_mcmc_header">MCMC inputs</h2>
+<div id="id_mcmc_div">
+<table id="mcmc_table">
+  <tr>
+    <td>Number of ensemble points (default: 100)</td>
+    <td><input type="text" id="mcmc_nensemble" value="100"></td>
+  </tr>
+  <tr>
+    <td>Number of MCMC interations (default: 1000)</td>
+    <td><input type="text" id="mcmc_niteration" value="1000"></td>
+  </tr>
+  <tr>
+    <td>Number of MCMC burn-in interations (default: 1000)</td>
+    <td><input type="text" id="mcmc_nburnin" value="1000"></td>
+  </tr>
+</table>
+</div>
+<br>
 
-<input type="hidden" id="id_submit_variables" value="Submit">
+<input type="submit" id="id_submit_variables" value="Submit">
 </form>
 
 <br>
