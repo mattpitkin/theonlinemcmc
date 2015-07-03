@@ -140,7 +140,7 @@ values [in the future xls or ods could be used])</li>
 </div>
 <br>
 
-<input type="submit" id="id_submit_variables" value="Submit">
+<input type="button" id="id_submit_variables" value="Submit">
 </form>
 
 <br>

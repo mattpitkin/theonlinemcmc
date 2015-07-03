@@ -304,7 +304,7 @@ $(document).ready(function() {
   }
 
   // form submission
-  $("#id_formvariables").submit(function(){
+  $("#id_submit_variables").click(function(){
     // create python file for submission
     pyfile += "#!/usr/bin/env python\n\n";
     
@@ -341,7 +341,7 @@ from scipy.misc import factorial\n\n"
           var idmaxval = "#maxval_" + variables[index];
           var minmaxvals = getMinMaxValues(idminval, idmaxval);
 
-          if ( minmaxvals.length == 0 ){ return False; } // there has been a problem
+          if ( minmaxvals.length == 0 ){ return false; } // there has been a problem
 
           fitarray[variables[index]].minval = minmaxvals[0];
           fitarray[variables[index]].maxval = minmaxvals[1];
@@ -353,7 +353,7 @@ from scipy.misc import factorial\n\n"
           var idsigmaval = "#sigmaval_" + variables[index];
           var meanstdvals = getGaussianValues(idmeanval, idsigmaval);
 
-          if ( meanstdvals.length == 0 ){ return False; } // there has been a problem
+          if ( meanstdvals.length == 0 ){ return false; } // there has been a problem
 
           fitarray[variables[index]].meanval = meanstdvals[0];
           fitarray[variables[index]].sigmaval = meanstdvals[1];
@@ -379,10 +379,10 @@ from scipy.misc import factorial\n\n"
         var idmaxval = "#sigma_gauss_prior_max";
         var minmaxvals = getMinMaxValues(idminval, idmaxval);
 
-        if ( minmaxvals.length == 0 ){ return False; } // there has been a problem
+        if ( minmaxvals.length == 0 ){ return false; } // there has been a problem
 
         fitarray["sigma_gauss"].minval = minmaxvals[0];
-        fitarray[variables[index]].maxval = minmaxvals[1];
+        fitarray["sigma_gauss"].maxval = minmaxvals[1];
       }
 
       if ( priortype == "Gaussian" ){
@@ -391,7 +391,7 @@ from scipy.misc import factorial\n\n"
         var idsigmaval = "#sigma_gauss_prior_sigma";
         var meanstdvals = getGaussianValues(idmeanval, idsigmaval);
 
-        if ( meanstdvals.length == 0 ){ return False; } // there has been a problem
+        if ( meanstdvals.length == 0 ){ return false; } // there has been a problem
 
         fitarray["sigma_gauss"].meanval = meanstdvals[0];
         fitarray["sigma_gauss"].sigmaval = meanstdvals[1];
@@ -401,7 +401,7 @@ from scipy.misc import factorial\n\n"
     // write model function
     var modelfunction = "# define the model to fit to the data\ndef mymodel(";
 
-    var conststrings = "";
+    var conststring = "";
     var abscissastring = "";
     for (index=0; index < variables.length; index++){
       // check for constants
@@ -419,9 +419,16 @@ from scipy.misc import factorial\n\n"
           else{
             alert("Constant value is not a number!");
             // add red warning to highlight the constant that is wrong
-            $(idconst).val("<div style=\"color:red\">Invalid value</div>");
-            return False; // abort submission
+            $(idconst).css("color", "red");
+            $(idconst).val("Invalid value");
+            return false; // abort submission
           }
+        }
+        else{
+          alert("Constant value is not set");
+          $(idconst).css("color", "red");
+          $(idconst).val("Invalid value");
+          return false;
         }
       }
 
@@ -440,14 +447,14 @@ from scipy.misc import factorial\n\n"
     pyfile += modelfunction; // add to python file
 
     var gauss_like_sigma = ", ";
-    if ( ("#likelihood_input_type").val() == "Gaussian" ){
-      if ( ("#id_gauss_like_type").val().search("Known") != -1 ){
+    if ( $("#likelihood_input_type").val() == "Gaussian" ){
+      if ( $("#id_gauss_like_type").val().search("Known") != -1 ){
         gauss_like_sigma += "sigma_gauss";
       }
     }
 
     // create log posterior function
-    var posteriorfunction + "# define the log posterior function\n";
+    var posteriorfunction = "# define the log posterior function\n";
     posteriorfunction += "def lnprob(theta, " + abscissastring + gauss_like_sigma;   
     posteriorfunction += ", data):\n  lp = lnprior(theta)\n\
   if not np.isfinite(lp):\n\
@@ -498,10 +505,10 @@ from scipy.misc import factorial\n\n"
     likefunction += "def lnlike(theta, " + abscissastring + gauss_like_sigma + ", data):\n";
     likefunction += "  " + theta.join() + " theta\n"; // unpack theta
     likefunction += "  md = mymodel(" + variables.join() + "," + abscissastring + ")\n"; // get model
-    if ( ("#likelihood_input_type").val() == "Gaussian" ){
+    if ( $("#likelihood_input_type").val() == "Gaussian" ){
       likefunction += "  return -0.5*np.sum(((md - data)/sigma_gauss)**2)\n\n";
     }
-    else if( ("#likelihood_input_type").val() == "Studentst" ){
+    else if( $("#likelihood_input_type").val() == "Studentst" ){
       likefunction += "  nu = 0.5*len(md) # number of degrees of freedom\n";
       likefunction += "  return -nu*log(np.sum((md - data)**2))\n\n";
     }
@@ -542,13 +549,15 @@ from scipy.misc import factorial\n\n"
     if ( minval != "Min." ){
       if ( !isNumber(minval) ){
         alert("Minimum value is not a number");
-        $(idminval).val("<div style=\"color:red\">Invalid value</div>");
+        $(idminval).css("color", "red");
+        $(idminval).val("Invalid value");
         return [];
       }
     }
     else{
       alert("Minimum value not specified");
-      $(idminval).val("<div style=\"color:red\">Invalid value</div>");
+      $(idminval).css("color", "red");
+      $(idminval).val("Invalid value");
       return [];
     }
 
@@ -558,19 +567,22 @@ from scipy.misc import factorial\n\n"
         // check max val is greater than min val
         if ( parseFloat( maxval ) < parseFloat( minval ) ){
           alert("Maximum value is less than minimum value!");
-          $(idminval).val("<div style=\"color:red\">Invalid value</div>");
+          $(idminval).css("color", "red");
+          $(idminval).val("Invalid value");
           return [];
         }
       }
       else{
         alert("Maximum value is not a number");
-        $(idmaxval).val("<div style=\"color:red\">Invalid value</div>");
+        $(idmaxval).css("color", "red");
+        $(idmaxval).val("Invalid value");
         return [];
       }
     }
     else{
       alert("Maximum value not specified");
-      $(idmaxval).val("<div style=\"color:red\">Invalid value</div>");
+      $(idmaxval).css("color", "red");
+      $(idmaxval).val("Invalid value");
       return [];
     }
 
@@ -589,31 +601,36 @@ from scipy.misc import factorial\n\n"
           if ( isNumber( sigmaval ) ){
             if ( sigmaval < 0. ){
               alert("Standard devaition must be a positive number");
-              $(idsigmaval).val("<div style=\"color:red\">Invalid value</div>");
+              $(idsigmaval).css("color", "red");
+              $(idsigmaval).val("Invalid value");
               return [];
             }
           }
           else{
             alert("Standard deviation value is not a number");
-            $(idsigmaval).val("<div style=\"color:red\">Invalid value</div>");
+            $(idsigmaval).css("color", "red");
+            $(idsigmaval).val("Invalid value");
             return [];
           }
         }
         else{
           alert("Standard deviation value not specified");
-          $(idsigmaval).val("<div style=\"color:red\">Invalid value</div>");
+          $(idsigmaval).css("color", "red");
+          $(idsigmaval).val("Invalid value");
           return [];
         }
       }
       else{
         alert("Mean value is not a number");
-        $(idmeanval).val("<div style=\"color:red\">Invalid value</div>");
+        $(idmeanval).css("color", "red");
+        $(idmeanval).val("Invalid value");
         return [];
       }
     }
     else{
       alert("Mean value not specified for Gaussian prior");
-      $(idmeanval).val("<div style=\"color:red\">Invalid value</div>");
+      $(idmeanval).css("color", "red");
+      $(idmeanval).val("Invalid value");
       return [];
     }
 
