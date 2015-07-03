@@ -341,6 +341,8 @@ from scipy.misc import factorial\n\n"
           var idmaxval = "#maxval_" + variables[index];
           var minmaxvals = getMinMaxValues(idminval, idmaxval);
 
+          if ( minmaxvals.length == 0 ){ return False; } // there has been a problem
+
           fitarray[variables[index]].minval = minmaxvals[0];
           fitarray[variables[index]].maxval = minmaxvals[1];
         }
@@ -350,6 +352,8 @@ from scipy.misc import factorial\n\n"
           var idmeanval = "#meanval_" + variables[index];
           var idsigmaval = "#sigmaval_" + variables[index];
           var meanstdvals = getGaussianValues(idmeanval, idsigmaval);
+
+          if ( meanstdvals.length == 0 ){ return False; } // there has been a problem
 
           fitarray[variables[index]].meanval = meanstdvals[0];
           fitarray[variables[index]].sigmaval = meanstdvals[1];
@@ -375,6 +379,8 @@ from scipy.misc import factorial\n\n"
         var idmaxval = "#sigma_gauss_prior_max";
         var minmaxvals = getMinMaxValues(idminval, idmaxval);
 
+        if ( minmaxvals.length == 0 ){ return False; } // there has been a problem
+
         fitarray["sigma_gauss"].minval = minmaxvals[0];
         fitarray[variables[index]].maxval = minmaxvals[1];
       }
@@ -384,6 +390,8 @@ from scipy.misc import factorial\n\n"
         var idmeanval = "#sigma_gauss_prior_mean";
         var idsigmaval = "#sigma_gauss_prior_sigma";
         var meanstdvals = getGaussianValues(idmeanval, idsigmaval);
+
+        if ( meanstdvals.length == 0 ){ return False; } // there has been a problem
 
         fitarray["sigma_gauss"].meanval = meanstdvals[0];
         fitarray["sigma_gauss"].sigmaval = meanstdvals[1];
@@ -410,6 +418,8 @@ from scipy.misc import factorial\n\n"
           }
           else{
             alert("Constant value is not a number!");
+            // TODO: add something to highlight the constant that is wrong e.g. $(idconst).val() = "<div style=\"color:red\">Invalid value</div>";
+            return False; // abort submission
           }
         }
       }
@@ -531,10 +541,12 @@ from scipy.misc import factorial\n\n"
     if ( minval != "Min." ){
       if ( !isNumber(minval) ){
         alert("Minimum value is not a number");
+        return [];
       }
     }
     else{
       alert("Minimum value not specified");
+      return [];
     }
 
     var maxval = $(idmaxval).val();
@@ -543,14 +555,17 @@ from scipy.misc import factorial\n\n"
         // check max val is greater than min val
         if ( parseFloat( maxval ) < parseFloat( minval ) ){
           alert("Maximum value is less than minimum value!");
+          return [];
         }
       }
       else{
         alert("Maximum value is not a number");
+        return [];
       }
     }
     else{
       alert("Maximum value not specified");
+      return [];
     }
 
     return [minval, maxval];
@@ -568,22 +583,27 @@ from scipy.misc import factorial\n\n"
           if ( isNumber( sigmaval ) ){
             if ( sigmaval < 0. ){
               alert("Standard devaition must be a positive number");
+              return [];
             }
           }
           else{
             alert("Standard deviation value is not a number");
+            return [];
           }
         }
         else{
           alert("Standard deviation value not specified");
+          return [];
         }
       }
       else{
         alert("Mean value is not a number");
+        return [];
       }
     }
     else{
       alert("Mean value not specified for Gaussian prior");
+      return [];
     }
 
     return [meanval, sigmaval];
