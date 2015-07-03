@@ -418,7 +418,8 @@ from scipy.misc import factorial\n\n"
           }
           else{
             alert("Constant value is not a number!");
-            // TODO: add something to highlight the constant that is wrong e.g. $(idconst).val() = "<div style=\"color:red\">Invalid value</div>";
+            // add red warning to highlight the constant that is wrong
+            $(idconst).val("<div style=\"color:red\">Invalid value</div>");
             return False; // abort submission
           }
         }
@@ -541,11 +542,13 @@ from scipy.misc import factorial\n\n"
     if ( minval != "Min." ){
       if ( !isNumber(minval) ){
         alert("Minimum value is not a number");
+        $(idminval).val("<div style=\"color:red\">Invalid value</div>");
         return [];
       }
     }
     else{
       alert("Minimum value not specified");
+      $(idminval).val("<div style=\"color:red\">Invalid value</div>");
       return [];
     }
 
@@ -555,16 +558,19 @@ from scipy.misc import factorial\n\n"
         // check max val is greater than min val
         if ( parseFloat( maxval ) < parseFloat( minval ) ){
           alert("Maximum value is less than minimum value!");
+          $(idminval).val("<div style=\"color:red\">Invalid value</div>");
           return [];
         }
       }
       else{
         alert("Maximum value is not a number");
+        $(idmaxval).val("<div style=\"color:red\">Invalid value</div>");
         return [];
       }
     }
     else{
       alert("Maximum value not specified");
+      $(idmaxval).val("<div style=\"color:red\">Invalid value</div>");
       return [];
     }
 
@@ -583,26 +589,31 @@ from scipy.misc import factorial\n\n"
           if ( isNumber( sigmaval ) ){
             if ( sigmaval < 0. ){
               alert("Standard devaition must be a positive number");
+              $(idsigmaval).val("<div style=\"color:red\">Invalid value</div>");
               return [];
             }
           }
           else{
             alert("Standard deviation value is not a number");
+            $(idsigmaval).val("<div style=\"color:red\">Invalid value</div>");
             return [];
           }
         }
         else{
           alert("Standard deviation value not specified");
+          $(idsigmaval).val("<div style=\"color:red\">Invalid value</div>");
           return [];
         }
       }
       else{
         alert("Mean value is not a number");
+        $(idmeanval).val("<div style=\"color:red\">Invalid value</div>");
         return [];
       }
     }
     else{
       alert("Mean value not specified for Gaussian prior");
+      $(idmeanval).val("<div style=\"color:red\">Invalid value</div>");
       return [];
     }
 
