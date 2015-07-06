@@ -26,12 +26,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   if (!empty($_POST["pyfile"])) {
     $pyfile = $_POST["pyfile"];
     // output data to file
-    file_put_contents('/tmp/pyfile.py', $pymodel);
+    file_put_contents('/tmp/pyfile.py', $pyfile);
   }
 
-  if (!empty($_POST["returncode"])) {
-    $returncode = $_POST["returncode"];
-    file_put_contents('/tmp/returncode.txt', $returncode);
+  if(!empty($_POST["abscissa_file"])){
+    if ($_FILES["file"]["name"]){
+      // rename the uploaded abscissa file to abscissa_file.txt
+      move_uploaded_file($_FILES["file"]["tmp_name"], "/tmp/abscissa_file.txt");
+    }
+  }
+
+  // if abscissa values have been input output them to a file called abscissa_file.txt
+  if (!empty($_POST["abscissa_data"])){
+    file_put_contents('/tmp/abscissa_file.txt', $_POST["abscissa_data"]);
   }
 }
 ?>

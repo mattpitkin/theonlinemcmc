@@ -3,10 +3,9 @@ var modeleq = "";
 var variables = [];
 var nabscissa = 0; // number of abscissa variables (can only have 1 at the moment)
 
-// create object to hold all info
-var returncode = "";
-
 var data_form_id = ""; // the id that the data input form will have (there are two possibilities)
+
+var abscissavar = "";
 
 $(document).ready(function() {
   // change data input form type
@@ -276,6 +275,7 @@ $(document).ready(function() {
 
   function createAbscissaForm(row, variable){
     var idabscissatype = "id_abscissa_"+variable;
+    abscissavar = variable;
 
     $('#'+idabscissatype).change(function(){
       var abscissatype = $(this).val();
@@ -291,7 +291,7 @@ $(document).ready(function() {
       if ( abscissatype == "Input" ){
         var cell = row.insertCell(-1);
         //cell.innerHTML = "<input type=\"text\" id=\"id_abscissaval_"+variable+"\" value=\"\">";
-        cell.innerHTML = "<textarea rows=\"1\" cols=\"20\" id=\"id_abscissaval_"+variable+"\"></textarea>";
+        cell.innerHTML = "<textarea rows=\"1\" cols=\"20\" id=\"id_abscissaval\"></textarea>";
       }
 
       if ( abscissatype == "Upload" ){
@@ -412,6 +412,8 @@ from scipy.misc import factorial\n\n"
         var idconst = "#id_constant_" + variables[index];
         var constval = $(idconst).val();
         if ( constval != "Value" ){ // "Value" is the default value
+          $(idconst).css("color", "black");
+
           // check value is actually a number
           if ( isNumber( constval ) ){
             conststring += "  " + variables[index] + " = " + constval + "\n";
@@ -437,7 +439,17 @@ from scipy.misc import factorial\n\n"
       }
     }
     
-    modelfunction += variables.join() + ", " + abscissastring;
+    if ( abscissastring == "" ){ // must have an abscissa
+      alert("There must be an independent variable/abscissa as an input");
+      return false;
+    }
+
+    if ( theta.length == 0 ){ // must have a parameter to fit
+      alert("There must be a parameter to fit");
+      return false;
+    }
+
+    modelfunction += theta.join() + ", " + abscissastring;
     modelfunction += "):\n";
     modelfunction += conststring; // include constant values
     modelfunction += "  return ";
@@ -446,10 +458,10 @@ from scipy.misc import factorial\n\n"
 
     pyfile += modelfunction; // add to python file
 
-    var gauss_like_sigma = ", ";
+    var gauss_like_sigma = "";
     if ( $("#likelihood_input_type").val() == "Gaussian" ){
       if ( $("#id_gauss_like_type").val().search("Known") != -1 ){
-        gauss_like_sigma += "sigma_gauss";
+        gauss_like_sigma += ", sigma_gauss";
       }
     }
 
@@ -504,7 +516,7 @@ from scipy.misc import factorial\n\n"
     var likefunction = "# define log likelihood function\n";
     likefunction += "def lnlike(theta, " + abscissastring + gauss_like_sigma + ", data):\n";
     likefunction += "  " + theta.join() + " theta\n"; // unpack theta
-    likefunction += "  md = mymodel(" + variables.join() + "," + abscissastring + ")\n"; // get model
+    likefunction += "  md = mymodel(" + theta.join() + "," + abscissastring + ")\n"; // get model
     if ( $("#likelihood_input_type").val() == "Gaussian" ){
       likefunction += "  return -0.5*np.sum(((md - data)/sigma_gauss)**2)\n\n";
     }
@@ -515,7 +527,36 @@ from scipy.misc import factorial\n\n"
 
     pyfile += likefunction;
 
+    // object to output the data
+    var outputdata = {};
+    outputdata['pyfile'] = pyfile; // the python file
+
+    // get abscissa data
+    var abscissa_data = "";
+    if( $("#id_abscissa_"+abscissavar).val() == "Input" ){
+      // check all values are numbers
+      var abscissa_data = ($("#id_abscissaval").val()).split(',');
+      for ( index = 0; index < abscissa_data.length; index++ ){
+        if ( !isNumber(abscissa_data[index]) ){
+          alert("Non-number value in independent variable/abscissa data");
+          return false;
+        }
+      }
+      outputdata['abscissa_data'] = abscissa_data;
+    }
+
+    // upload abscissa data
+    var abscissaformData = new FormData();
+    if( $("#id_abscissa_"+abscissavar).val() == "Upload" ){
+      alert($("#id_abscissafile")[0].files[0]);
+      abscissaformData.append('file', $("#id_abscissafile")[0].files[0]);
+      outputdata['abscissa_file'] = abscissaformData;
+    }
+
     // read in input data
+    if ( $("#data_input_type").val() == "Input" ){ // get input data
+
+    }
 
     // need to add inputs for MCMC - number of ensemble samples, burn-in and MCMC interations
 
@@ -536,7 +577,9 @@ from scipy.misc import factorial\n\n"
     // this is a test!
     $.ajax({
       method: 'POST',
-      data: {pyfile: pyfile},
+      data: outputdata,
+      processData: false,  // tell jQuery not to process the data
+      contentType: false,  // tell jQuery not to set contentType
       success: function(data){
         alert("Successfully submitted data");
       }
@@ -547,6 +590,8 @@ from scipy.misc import factorial\n\n"
   function getMinMaxValues(idminval, idmaxval){
     var minval = $(idminval).val();
     if ( minval != "Min." ){
+      $(idminval).css("color", "black");
+
       if ( !isNumber(minval) ){
         alert("Minimum value is not a number");
         $(idminval).css("color", "red");
@@ -563,6 +608,8 @@ from scipy.misc import factorial\n\n"
 
     var maxval = $(idmaxval).val();
     if ( maxval != "Max." ){
+      $(idmaxval).css("color", "black");
+
       if ( isNumber(maxval) ){
         // check max val is greater than min val
         if ( parseFloat( maxval ) < parseFloat( minval ) ){
@@ -597,7 +644,11 @@ from scipy.misc import factorial\n\n"
     // check and get mean and sigma values
     if ( meanval != "Mean" ){          
       if ( isNumber( meanval ) ){
-        if ( sigmaval != "Standard deviation" ){
+       $(idmeanval).css("color", "black"); 
+
+       if ( sigmaval != "Standard deviation" ){
+          $(idsigmaval).css("color", "black");
+
           if ( isNumber( sigmaval ) ){
             if ( sigmaval < 0. ){
               alert("Standard devaition must be a positive number");
