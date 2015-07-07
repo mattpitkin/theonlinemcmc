@@ -541,7 +541,6 @@ from scipy.misc import factorial\n\n"
     outputdata['pyfile'] = pyfile; // the python file
 
     // get abscissa data
-    var abscissa_data = "";
     if( $("#id_abscissa_"+abscissavar).val() == "Input" ){
       // check all values are numbers
       var abscissa_data = ($("#id_abscissaval").val()).split(',');
@@ -555,8 +554,8 @@ from scipy.misc import factorial\n\n"
     }
 
     // upload abscissa data
-    var abscissaformData = new FormData();
     if( $("#id_abscissa_"+abscissavar).val() == "Upload" ){
+      var abscissaformData = new FormData();
       var abfile = $("#id_abscissafile")[0].files[0];
       abscissaformData.append('file', abfile);
       abscissaformData.append('labelab', 'abscissafile');
@@ -583,7 +582,83 @@ from scipy.misc import factorial\n\n"
 
     // read in input data
     if ( $("#data_input_type").val() == "Input" ){ // get input data
+      // check all values are numbers
+      var input_data = ($(data_form_id).val()).split(',');
+      for ( index = 0; index < input_data.length; index++ ){
+        if ( !isNumber(input_data[index]) ){
+          alert("Non-number value in input data");
+          return false;
+        }
+      }
+      outputdata['input_data'] = input_data;
+    }
 
+    // upload abscissa data
+    if( $("#data_input_type").val() == "Upload" ){
+      var inputformData = new FormData();
+      var dtfile = $(data_form_id)[0].files[0];
+      inputformData.append('file', dtfile);
+      inputformData.append('labeldt', 'datafile');
+      inputformData.append('outdirdt', outdir);
+
+      // have file size limit of 500kb
+      if ( dtfile.size/1024.0 > 500 ){
+        alert("Data file size is too large");
+        return false;
+      }
+
+      $.ajax({
+      	method: 'POST',
+      	data: inputformData,
+      	processData: false,  // tell jQuery not to process the data
+      	contentType: false,  // tell jQuery not to set contentType
+      	success: function(data){
+          //
+      	}
+      }).done(function(data){
+        console.log( data );
+      });
+    }
+
+    // check for input sigma values (rather than a single value)
+    if ( $("#id_gauss_like_type").val() == "Known2" ){
+      if( $("#id_gauss_known2_type").val() == "Input" ){
+        // check all values are numbers
+        var sigma_data = ($("#id_gauss_like_sigma_input").val()).split(',');
+        for ( index = 0; index < sigma_data.length; index++ ){
+          if ( !isNumber(sigma_data[index]) ){
+            alert("Non-number value in sigma input data");
+            return false;
+          }
+        }
+        outputdata['sigma_data'] = sigma_data;
+      }
+
+      if( $("#id_gauss_known2_type").val() == "Upload" ){
+      	var siformData = new FormData();
+        var sifile = $("#id_gauss_like_sigma_upload")[0].files[0];
+        siformData.append('file', sifile);
+        siformData.append('labelsi', 'sigmafile');
+        siformData.append('outdirsi', outdir);
+
+        // have file size limit of 500kb
+        if ( sifile.size/1024.0 > 500 ){
+          alert("Data file size is too large");
+          return false;
+        }
+
+        $.ajax({
+      	  method: 'POST',
+      	  data: siformData,
+      	  processData: false,  // tell jQuery not to process the data
+      	  contentType: false,  // tell jQuery not to set contentType
+      	  success: function(data){
+            //
+      	  }
+        }).done(function(data){
+          console.log( data );
+        });
+      }
     }
 
     // need to add inputs for MCMC - number of ensemble samples, burn-in and MCMC interations
@@ -591,8 +666,6 @@ from scipy.misc import factorial\n\n"
     // set up initial points from prior
 
     // set MCMC to run
-
-    // create a unique directory for output
 
     // output chain and log probabilities to file
 
@@ -602,7 +675,7 @@ from scipy.misc import factorial\n\n"
     // to upload data if required
 
 
-    // this is a test!
+    // submit final data (python file and any inputs)
     $.ajax({
       method: 'POST',
       data: outputdata,

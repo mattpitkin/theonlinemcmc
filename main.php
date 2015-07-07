@@ -57,6 +57,54 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
     file_put_contents($outdir.'/abscissa_file.txt', $_POST["abscissa_data"]);
   }
+
+  // if input data values have been input output them to a file called data_file.txt
+  if (!empty($_POST["input_data"])){
+    $outdir = $_POST["outdir"];
+    if(!file_exists($outdir)){
+      mkdir($outdir, 0777, true);
+    }
+    file_put_contents($outdir.'/data_file.txt', $_POST["input_data"]);
+  }
+
+  if(!empty($_POST["labeldt"])){
+    if ($_POST["labeldt"] == "datafile"){
+      // get directory and check if it exists
+      $outdirdt = $_POST["outdirdt"];
+      if (!file_exists($outdirdt)){
+        mkdir($outdirdt, 0777, true);
+      }
+
+      if ($_FILES["file"]["name"]){
+        // rename the uploaded data file to data_file.txt
+        move_uploaded_file($_FILES["file"]["tmp_name"], $outdirdt."/data_file.txt");
+      }
+    }
+  }
+
+  // if input sigma values have been input output them to a file called sigma_file.txt
+  if (!empty($_POST["sigma_data"])){
+    $outdir = $_POST["outdir"];
+    if(!file_exists($outdir)){
+      mkdir($outdir, 0777, true);
+    }
+    file_put_contents($outdir.'/sigma_file.txt', $_POST["sigma_data"]);
+  }
+
+  if(!empty($_POST["labelsi"])){
+    if ($_POST["labelsi"] == "sigmafile"){
+      // get directory and check if it exists
+      $outdirdsi = $_POST["outdirsi"];
+      if (!file_exists($outdirsi)){
+        mkdir($outdirsi, 0777, true);
+      }
+
+      if ($_FILES["file"]["name"]){
+        // rename the uploaded data file to data_file.txt
+        move_uploaded_file($_FILES["file"]["tmp_name"], $outdirsi."/sigma_file.txt");
+      }
+    }
+  }
 }
 ?>
 
