@@ -24,21 +24,38 @@
 <?php
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
   if (!empty($_POST["pyfile"])) {
+    $outdir = $_POST["outdir"];
+    if(!file_exists($outdir)){
+      mkdir($outdir, 0777, true);
+    }
+
     $pyfile = $_POST["pyfile"];
     // output data to file
-    file_put_contents('/tmp/pyfile.py', $pyfile);
+    file_put_contents($outdir.'/pyfile.py', $pyfile);
   }
 
-  if(!empty($_POST["abscissa_file"])){
-    if ($_FILES["file"]["name"]){
-      // rename the uploaded abscissa file to abscissa_file.txt
-      move_uploaded_file($_FILES["file"]["tmp_name"], "/tmp/abscissa_file.txt");
+  if(!empty($_POST["labelab"])){
+    if ($_POST["labelab"] == "abscissafile"){
+      // get directory and check if it exists
+      $outdirab = $_POST["outdirab"];
+      if (!file_exists($outdirab)){
+        mkdir($outdirab, 0777, true);
+      }
+
+      if ($_FILES["file"]["name"]){
+        // rename the uploaded abscissa file to abscissa_file.txt
+        move_uploaded_file($_FILES["file"]["tmp_name"], $outdirab."/abscissa_file.txt");
+      }
     }
   }
 
   // if abscissa values have been input output them to a file called abscissa_file.txt
   if (!empty($_POST["abscissa_data"])){
-    file_put_contents('/tmp/abscissa_file.txt', $_POST["abscissa_data"]);
+    $outdir = $_POST["outdir"];
+    if(!file_exists($outdir)){
+      mkdir($outdir, 0777, true);
+    }
+    file_put_contents($outdir.'/abscissa_file.txt', $_POST["abscissa_data"]);
   }
 }
 ?>

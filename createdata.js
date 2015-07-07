@@ -7,6 +7,10 @@ var data_form_id = ""; // the id that the data input form will have (there are t
 
 var abscissavar = "";
 
+var absfile = "abscissa_file.txt";
+var datafile = "data_file.txt";
+var sigmafile = "sigma_file.txt";
+
 $(document).ready(function() {
   // change data input form type
   $('#data_input_type').change(function(){
@@ -527,8 +531,13 @@ from scipy.misc import factorial\n\n"
 
     pyfile += likefunction;
 
+    // generate a unique output directory for the file and data
+    var outdir = guuid();
+
     // object to output the data
     var outputdata = {};
+    outputdata['outdir'] = outdir;
+
     outputdata['pyfile'] = pyfile; // the python file
 
     // get abscissa data
@@ -548,9 +557,28 @@ from scipy.misc import factorial\n\n"
     // upload abscissa data
     var abscissaformData = new FormData();
     if( $("#id_abscissa_"+abscissavar).val() == "Upload" ){
-      alert($("#id_abscissafile")[0].files[0]);
-      abscissaformData.append('file', $("#id_abscissafile")[0].files[0]);
-      outputdata['abscissa_file'] = abscissaformData;
+      var abfile = $("#id_abscissafile")[0].files[0];
+      abscissaformData.append('file', abfile);
+      abscissaformData.append('labelab', 'abscissafile');
+      abscissaformData.append('outdirab', outdir);
+
+      // have file size limit of 500kb
+      if ( abfile.size/1024.0 > 500 ){
+        alert("Independent variable/abscissa file size is too large");
+        return false;
+      }
+
+      $.ajax({
+      	method: 'POST',
+      	data: abscissaformData,
+      	processData: false,  // tell jQuery not to process the data
+      	contentType: false,  // tell jQuery not to set contentType
+      	success: function(data){
+          //
+      	}
+      }).done(function(data){
+        console.log( data );
+      });
     }
 
     // read in input data
@@ -578,8 +606,6 @@ from scipy.misc import factorial\n\n"
     $.ajax({
       method: 'POST',
       data: outputdata,
-      processData: false,  // tell jQuery not to process the data
-      contentType: false,  // tell jQuery not to set contentType
       success: function(data){
         alert("Successfully submitted data");
       }
@@ -692,5 +718,14 @@ from scipy.misc import factorial\n\n"
   function isNumber(n) {
     return !isNaN(parseFloat(n)) && isFinite(n);
   }
+
+  // function to generate a UUID (from http://stackoverflow.com/questions/12223529/create-globally-unique-id-in-javascript?lq=1) 
+  function guuid() {
+    function S4() {
+        return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+    }
+
+    return (S4() + S4() + S4() + S4() + S4() + S4() + S4() + S4());
+  };
 });
 
