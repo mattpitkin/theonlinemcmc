@@ -94,7 +94,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   if(!empty($_POST["labelsi"])){
     if ($_POST["labelsi"] == "sigmafile"){
       // get directory and check if it exists
-      $outdirdsi = $_POST["outdirsi"];
+      $outdirsi = $_POST["outdirsi"];
       if (!file_exists($outdirsi)){
         mkdir($outdirsi, 0777, true);
       }
@@ -160,7 +160,7 @@ values [in the future xls or ods could be used])</li>
 
 <h2 id="id_input_header"></h2>
 <form method="post" id="id_formvariables" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
-<div>
+<div id="id_variables_div" style="display:none">
   <table id="table_id">
   </table>
 <br>

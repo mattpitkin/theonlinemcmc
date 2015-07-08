@@ -115,6 +115,9 @@ $(document).ready(function() {
     // add input header
     document.getElementById("id_input_header").innerHTML = "Parameter inputs";
 
+    // un-hide the div element
+    $("#id_variables_div").css("display", "");
+    
     // un-hide conditions field
     $("#id_conditions").prop("type", "text");
 
@@ -191,9 +194,13 @@ $(document).ready(function() {
   <option value=\"Abscissa\">Independent variable/abscissa</option>\
 </select>";
 
-    $('#'+idvartype).change(function(){
+    var previoustype;
+    
+    $('#'+idvartype).focus(function(){
+      previoustype = $(this).val(); // store the previous value
+    }).change(function(){
       var vartype = $(this).val();
-        
+
       // number of cells in row
       var ncells = row.cells.length;
         
@@ -221,11 +228,13 @@ $(document).ready(function() {
         createPriorSelection(row, variable);
       }
 
-      if ( nabscissa == 1 && vartype != "Abscissa" ){
-        // reset nabscissa count incase an abscissa variable is changed to something else
+      if ( nabscissa == 1 && vartype != "Abscissa" && previoustype == "Abscissa" ){
+        // reset nabscissa count in case an abscissa variable is changed to something else
         nabscissa = 0;
       }
 
+      previoustype = $(this).val(); // set previous to current
+      
       if( vartype == "Abscissa" ){
         if ( nabscissa == 1 ){
           alert('Can only have one abscissa at the moment');
@@ -568,13 +577,13 @@ from scipy.misc import factorial\n\n"
       }
 
       $.ajax({
-      	method: 'POST',
-      	data: abscissaformData,
-      	processData: false,  // tell jQuery not to process the data
-      	contentType: false,  // tell jQuery not to set contentType
-      	success: function(data){
+        method: 'POST',
+        data: abscissaformData,
+        processData: false,  // tell jQuery not to process the data
+        contentType: false,  // tell jQuery not to set contentType
+        success: function(data){
           //
-      	}
+        }
       }).done(function(data){
         console.log( data );
       });
@@ -608,13 +617,13 @@ from scipy.misc import factorial\n\n"
       }
 
       $.ajax({
-      	method: 'POST',
-      	data: inputformData,
-      	processData: false,  // tell jQuery not to process the data
-      	contentType: false,  // tell jQuery not to set contentType
-      	success: function(data){
+        method: 'POST',
+        data: inputformData,
+        processData: false,  // tell jQuery not to process the data
+        contentType: false,  // tell jQuery not to set contentType
+        success: function(data){
           //
-      	}
+        }
       }).done(function(data){
         console.log( data );
       });
@@ -635,7 +644,7 @@ from scipy.misc import factorial\n\n"
       }
 
       if( $("#id_gauss_known2_type").val() == "Upload" ){
-      	var siformData = new FormData();
+        var siformData = new FormData();
         var sifile = $("#id_gauss_like_sigma_upload")[0].files[0];
         siformData.append('file', sifile);
         siformData.append('labelsi', 'sigmafile');
@@ -648,13 +657,13 @@ from scipy.misc import factorial\n\n"
         }
 
         $.ajax({
-      	  method: 'POST',
-      	  data: siformData,
-      	  processData: false,  // tell jQuery not to process the data
-      	  contentType: false,  // tell jQuery not to set contentType
-      	  success: function(data){
+          method: 'POST',
+          data: siformData,
+          processData: false,  // tell jQuery not to process the data
+          contentType: false,  // tell jQuery not to set contentType
+          success: function(data){
             //
-      	  }
+          }
         }).done(function(data){
           console.log( data );
         });
@@ -670,9 +679,6 @@ from scipy.misc import factorial\n\n"
     // output chain and log probabilities to file
 
     // run a pre-written script to parse the output, create plots and an output webpage and email user
-
-    // submit data and use stuff from e.g. http://stackoverflow.com/questions/2320069/jquery-ajax-file-upload
-    // to upload data if required
 
 
     // submit final data (python file and any inputs)
