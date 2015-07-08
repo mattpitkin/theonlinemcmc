@@ -321,6 +321,11 @@ $(document).ready(function() {
     // create python file for submission
     pyfile += "#!/usr/bin/env python\n\n";
     
+    // some error codes
+    pyfile += "DATA_READ_ERR = 101\n";
+    pyfile += "ABSCISSA_READ_ERR = 102\n";
+    pyfile += "SIGMA_READ_ERR = 103\n\n";
+    
     // import required packages
     pyfile += "import emcee\n";
 
@@ -494,6 +499,9 @@ from scipy.misc import factorial\n\n"
     priorfunction += "  lp = 0.\n";
     priorfunction += "  " + theta.join() + " = theta\n\n"; // unpack variables 
 
+    // initial points for MCMC
+    var initialpoint = "\n";
+    
     // loop through fit array object
     for ( var priorvar in fitarray ){
       var priortype = fitarray[priorvar].priortype;
@@ -501,14 +509,21 @@ from scipy.misc import factorial\n\n"
       if ( priortype == "Uniform" || priortype == "LogUniform" ){
         priorfunction += "  if ";
         
-        if ( priortype == "Uniform" ){ priorfunction += fitarray[priorvar].minval + " < " + priorvar + " < " + fitarray[priorvar].maxval + ":\n"; }
-        if ( priortype == "LogUniform" ){ priorfunction += "log(" + fitarray[priorvar].minval + ") < " + priorvar + " < log(" + fitarray[priorvar].maxval + "):\n"; }
+        if ( priortype == "Uniform" ){
+          priorfunction += fitarray[priorvar].minval + " < " + priorvar + " < " + fitarray[priorvar].maxval + ":\n";
+          initialpoint += priorvar + "ini = " + fitarray[priorvar].minval + " + np.random.rand(Nens)*" + (fitarray[priorvar].maxval - fitarray[priorvar].minval).toString() + "\n";
+        }
+        if ( priortype == "LogUniform" ){
+          priorfunction += "log(" + fitarray[priorvar].minval + ") < " + priorvar + " < log(" + fitarray[priorvar].maxval + "):\n";
+          initialpoint += priorvar + "ini = " + "log(" + fitarray[priorvar].minval + " + np.random.rand(Nens)*" + (fitarray[priorvar].maxval - fitarray[priorvar].minval).toString() + ")\n";
+        }
 
         priorfunction += "    lp = 0\n  else:\n    return -np.inf\n\n";
       }
 
       if ( priortype == "Gaussian" ){
         priorfunction += "  lp -= 0.5*("+ priorvar + " - " + fitarray[priorvar].meanval + ")**2/" + fitarray[priorvar].sigmaval + "\n\n";
+        initialpoint += priorvar + "ini = " + fitarray[priorvar].meanval + "np.random.randn(Nens)*" + fitarray[priorvar].sigmaval + "\n";
       }
 
       // maybe have other prior type (exponential?) (plus hyperparameters?)
@@ -546,8 +561,6 @@ from scipy.misc import factorial\n\n"
     // object to output the data
     var outputdata = {};
     outputdata['outdir'] = outdir;
-
-    outputdata['pyfile'] = pyfile; // the python file
 
     // get abscissa data
     if( $("#id_abscissa_"+abscissavar).val() == "Input" ){
@@ -671,15 +684,112 @@ from scipy.misc import factorial\n\n"
     }
 
     // need to add inputs for MCMC - number of ensemble samples, burn-in and MCMC interations
+    var nens = $("#mcmc_nensemble").val();
+    if ( isNumber(nens) ){
+      if ( nens < theta.length && !(nens%1===0) ){
+        alert("Number of ensemble points must be an integer greater than the number of variables");
+        return false;
+      }
+    }
+    else{
+      alert("Number of ensemble points is not a number");
+      return false;
+    }
 
+    var niter = $("#mcmc_niteration").val();
+    if ( isNumber(niter) ){
+      if ( niter > 0 && !(niter%1===0) ){
+        alert("Number of iterations must be an integer greater than zero");
+        return false;
+      }
+    }
+    else{
+      alert("Number of iterations is not a number");
+      return false;
+    }
+
+    var nburn = $("#mcmc_nburnin").val();
+    if ( isNumber(nburn) ){
+      if ( nburn > -1 && !(niter%1===0) ){
+        alert("Number of burn-in iterations must an integer of zero or greater");
+        return false;
+      }
+    }
+    else{
+      alert("Number of burn-in iterations is not a number");
+      return false;
+    }
+    
+    pyfile += "\nNmcmc = " + niter.toString() + "\nNburnin = " + nburn.toString() + "\nNens = " + nens.toString() + "\n";
+    pyfile += "ndim = " + theta.length.toString() + "\n";
+    
     // set up initial points from prior
-
+    initialpoint += "pos = np.array([";
+    for ( index = 0; index < theta.length; index++ ){
+      initialpoint += theta[index] + "ini";
+      if ( index < (theta.length-1) ){ initialpoint += ", "; }
+    }
+    initialpoint += "]).T\n";
+    pyfile += initialpoint;
+    
+    // read in data
+    pyfile += '\ntry:\n  data = np.loadtxt("'+outdir+'/data_file.txt")\n';
+    pyfile += 'except:\n  try:\n    data = np.loadtxt("'+outdir+'/data_file.txt", delimiter=",")\n';
+    pyfile += '  except:\n    sys.exit(DATA_READ_ERR)\n\n';
+    
+    // read in abscissa
+    pyfile += '\ntry:\n  ' + abscissavar + ' = np.loadtxt("'+outdir+'/abscissa_file.txt")\n';
+    pyfile += 'except:\n  try:\n    ' + abscissavar + ' = np.loadtxt("'+outdir+'/abscissa_file.txt", delimiter=",")\n';
+    pyfile += '  except:\n    sys.exit(ABSCISSA_READ_ERR)\n\n';
+    
+    // read in or set sigma values (for Gaussian likelihood)
+    var sigmavar = "";
+    if ( $('#likelihood_input_type').val() == "Gaussian" ){        
+      if ( $("#id_gauss_like_type").val() == "Known1" ){
+        var sigmanum = $("#id_gauss_known").val();
+        if ( isNumber(sigmanum) ){
+          if( sigmanum <= 0.0 ){
+            alert("Sigma value must be positive");
+            return false;
+          }
+          else{
+            sigmavar += sigmanum.toString();   
+          }
+        }
+        else{
+          alert("Sigma value is not a number");
+          return false;   
+        }
+      }
+      
+      if ( $("#id_gauss_like_type").val() == "Known2" ){
+        pyfile += '\ntry:\n  sigma_data = np.loadtxt("'+outdir+'/sigma_file.txt")\n';
+        pyfile += 'except:\n  try:\n    sigma_data = np.loadtxt("'+outdir+'/sigma_file.txt", delimiter=",")\n';
+        pyfile += '  except:\n    sys.exit(SIGMA_READ_ERR)\n\n';
+        sigmavar += "sigma_data";
+      }
+    
+      sigmavar += ",";
+    }
+    
     // set MCMC to run
+    var argslist = "\nargslist = (" + abscissavar + ", " + sigmavar + " data)\n";
+    pyfile += argslist;
+    
+    pyfile += "\n# set up sampler\n";
+    pyfile += "sampler = emcee.EnsembleSampler(Nens, ndim, lnprob, args=argslist)\n"
 
+    pyfile += "\n# run sampler\n";
+    pyfile += "sampler.run_mcmc(pos, Niter+Nburnin)\n";
+
+    pyfile += "# remove burn-in and flatten\n";
+    pyfile += "samples = sampler.chain[:, Nburnin:, :].reshape((-1, ndim))\n";
+    
     // output chain and log probabilities to file
 
     // run a pre-written script to parse the output, create plots and an output webpage and email user
 
+    outputdata['pyfile'] = pyfile; // the python file
 
     // submit final data (python file and any inputs)
     $.ajax({
