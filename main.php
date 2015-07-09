@@ -20,11 +20,17 @@
 </head>
 <body>
 
+<!-- start a session to share variables -->
+<?php
+session_start();
+?>
+
 <!-- php code to write out python and submit process -->
 <?php
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
   if (!empty($_POST["pyfile"])) {
     $outdir = $_POST["outdir"];
+    $_SESSION["outdir"] = $outdir;
     if(!file_exists($outdir)){
       mkdir($outdir, 0777, true);
     }
@@ -34,10 +40,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     file_put_contents($outdir.'/pyfile.py', $pyfile);
   }
 
+  if (!empty($_POST["modelfile"])) {
+    $outdir = $_POST["outdir"];
+    $_SESSION["outdir"] = $outdir;
+    if(!file_exists($outdir)){
+      mkdir($outdir, 0777, true);
+    }
+
+    $modelfile = $_POST["modelfile"];
+    // output data to file
+    file_put_contents($outdir.'/mymodel.py', $modelfile);
+  }
+  
   if(!empty($_POST["labelab"])){
     if ($_POST["labelab"] == "abscissafile"){
       // get directory and check if it exists
       $outdirab = $_POST["outdirab"];
+      $_SESSION["outdir"] = $outdirab;
       if (!file_exists($outdirab)){
         mkdir($outdirab, 0777, true);
       }
@@ -52,6 +71,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   // if abscissa values have been input output them to a file called abscissa_file.txt
   if (!empty($_POST["abscissa_data"])){
     $outdir = $_POST["outdir"];
+    $_SESSION["outdir"] = $outdir;
     if(!file_exists($outdir)){
       mkdir($outdir, 0777, true);
     }
@@ -61,6 +81,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   // if input data values have been input output them to a file called data_file.txt
   if (!empty($_POST["input_data"])){
     $outdir = $_POST["outdir"];
+    $_SESSION["outdir"] = $outdir;
     if(!file_exists($outdir)){
       mkdir($outdir, 0777, true);
     }
@@ -71,6 +92,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($_POST["labeldt"] == "datafile"){
       // get directory and check if it exists
       $outdirdt = $_POST["outdirdt"];
+      $_SESSION["outdir"] = $outdirdt;
       if (!file_exists($outdirdt)){
         mkdir($outdirdt, 0777, true);
       }
@@ -85,6 +107,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   // if input sigma values have been input output them to a file called sigma_file.txt
   if (!empty($_POST["sigma_data"])){
     $outdir = $_POST["outdir"];
+    $_SESSION["outdir"] = $outdir;
     if(!file_exists($outdir)){
       mkdir($outdir, 0777, true);
     }
@@ -95,6 +118,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($_POST["labelsi"] == "sigmafile"){
       // get directory and check if it exists
       $outdirsi = $_POST["outdirsi"];
+      $_SESSION["outdir"] = $outdirsi;
       if (!file_exists($outdirsi)){
         mkdir($outdirsi, 0777, true);
       }
@@ -105,6 +129,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       }
     }
   }
+  
+  header('Location: http://'.$_SERVER['SERVER_NAME'].'/submitted.php');
 }
 ?>
 
@@ -211,6 +237,10 @@ values [in the future xls or ods could be used])</li>
 </table>
 </div>
 <br>
+
+<p>
+Please supply your email address to be able to get your results: <input type="email" id="id_email">
+</p>
 
 <input type="button" id="id_submit_variables" value="Submit">
 </form>

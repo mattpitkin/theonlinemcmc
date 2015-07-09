@@ -318,13 +318,16 @@ $(document).ready(function() {
 
   // form submission
   $("#id_submit_variables").click(function(){
+    pyfile = ""; // clear variable    
+
     // create python file for submission
     pyfile += "#!/usr/bin/env python\n\n";
     
     // some error codes
     pyfile += "DATA_READ_ERR = 101\n";
     pyfile += "ABSCISSA_READ_ERR = 102\n";
-    pyfile += "SIGMA_READ_ERR = 103\n\n";
+    pyfile += "SIGMA_READ_ERR = 103\n";
+    pyfile += "MCMC_RUN_ERR = 104\n\n";
     
     // import required packages
     pyfile += "import emcee\n";
@@ -334,6 +337,9 @@ from numpy import pi, sin, cos, tan, exp, log, log10, arccos, arcsin, arctan, ar
 from scipy.special import erf, gamma\n\
 from scipy.misc import factorial\n\n"
 
+    pyfile += "# import model function from separate file\n";
+    pyfile += "from mymodel import mymodel\n\n"; 
+    
     var theta = []; // array for unpacking variables that require fitting
 
     // get all parameters requiring fitting and put them in an object
@@ -359,8 +365,10 @@ from scipy.misc import factorial\n\n"
           var idmaxval = "#maxval_" + variables[index];
           var minmaxvals = getMinMaxValues(idminval, idmaxval);
 
-          if ( minmaxvals.length == 0 ){ return false; } // there has been a problem
-
+          if ( minmaxvals.length == 0 ){
+            return false; // there has been a problem
+          }
+        
           fitarray[variables[index]].minval = minmaxvals[0];
           fitarray[variables[index]].maxval = minmaxvals[1];
         }
@@ -371,7 +379,9 @@ from scipy.misc import factorial\n\n"
           var idsigmaval = "#sigmaval_" + variables[index];
           var meanstdvals = getGaussianValues(idmeanval, idsigmaval);
 
-          if ( meanstdvals.length == 0 ){ return false; } // there has been a problem
+          if ( meanstdvals.length == 0 ){
+            return false; // there has been a problem
+          }
 
           fitarray[variables[index]].meanval = meanstdvals[0];
           fitarray[variables[index]].sigmaval = meanstdvals[1];
@@ -397,7 +407,9 @@ from scipy.misc import factorial\n\n"
         var idmaxval = "#sigma_gauss_prior_max";
         var minmaxvals = getMinMaxValues(idminval, idmaxval);
 
-        if ( minmaxvals.length == 0 ){ return false; } // there has been a problem
+        if ( minmaxvals.length == 0 ){
+          return false; // there has been a problem
+        }
 
         fitarray["sigma_gauss"].minval = minmaxvals[0];
         fitarray["sigma_gauss"].maxval = minmaxvals[1];
@@ -409,7 +421,9 @@ from scipy.misc import factorial\n\n"
         var idsigmaval = "#sigma_gauss_prior_sigma";
         var meanstdvals = getGaussianValues(idmeanval, idsigmaval);
 
-        if ( meanstdvals.length == 0 ){ return false; } // there has been a problem
+        if ( meanstdvals.length == 0 ){ 
+          return false; // there has been a problem
+        }
 
         fitarray["sigma_gauss"].meanval = meanstdvals[0];
         fitarray["sigma_gauss"].sigmaval = meanstdvals[1];
@@ -473,8 +487,6 @@ from scipy.misc import factorial\n\n"
     modelfunction += "  return ";
     modelfunction += modeleq.replace(/[ \t\n\r]+/, ""); // add model equation
     modelfunction += "\n\n";
-
-    pyfile += modelfunction; // add to python file
 
     var gauss_like_sigma = "";
     if ( $("#likelihood_input_type").val() == "Gaussian" ){
@@ -576,8 +588,8 @@ from scipy.misc import factorial\n\n"
     }
 
     // upload abscissa data
+    var abscissaformData = new FormData();
     if( $("#id_abscissa_"+abscissavar).val() == "Upload" ){
-      var abscissaformData = new FormData();
       var abfile = $("#id_abscissafile")[0].files[0];
       abscissaformData.append('file', abfile);
       abscissaformData.append('labelab', 'abscissafile');
@@ -588,18 +600,6 @@ from scipy.misc import factorial\n\n"
         alert("Independent variable/abscissa file size is too large");
         return false;
       }
-
-      $.ajax({
-        method: 'POST',
-        data: abscissaformData,
-        processData: false,  // tell jQuery not to process the data
-        contentType: false,  // tell jQuery not to set contentType
-        success: function(data){
-          //
-        }
-      }).done(function(data){
-        console.log( data );
-      });
     }
 
     // read in input data
@@ -616,8 +616,8 @@ from scipy.misc import factorial\n\n"
     }
 
     // upload abscissa data
+    var inputformData = new FormData();
     if( $("#data_input_type").val() == "Upload" ){
-      var inputformData = new FormData();
       var dtfile = $(data_form_id)[0].files[0];
       inputformData.append('file', dtfile);
       inputformData.append('labeldt', 'datafile');
@@ -628,21 +628,10 @@ from scipy.misc import factorial\n\n"
         alert("Data file size is too large");
         return false;
       }
-
-      $.ajax({
-        method: 'POST',
-        data: inputformData,
-        processData: false,  // tell jQuery not to process the data
-        contentType: false,  // tell jQuery not to set contentType
-        success: function(data){
-          //
-        }
-      }).done(function(data){
-        console.log( data );
-      });
     }
 
     // check for input sigma values (rather than a single value)
+    var siformData = new FormData();
     if ( $("#id_gauss_like_type").val() == "Known2" ){
       if( $("#id_gauss_known2_type").val() == "Input" ){
         // check all values are numbers
@@ -657,7 +646,6 @@ from scipy.misc import factorial\n\n"
       }
 
       if( $("#id_gauss_known2_type").val() == "Upload" ){
-        var siformData = new FormData();
         var sifile = $("#id_gauss_like_sigma_upload")[0].files[0];
         siformData.append('file', sifile);
         siformData.append('labelsi', 'sigmafile');
@@ -668,18 +656,6 @@ from scipy.misc import factorial\n\n"
           alert("Data file size is too large");
           return false;
         }
-
-        $.ajax({
-          method: 'POST',
-          data: siformData,
-          processData: false,  // tell jQuery not to process the data
-          contentType: false,  // tell jQuery not to set contentType
-          success: function(data){
-            //
-          }
-        }).done(function(data){
-          console.log( data );
-        });
       }
     }
 
@@ -750,7 +726,8 @@ from scipy.misc import factorial\n\n"
         if ( isNumber(sigmanum) ){
           if( sigmanum <= 0.0 ){
             alert("Sigma value must be positive");
-            return false;
+            catcherrors++;
+            //return false;
           }
           else{
             sigmavar += sigmanum.toString();   
@@ -780,8 +757,11 @@ from scipy.misc import factorial\n\n"
     pyfile += "sampler = emcee.EnsembleSampler(Nens, ndim, lnprob, args=argslist)\n"
 
     pyfile += "\n# run sampler\n";
-    pyfile += "sampler.run_mcmc(pos, Niter+Nburnin)\n";
-
+    pyfile += "try:\n";
+    pyfile += "  sampler.run_mcmc(pos, Niter+Nburnin)\n";
+    pyfile += "except:\n";
+    pyfile += "  sys.exit(MCMC_RUN_ERR)\n\n";
+    
     pyfile += "# remove burn-in and flatten\n";
     pyfile += "samples = sampler.chain[:, Nburnin:, :].reshape((-1, ndim))\n";
     
@@ -790,7 +770,56 @@ from scipy.misc import factorial\n\n"
     // run a pre-written script to parse the output, create plots and an output webpage and email user
 
     outputdata['pyfile'] = pyfile; // the python file
+    outputdata['modelfile'] = modelfunction; // the python file containing the model function
 
+    var emailaddress = $("#id_email").val();
+    outputdata['email'] = emailaddress;
+
+    // submit abscissa data
+    if ( !$.isEmptyObject( abscissaformData ) ){
+      $.ajax({
+        method: 'POST',
+        data: abscissaformData,
+        processData: false,  // tell jQuery not to process the data
+        contentType: false,  // tell jQuery not to set contentType
+        success: function(data){
+          //
+        }
+      }).done(function(data){
+        console.log( data );
+      });
+    }
+    
+    // submit input data
+    if ( !$.isEmptyObject( inputformData ) ){
+      $.ajax({
+        method: 'POST',
+        data: inputformData,
+        processData: false,  // tell jQuery not to process the data
+        contentType: false,  // tell jQuery not to set contentType
+        success: function(data){
+          //
+        }
+      }).done(function(data){
+        console.log( data );
+      });
+    }
+    
+    // submit sigma data
+    if( !$.isEmptyObject(siformData) ){
+      $.ajax({
+        method: 'POST',
+        data: siformData,
+        processData: false,  // tell jQuery not to process the data
+        contentType: false,  // tell jQuery not to set contentType
+        success: function(data){
+          //
+        }
+      }).done(function(data){
+        console.log( data );
+      });
+    }
+    
     // submit final data (python file and any inputs)
     $.ajax({
       method: 'POST',
@@ -799,6 +828,9 @@ from scipy.misc import factorial\n\n"
         alert("Successfully submitted data");
       }
     });
+    
+    // actually submit the form
+    $("#id_formvariables").submit();
   });
 
   // function to get minimum and maximum values based on tag ids
