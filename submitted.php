@@ -11,9 +11,18 @@ session_start();
 ?>
 
 <?php
-echo $_SESSION["outdir"];
+$outdir = $_SESSION["outdir"];
+$emailaddress = $_SESSION["email"];
+
+// copy a pre-written post-processing file into the individuals directory
+
+// copy the email into the file
 
 // submit a process to run the python script in the directory that has been passed through
+$errfile = $outdir.'/err_code.txt';
+$outfile = $outdir.'/out_code.txt';
+$pycommand = $outdir.'/pyfile.py';
+$pid = shell_exec(sprintf('%s > %s 2>%s & echo $!', $pycommand, $outfile, $errfile));
 ?>
 
 <h1>Submission successful</h1>

@@ -38,11 +38,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $pyfile = $_POST["pyfile"];
     // output data to file
     file_put_contents($outdir.'/pyfile.py', $pyfile);
+    chmod($outdir.'/pyfile.py',0755); // make executable
   }
 
   if (!empty($_POST["modelfile"])) {
     $outdir = $_POST["outdir"];
-    $_SESSION["outdir"] = $outdir;
     if(!file_exists($outdir)){
       mkdir($outdir, 0777, true);
     }
@@ -52,11 +52,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     file_put_contents($outdir.'/mymodel.py', $modelfile);
   }
   
+  if (!empty($_POST["errcodefile"])) {
+    $outdir = $_POST["outdir"];
+    if(!file_exists($outdir)){
+      mkdir($outdir, 0777, true);
+    }
+    
+    $errcodefile = $_POST["errcodefile"];
+    // output the error code to a file
+    file_put_contents($outdir.'/errorcodes.py', $errcodefile);
+  }
+
   if(!empty($_POST["labelab"])){
     if ($_POST["labelab"] == "abscissafile"){
       // get directory and check if it exists
       $outdirab = $_POST["outdirab"];
-      $_SESSION["outdir"] = $outdirab;
       if (!file_exists($outdirab)){
         mkdir($outdirab, 0777, true);
       }
@@ -71,7 +81,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   // if abscissa values have been input output them to a file called abscissa_file.txt
   if (!empty($_POST["abscissa_data"])){
     $outdir = $_POST["outdir"];
-    $_SESSION["outdir"] = $outdir;
     if(!file_exists($outdir)){
       mkdir($outdir, 0777, true);
     }
@@ -81,7 +90,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   // if input data values have been input output them to a file called data_file.txt
   if (!empty($_POST["input_data"])){
     $outdir = $_POST["outdir"];
-    $_SESSION["outdir"] = $outdir;
     if(!file_exists($outdir)){
       mkdir($outdir, 0777, true);
     }
@@ -92,7 +100,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($_POST["labeldt"] == "datafile"){
       // get directory and check if it exists
       $outdirdt = $_POST["outdirdt"];
-      $_SESSION["outdir"] = $outdirdt;
       if (!file_exists($outdirdt)){
         mkdir($outdirdt, 0777, true);
       }
@@ -107,7 +114,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   // if input sigma values have been input output them to a file called sigma_file.txt
   if (!empty($_POST["sigma_data"])){
     $outdir = $_POST["outdir"];
-    $_SESSION["outdir"] = $outdir;
     if(!file_exists($outdir)){
       mkdir($outdir, 0777, true);
     }
@@ -118,7 +124,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($_POST["labelsi"] == "sigmafile"){
       // get directory and check if it exists
       $outdirsi = $_POST["outdirsi"];
-      $_SESSION["outdir"] = $outdirsi;
       if (!file_exists($outdirsi)){
         mkdir($outdirsi, 0777, true);
       }
@@ -129,7 +134,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       }
     }
   }
+
+  // get email address
+  if(!empty($_POST["email"])){
+    $_SESSION["email"] = $_POST["email"];
+  }
   
+  // re-direct to page that will run the MCMC python script
   header('Location: http://'.$_SERVER['SERVER_NAME'].'/submitted.php');
 }
 ?>

@@ -324,10 +324,14 @@ $(document).ready(function() {
     pyfile += "#!/usr/bin/env python\n\n";
     
     // some error codes
-    pyfile += "DATA_READ_ERR = 101\n";
-    pyfile += "ABSCISSA_READ_ERR = 102\n";
-    pyfile += "SIGMA_READ_ERR = 103\n";
-    pyfile += "MCMC_RUN_ERR = 104\n\n";
+    errcodefile = "DATA_READ_ERR = 1001\n";
+    errcodefile += "ABSCISSA_READ_ERR = 1002\n";
+    errcodefile += "SIGMA_READ_ERR = 1003\n";
+    errcodefile += "MCMC_RUN_ERR = 1004\n";
+    errcodefile += "PRIOR_INIT_ERR = 1005\n";
+    errcodefile += "MCMC_INIT_ERR = 1006\n";
+    errcodefile += "POST_OUTPUT_ERR = 1007\n";
+    errcodefile += "POST_PROCESS_ERR = 1008\n\n";
     
     // import required packages
     pyfile += "import emcee\n";
@@ -339,6 +343,9 @@ from scipy.misc import factorial\n\n"
 
     pyfile += "# import model function from separate file\n";
     pyfile += "from mymodel import mymodel\n\n"; 
+    
+    pyfile += "# import error codes\n";
+    pyfile += "from errorcodes import *\n\n";
     
     var theta = []; // array for unpacking variables that require fitting
 
@@ -512,7 +519,7 @@ from scipy.misc import factorial\n\n"
     priorfunction += "  " + theta.join() + " = theta\n\n"; // unpack variables 
 
     // initial points for MCMC
-    var initialpoint = "\n";
+    var initialpoint = "\ntry:\n";
     
     // loop through fit array object
     for ( var priorvar in fitarray ){
@@ -523,11 +530,11 @@ from scipy.misc import factorial\n\n"
         
         if ( priortype == "Uniform" ){
           priorfunction += fitarray[priorvar].minval + " < " + priorvar + " < " + fitarray[priorvar].maxval + ":\n";
-          initialpoint += priorvar + "ini = " + fitarray[priorvar].minval + " + np.random.rand(Nens)*" + (fitarray[priorvar].maxval - fitarray[priorvar].minval).toString() + "\n";
+          initialpoint += "  " + priorvar + "ini = " + fitarray[priorvar].minval + " + np.random.rand(Nens)*" + (fitarray[priorvar].maxval - fitarray[priorvar].minval).toString() + "\n";
         }
         if ( priortype == "LogUniform" ){
           priorfunction += "log(" + fitarray[priorvar].minval + ") < " + priorvar + " < log(" + fitarray[priorvar].maxval + "):\n";
-          initialpoint += priorvar + "ini = " + "log(" + fitarray[priorvar].minval + " + np.random.rand(Nens)*" + (fitarray[priorvar].maxval - fitarray[priorvar].minval).toString() + ")\n";
+          initialpoint += "  " + priorvar + "ini = " + "log(" + fitarray[priorvar].minval + " + np.random.rand(Nens)*" + (fitarray[priorvar].maxval - fitarray[priorvar].minval).toString() + ")\n";
         }
 
         priorfunction += "    lp = 0\n  else:\n    return -np.inf\n\n";
@@ -535,7 +542,7 @@ from scipy.misc import factorial\n\n"
 
       if ( priortype == "Gaussian" ){
         priorfunction += "  lp -= 0.5*("+ priorvar + " - " + fitarray[priorvar].meanval + ")**2/" + fitarray[priorvar].sigmaval + "\n\n";
-        initialpoint += priorvar + "ini = " + fitarray[priorvar].meanval + "np.random.randn(Nens)*" + fitarray[priorvar].sigmaval + "\n";
+        initialpoint += "  " + priorvar + "ini = " + fitarray[priorvar].meanval + "np.random.randn(Nens)*" + fitarray[priorvar].sigmaval + "\n";
       }
 
       // maybe have other prior type (exponential?) (plus hyperparameters?)
@@ -700,22 +707,24 @@ from scipy.misc import factorial\n\n"
     pyfile += "ndim = " + theta.length.toString() + "\n";
     
     // set up initial points from prior
-    initialpoint += "pos = np.array([";
+    initialpoint += "  pos = np.array([";
     for ( index = 0; index < theta.length; index++ ){
       initialpoint += theta[index] + "ini";
       if ( index < (theta.length-1) ){ initialpoint += ", "; }
     }
     initialpoint += "]).T\n";
+    initialpoint += "except:\n";
+    initialpoint += "  sys.exit(PRIOR_INIT_ERR)\n";
     pyfile += initialpoint;
     
     // read in data
-    pyfile += '\ntry:\n  data = np.loadtxt("'+outdir+'/data_file.txt")\n';
-    pyfile += 'except:\n  try:\n    data = np.loadtxt("'+outdir+'/data_file.txt", delimiter=",")\n';
+    pyfile += '\ntry:\n  data = np.loadtxt("data_file.txt")\n';
+    pyfile += 'except:\n  try:\n    data = np.loadtxt("data_file.txt", delimiter=",")\n';
     pyfile += '  except:\n    sys.exit(DATA_READ_ERR)\n\n';
     
     // read in abscissa
-    pyfile += '\ntry:\n  ' + abscissavar + ' = np.loadtxt("'+outdir+'/abscissa_file.txt")\n';
-    pyfile += 'except:\n  try:\n    ' + abscissavar + ' = np.loadtxt("'+outdir+'/abscissa_file.txt", delimiter=",")\n';
+    pyfile += '\ntry:\n  ' + abscissavar + ' = np.loadtxt("abscissa_file.txt")\n';
+    pyfile += 'except:\n  try:\n    ' + abscissavar + ' = np.loadtxt("abscissa_file.txt", delimiter=",")\n';
     pyfile += '  except:\n    sys.exit(ABSCISSA_READ_ERR)\n\n';
     
     // read in or set sigma values (for Gaussian likelihood)
@@ -740,9 +749,13 @@ from scipy.misc import factorial\n\n"
       }
       
       if ( $("#id_gauss_like_type").val() == "Known2" ){
-        pyfile += '\ntry:\n  sigma_data = np.loadtxt("'+outdir+'/sigma_file.txt")\n';
-        pyfile += 'except:\n  try:\n    sigma_data = np.loadtxt("'+outdir+'/sigma_file.txt", delimiter=",")\n';
-        pyfile += '  except:\n    sys.exit(SIGMA_READ_ERR)\n\n';
+        pyfile += '\ntry:\n';
+        pyfile += '  sigma_data = np.loadtxt("sigma_file.txt")\n';
+        pyfile += 'except:\n';
+        pyfile += '  try:\n';
+        pyfile += '    sigma_data = np.loadtxt("sigma_file.txt", delimiter=",")\n';
+        pyfile += '  except:\n';
+        pyfile += '    sys.exit(SIGMA_READ_ERR)\n\n';
         sigmavar += "sigma_data";
       }
     
@@ -754,8 +767,11 @@ from scipy.misc import factorial\n\n"
     pyfile += argslist;
     
     pyfile += "\n# set up sampler\n";
-    pyfile += "sampler = emcee.EnsembleSampler(Nens, ndim, lnprob, args=argslist)\n"
-
+    pyfile += "try:\n";
+    pyfile += "  sampler = emcee.EnsembleSampler(Nens, ndim, lnprob, args=argslist)\n"
+    pyfile += "except:\n";
+    pyfile += "  sys.exit(MCMC_INIT_ERR)\n\n";
+    
     pyfile += "\n# run sampler\n";
     pyfile += "try:\n";
     pyfile += "  sampler.run_mcmc(pos, Niter+Nburnin)\n";
@@ -764,15 +780,28 @@ from scipy.misc import factorial\n\n"
     
     pyfile += "# remove burn-in and flatten\n";
     pyfile += "samples = sampler.chain[:, Nburnin:, :].reshape((-1, ndim))\n";
+    pyfile += "samples = np.vstack((samples, sampler.lnprobability[:, Nburnin:].flatten()))\n\n";
     
-    // output chain and log probabilities to file
+    // output chain and log probabilities to gzipped file
+    pyfile += "# output the samples, posterior and variables\n";
+    pyfile += "try:\n";
+    pyfile += "  np.savetxt('posterior_samples.txt.gz', samples)\n";
+    pyfile += "  fv = open('variables.txt', 'w')\n";
+    pyfile += "  fv.write(theta.join())\n";
+    pyfile += "except:\n";
+    pyfile += "  sys.exit(POST_OUTPUT_ERR)\n\n";
 
     // run a pre-written script to parse the output, create plots and an output webpage and email user
 
     outputdata['pyfile'] = pyfile; // the python file
     outputdata['modelfile'] = modelfunction; // the python file containing the model function
-
+    outputdata['errcodefile'] = errcodefile; // python file containing the error codes
+    
     var emailaddress = $("#id_email").val();
+    if( emailaddress.search('@') == -1 ){
+      alert("Email address is not valid");
+      return false;
+    }
     outputdata['email'] = emailaddress;
 
     // submit abscissa data
@@ -889,7 +918,7 @@ from scipy.misc import factorial\n\n"
     var sigmaval = $(idsigmaval).val();
 
     // check and get mean and sigma values
-    if ( meanval != "Mean" ){          
+    if ( meanval != "Mean" ){
       if ( isNumber( meanval ) ){
        $(idmeanval).css("color", "black"); 
 
