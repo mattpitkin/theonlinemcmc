@@ -826,13 +826,13 @@ from scipy.misc import factorial\n\n"
     // run a pre-written script to parse the output, create plots and an output webpage and email user
     pyfile += "  # run post-processing script\n";
     pyfile += "  try:\n";
-    pyfile += "    postprocessing(samples, \"" + theta.join() + "\", " + abscissavar + ", data, \"" + emailaddress + "\", \"" + outdir + "\")\n";
+    pyfile += "    postprocessing(samples, \"" + theta.join() + "\", " + abscissavar + ", data, \"" + emailaddress + "\", \"" + window.location.host + "/" + outdir + "\")\n";
     pyfile += "  except:\n";
     pyfile += "    errval = POST_PROCESS_ERR\n\n";
     
     pyfile += "if errval != 0:\n";
     pyfile += "  # run different script in case error codes are encountered\n";
-    pyfile += "  errorpage(errval, \"" + emailaddress + "\", \"" + outdir + "\")\n\n";
+    pyfile += "  errorpage(errval, \"" + emailaddress + "\", \"" + window.location.host + "/" + outdir + "\")\n\n";
     
     outputdata['pyfile'] = pyfile; // the python file
     outputdata['modelfile'] = modelfunction; // the python file containing the model function
