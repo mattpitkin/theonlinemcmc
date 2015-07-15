@@ -134,11 +134,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       }
     }
   }
-
-  // get email address
-  if(!empty($_POST["email"])){
-    $_SESSION["email"] = $_POST["email"];
-  }
   
   // re-direct to page that will run the MCMC python script
   header('Location: http://'.$_SERVER['SERVER_NAME'].'/submitted.php');

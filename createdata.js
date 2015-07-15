@@ -331,7 +331,8 @@ $(document).ready(function() {
     errcodefile += "PRIOR_INIT_ERR = 1005\n";
     errcodefile += "MCMC_INIT_ERR = 1006\n";
     errcodefile += "POST_OUTPUT_ERR = 1007\n";
-    errcodefile += "POST_PROCESS_ERR = 1008\n\n";
+    errcodefile += "POST_PROCESS_ERR = 1008\n";
+    errcodefile += "DATA_LENGTH_ERR = 1009\n\n";
     
     // import required packages
     pyfile += "import emcee\n";
@@ -346,6 +347,14 @@ from scipy.misc import factorial\n\n"
     
     pyfile += "# import error codes\n";
     pyfile += "from errorcodes import *\n\n";
+    
+    pyfile += "# import post-processing function\n";
+    pyfile += "from postprocessing import *\n\n";
+    
+    pyfile += "#import error page creation function\n";
+    pyfile += "from errorpage import *\n\n";
+    
+    pyfile += "errval = 0\n\n"; // initialise error code value
     
     var theta = []; // array for unpacking variables that require fitting
 
@@ -714,18 +723,26 @@ from scipy.misc import factorial\n\n"
     }
     initialpoint += "]).T\n";
     initialpoint += "except:\n";
-    initialpoint += "  sys.exit(PRIOR_INIT_ERR)\n";
+    initialpoint += "  errval = PRIOR_INIT_ERR\n";
     pyfile += initialpoint;
     
     // read in data
-    pyfile += '\ntry:\n  data = np.loadtxt("data_file.txt")\n';
-    pyfile += 'except:\n  try:\n    data = np.loadtxt("data_file.txt", delimiter=",")\n';
-    pyfile += '  except:\n    sys.exit(DATA_READ_ERR)\n\n';
+    pyfile += '\ntry:\n';
+    pyfile += '  data = np.loadtxt("'+outdir+'/data_file.txt")\n';
+    pyfile += 'except:\n';
+    pyfile += '  try:\n';
+    pyfile += '    data = np.loadtxt("data_file.txt", delimiter=",")\n';
+    pyfile += '  except:\n';
+    pyfile += '    errval = DATA_READ_ERR\n\n';
     
     // read in abscissa
-    pyfile += '\ntry:\n  ' + abscissavar + ' = np.loadtxt("abscissa_file.txt")\n';
-    pyfile += 'except:\n  try:\n    ' + abscissavar + ' = np.loadtxt("abscissa_file.txt", delimiter=",")\n';
-    pyfile += '  except:\n    sys.exit(ABSCISSA_READ_ERR)\n\n';
+    pyfile += '\ntry:\n';
+    pyfile += '  ' + abscissavar + ' = np.loadtxt("abscissa_file.txt")\n';
+    pyfile += 'except:\n';
+    pyfile += '  try:\n';
+    pyfile += '    ' + abscissavar + ' = np.loadtxt("abscissa_file.txt", delimiter=",")\n';
+    pyfile += '  except:\n';
+    pyfile += '    errval = ABSCISSA_READ_ERR\n\n';
     
     // read in or set sigma values (for Gaussian likelihood)
     var sigmavar = "";
@@ -751,58 +768,75 @@ from scipy.misc import factorial\n\n"
       if ( $("#id_gauss_like_type").val() == "Known2" ){
         pyfile += '\ntry:\n';
         pyfile += '  sigma_data = np.loadtxt("sigma_file.txt")\n';
+        pyfile += '  if len(sigma_data) != len(data):\n';
+        pyfile += '    errval = DATA_LENGTH_ERR\n';
         pyfile += 'except:\n';
         pyfile += '  try:\n';
         pyfile += '    sigma_data = np.loadtxt("sigma_file.txt", delimiter=",")\n';
+        pyfile += '    if len(sigma_data) != len(data):\n';
+        pyfile += '      errval = DATA_LENGTH_ERR\n';
         pyfile += '  except:\n';
-        pyfile += '    sys.exit(SIGMA_READ_ERR)\n\n';
+        pyfile += '    errval = SIGMA_READ_ERR\n\n';
         sigmavar += "sigma_data";
       }
     
       sigmavar += ",";
     }
     
+    // check length of data and abscissa are the same
+    pyfile += "\nif len(data) != len(" + abscissavar + "):\n";
+    pyfile += "  errval = DATA_LENGTH_ERR\n\n";
+    
     // set MCMC to run
     var argslist = "\nargslist = (" + abscissavar + ", " + sigmavar + " data)\n";
     pyfile += argslist;
     
-    pyfile += "\n# set up sampler\n";
-    pyfile += "try:\n";
-    pyfile += "  sampler = emcee.EnsembleSampler(Nens, ndim, lnprob, args=argslist)\n"
-    pyfile += "except:\n";
-    pyfile += "  sys.exit(MCMC_INIT_ERR)\n\n";
+    pyfile += "\nif errval == 0:\n";
+    pyfile += "  # set up sampler\n";
+    pyfile += "  try:\n";
+    pyfile += "    sampler = emcee.EnsembleSampler(Nens, ndim, lnprob, args=argslist)\n"
+    pyfile += "  except:\n";
+    pyfile += "    errval = MCMC_INIT_ERR\n\n";
     
-    pyfile += "\n# run sampler\n";
-    pyfile += "try:\n";
-    pyfile += "  sampler.run_mcmc(pos, Niter+Nburnin)\n";
-    pyfile += "except:\n";
-    pyfile += "  sys.exit(MCMC_RUN_ERR)\n\n";
+    pyfile += "\n  # run sampler\n";
+    pyfile += "  try:\n";
+    pyfile += "    sampler.run_mcmc(pos, Niter+Nburnin)\n";
+    pyfile += "  except:\n";
+    pyfile += "    errval = MCMC_RUN_ERR\n\n";
     
-    pyfile += "# remove burn-in and flatten\n";
-    pyfile += "samples = sampler.chain[:, Nburnin:, :].reshape((-1, ndim))\n";
-    pyfile += "samples = np.vstack((samples, sampler.lnprobability[:, Nburnin:].flatten()))\n\n";
+    pyfile += "  # remove burn-in and flatten\n";
+    pyfile += "  samples = sampler.chain[:, Nburnin:, :].reshape((-1, ndim))\n";
+    pyfile += "  samples = np.vstack((samples, sampler.lnprobability[:, Nburnin:].flatten()))\n\n";
     
     // output chain and log probabilities to gzipped file
-    pyfile += "# output the samples, posterior and variables\n";
-    pyfile += "try:\n";
-    pyfile += "  np.savetxt('posterior_samples.txt.gz', samples)\n";
-    pyfile += "  fv = open('variables.txt', 'w')\n";
-    pyfile += "  fv.write(theta.join())\n";
-    pyfile += "except:\n";
-    pyfile += "  sys.exit(POST_OUTPUT_ERR)\n\n";
+    pyfile += "  # output the samples, posterior and variables\n";
+    pyfile += "  try:\n";
+    pyfile += "    np.savetxt('posterior_samples.txt.gz', samples)\n";
+    pyfile += "    fv = open('variables.txt', 'w')\n";
+    pyfile += "    fv.write(\"" + theta.join() + "\")\n";
+    pyfile += "  except:\n";
+    pyfile += "    errval = POST_OUTPUT_ERR\n\n";
 
-    // run a pre-written script to parse the output, create plots and an output webpage and email user
-
-    outputdata['pyfile'] = pyfile; // the python file
-    outputdata['modelfile'] = modelfunction; // the python file containing the model function
-    outputdata['errcodefile'] = errcodefile; // python file containing the error codes
-    
     var emailaddress = $("#id_email").val();
     if( emailaddress.search('@') == -1 ){
       alert("Email address is not valid");
       return false;
     }
-    outputdata['email'] = emailaddress;
+    
+    // run a pre-written script to parse the output, create plots and an output webpage and email user
+    pyfile += "  # run post-processing script\n";
+    pyfile += "  try:\n";
+    pyfile += "    postprocessing(samples, \"" + theta.join() + "\", " + abscissavar + ", data, \"" + emailaddress + "\", \"" + outdir + "\")\n";
+    pyfile += "  except:\n";
+    pyfile += "    errval = POST_PROCESS_ERR\n\n";
+    
+    pyfile += "if errval != 0:\n";
+    pyfile += "  # run different script in case error codes are encountered\n";
+    pyfile += "  errorpage(errval, \"" + emailaddress + "\", \"" + outdir + "\")\n\n";
+    
+    outputdata['pyfile'] = pyfile; // the python file
+    outputdata['modelfile'] = modelfunction; // the python file containing the model function
+    outputdata['errcodefile'] = errcodefile; // python file containing the error codes
 
     // submit abscissa data
     if ( !$.isEmptyObject( abscissaformData ) ){
