@@ -728,19 +728,19 @@ from scipy.misc import factorial\n\n"
     
     // read in data
     pyfile += '\ntry:\n';
-    pyfile += '  data = np.loadtxt("'+outdir+'/data_file.txt")\n';
+    pyfile += '  data = np.loadtxt("' + datafile +'")\n';
     pyfile += 'except:\n';
     pyfile += '  try:\n';
-    pyfile += '    data = np.loadtxt("data_file.txt", delimiter=",")\n';
+    pyfile += '    data = np.loadtxt("' + datafile + '", delimiter=",")\n';
     pyfile += '  except:\n';
     pyfile += '    errval = DATA_READ_ERR\n\n';
     
     // read in abscissa
     pyfile += '\ntry:\n';
-    pyfile += '  ' + abscissavar + ' = np.loadtxt("abscissa_file.txt")\n';
+    pyfile += '  ' + abscissavar + ' = np.loadtxt("' + absfile + '")\n';
     pyfile += 'except:\n';
     pyfile += '  try:\n';
-    pyfile += '    ' + abscissavar + ' = np.loadtxt("abscissa_file.txt", delimiter=",")\n';
+    pyfile += '    ' + abscissavar + ' = np.loadtxt("' + absfile + '", delimiter=",")\n';
     pyfile += '  except:\n';
     pyfile += '    errval = ABSCISSA_READ_ERR\n\n';
     
@@ -767,12 +767,12 @@ from scipy.misc import factorial\n\n"
       
       if ( $("#id_gauss_like_type").val() == "Known2" ){
         pyfile += '\ntry:\n';
-        pyfile += '  sigma_data = np.loadtxt("sigma_file.txt")\n';
+        pyfile += '  sigma_data = np.loadtxt("' + sigmafile + '")\n';
         pyfile += '  if len(sigma_data) != len(data):\n';
         pyfile += '    errval = DATA_LENGTH_ERR\n';
         pyfile += 'except:\n';
         pyfile += '  try:\n';
-        pyfile += '    sigma_data = np.loadtxt("sigma_file.txt", delimiter=",")\n';
+        pyfile += '    sigma_data = np.loadtxt("' + sigmafile + '", delimiter=",")\n';
         pyfile += '    if len(sigma_data) != len(data):\n';
         pyfile += '      errval = DATA_LENGTH_ERR\n';
         pyfile += '  except:\n';
