@@ -334,6 +334,17 @@ $(document).ready(function() {
     errcodefile += "POST_PROCESS_ERR = 1008\n";
     errcodefile += "DATA_LENGTH_ERR = 1009\n\n";
     
+    errcodefile += 'errormessages = {}\n';
+    errcodefile += 'errormessages[DATA_READ_ERR] = "There was a problem reading in the data."\n';
+    errcodefile += 'errormessages[ABSCISSA_READ_ERR] = "There was a problem reading in the abscissa variable file."\n';
+    errcodefile += 'errormessages[SIGMA_READ_ERR] = "There was a problem reading in the data standard deviation file."\n';
+    errcodefile += 'errormessages[MCMC_RUN_ERR] = "There was a problem running the MCMC."\n';
+    errcodefile += 'errormessages[PRIOR_INIT_ERR] = "There was a problem initialising the prior values."\n';
+    errcodefile += 'errormessages[MCMC_INIT_ERR] = "There was a problem initialising the MCMC."\n';
+    errcodefile += 'errormessages[POST_OUTPUT_ERR] = "There was a problem outputing the posterior file."\n';
+    errcodefile += 'errormessages[POST_PROCESS_ERR] = "There was a problem running the post-processing page."\n';
+    errcodefile += 'errormessages[DATA_LENGTH_ERR] = "There are inconsistent lengths between data, abscissa, and/or sigma lengths."\n';
+
     // import required packages
     pyfile += "import emcee\n";
 
