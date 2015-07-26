@@ -1,3 +1,29 @@
+// alter the string prototype to include a format-style functionality
+// see e.g. http://stackoverflow.com/a/13639670/1862861
+String.prototype.format = function() {
+    var args = arguments;
+    this.unkeyed_index = 0;
+    return this.replace(/\{(\w*)\}/g, function(match, key) { 
+        if (key === '') {
+            key = this.unkeyed_index;
+            this.unkeyed_index++
+        }
+        if (key == +key) {
+            return args[key] !== 'undefined'
+                ? args[key]
+                : match;
+        } else {
+            for (var i = 0; i < args.length; i++) {
+                if (typeof args[i] === 'object' && typeof args[i][key] !== 'undefined') {
+                    return args[i][key];
+                }
+            }
+            return match;
+        }
+    }.bind(this));
+};
+
+
 var pyfile = "";
 var modeleq = "";
 var variables = [];
@@ -10,6 +36,7 @@ var abscissavar = "";
 var absfile = "abscissa_file.txt";
 var datafile = "data_file.txt";
 var sigmafile = "sigma_file.txt";
+
 
 $(document).ready(function() {
   // change data input form type
@@ -318,10 +345,64 @@ $(document).ready(function() {
 
   // form submission
   $("#id_submit_variables").click(function(){
-    pyfile = ""; // clear variable    
+    pyfile = ""; // clear global variable    
 
-    // create python file for submission
-    pyfile += "#!/usr/bin/env python\n\n";
+    // create python file for submission (use format function defined at the start of the code)
+    pyfile = "\
+#!/usr/bin/env python\n\n\
+\
+# import required packages\n\
+import emcee\n\
+import numpy as np\n\
+from numpy import pi, sin, cos, tan, exp, log, log10, arccos, arcsin, arctan, arctan2, sinh, cosh, tanh\n\
+from scipy.special import erf, gamma\n\
+from scipy.misc import factorial\n\
+\n\
+# import model function from separate file\n\
+from mymodel import mymodel\n\
+\n\
+# import error codes\n\
+from errorcodes import *\n\
+\n\
+# import post-processing function\
+from postprocessing import *\n\
+\n\
+# import error page creation function\n\
+from errorpage import *\n\
+\n\
+# initialise error code value\n\
+errval = 0\n\
+\n\
+# define the log posterior function\n\
+{posteriorfunction}\
+\n\
+# define the log prior function\n\
+{priorfunction}\
+\n\
+# define log likelihood function\n\
+{likefunction}\
+\n\
+# set number of MCMC points\n\
+{setnmcmc}\
+\n\
+# initialise the start ensemble points\n\
+{initialpoint}\
+\n\
+# read in the data\n\
+{readdata}\
+\n\
+# read in the abscissa values\n\
+{readabscissa}\
+\n\
+# read in sigma (standard deviation) values (there may be nothing here if it not appicable to your likelihood)\n\
+{readsigma}\
+\n\
+# run the MCMC\n\
+{runmcmc}\
+\n\
+";
+    
+    var outputStrings = {}; // object to pass to formatter
     
     // some error codes
     errcodefile = "DATA_READ_ERR = 1001\n";
@@ -344,28 +425,6 @@ $(document).ready(function() {
     errcodefile += 'errormessages[POST_OUTPUT_ERR] = "There was a problem outputing the posterior file."\n';
     errcodefile += 'errormessages[POST_PROCESS_ERR] = "There was a problem running the post-processing page."\n';
     errcodefile += 'errormessages[DATA_LENGTH_ERR] = "There are inconsistent lengths between data, abscissa, and/or sigma lengths."\n';
-
-    // import required packages
-    pyfile += "import emcee\n";
-
-    pyfile += "import numpy as np\n\
-from numpy import pi, sin, cos, tan, exp, log, log10, arccos, arcsin, arctan, arctan2, sinh, cosh, tanh\n\
-from scipy.special import erf, gamma\n\
-from scipy.misc import factorial\n\n"
-
-    pyfile += "# import model function from separate file\n";
-    pyfile += "from mymodel import mymodel\n\n"; 
-    
-    pyfile += "# import error codes\n";
-    pyfile += "from errorcodes import *\n\n";
-    
-    pyfile += "# import post-processing function\n";
-    pyfile += "from postprocessing import *\n\n";
-    
-    pyfile += "#import error page creation function\n";
-    pyfile += "from errorpage import *\n\n";
-    
-    pyfile += "errval = 0\n\n"; // initialise error code value
     
     var theta = []; // array for unpacking variables that require fitting
 
@@ -458,8 +517,13 @@ from scipy.misc import factorial\n\n"
     }
 
     // write model function
-    var modelfunction = "# define the model to fit to the data\ndef mymodel(";
-
+    var modelfunction = "# define the model to fit to the data\n\
+def mymodel({arguments}):\n\
+  {conststring}\n\
+  \n\
+  return {outputstring}\n\n";
+    var modelStrings = {};
+    
     var conststring = "";
     var abscissastring = "";
     for (index=0; index < variables.length; index++){
@@ -475,7 +539,7 @@ from scipy.misc import factorial\n\n"
 
           // check value is actually a number
           if ( isNumber( constval ) ){
-            conststring += "  " + variables[index] + " = " + constval + "\n";
+            conststring += variables[index] + " = " + constval;
           }
           else{
             alert("Constant value is not a number!");
@@ -508,12 +572,9 @@ from scipy.misc import factorial\n\n"
       return false;
     }
 
-    modelfunction += theta.join() + ", " + abscissastring;
-    modelfunction += "):\n";
-    modelfunction += conststring; // include constant values
-    modelfunction += "  return ";
-    modelfunction += modeleq.replace(/[ \t\n\r]+/, ""); // add model equation
-    modelfunction += "\n\n";
+    modelStrings['arguments'] = theta.join() + ", " + abscissastring;
+    modelStrings['conststring'] = conststring; // include constant values
+    modelStrings['outputstring'] = modeleq.replace(/[ \t\n\r]+/, ""); // add model equation
 
     var gauss_like_sigma = "";
     if ( $("#likelihood_input_type").val() == "Gaussian" ){
@@ -523,23 +584,21 @@ from scipy.misc import factorial\n\n"
     }
 
     // create log posterior function
-    var posteriorfunction = "# define the log posterior function\n";
-    posteriorfunction += "def lnprob(theta, " + abscissastring + gauss_like_sigma;   
+    var posteriorfunction = "def lnprob(theta, " + abscissastring + gauss_like_sigma;   
     posteriorfunction += ", data):\n  lp = lnprior(theta)\n\
   if not np.isfinite(lp):\n\
     return -np.inf\n\n\
   return lp + lnlike(theta, " + abscissastring + gauss_like_sigma + ")\n\n";
 
-    pyfile += posteriorfunction; // add to python file
-    
+    outputStrings["posteriorfunction"] = posteriorfunction;
+
     // create log prior function
-    var priorfunction = "# define the log prior function\n";
-    priorfunction += "def lnprior(theta):\n";
+    var priorfunction = "def lnprior(theta):\n";
     priorfunction += "  lp = 0.\n";
     priorfunction += "  " + theta.join() + " = theta\n\n"; // unpack variables 
 
     // initial points for MCMC
-    var initialpoint = "\ntry:\n";
+    var initialpoint = "try:\n";
     
     // loop through fit array object
     for ( var priorvar in fitarray ){
@@ -577,12 +636,11 @@ from scipy.misc import factorial\n\n"
 
     priorfunction += "  return lp\n\n";
 
-    pyfile += priorfunction;
+    outputStrings['priorfunction'] = priorfunction;
 
     // create log likelihood function
-    var likefunction = "# define log likelihood function\n";
-    likefunction += "def lnlike(theta, " + abscissastring + gauss_like_sigma + ", data):\n";
-    likefunction += "  " + theta.join() + " theta\n"; // unpack theta
+    var likefunction = "def lnlike(theta, " + abscissastring + gauss_like_sigma + ", data):\n";
+    likefunction += "  " + theta.join() + " = theta\n"; // unpack theta
     likefunction += "  md = mymodel(" + theta.join() + "," + abscissastring + ")\n"; // get model
     if ( $("#likelihood_input_type").val() == "Gaussian" ){
       likefunction += "  return -0.5*np.sum(((md - data)/sigma_gauss)**2)\n\n";
@@ -592,7 +650,7 @@ from scipy.misc import factorial\n\n"
       likefunction += "  return -nu*log(np.sum((md - data)**2))\n\n";
     }
 
-    pyfile += likefunction;
+    outputStrings['likefunction'] = likefunction;
 
     // generate a unique output directory for the file and data
     var outdir = guuid();
@@ -723,8 +781,10 @@ from scipy.misc import factorial\n\n"
       return false;
     }
     
-    pyfile += "\nNmcmc = " + niter.toString() + "\nNburnin = " + nburn.toString() + "\nNens = " + nens.toString() + "\n";
-    pyfile += "ndim = " + theta.length.toString() + "\n";
+    var setnmcmc = "Nmcmc = " + niter.toString() + "\nNburnin = " + nburn.toString() + "\nNens = " + nens.toString() + "\n";
+    setnmcmc += "ndim = " + theta.length.toString() + "\n";
+
+    outputStrings['setnmcmc'] = setnmcmc;
     
     // set up initial points from prior
     initialpoint += "  pos = np.array([";
@@ -735,27 +795,33 @@ from scipy.misc import factorial\n\n"
     initialpoint += "]).T\n";
     initialpoint += "except:\n";
     initialpoint += "  errval = PRIOR_INIT_ERR\n";
-    pyfile += initialpoint;
+    
+    outputStrings['initialpoint'] = initialpoint;
     
     // read in data
-    pyfile += '\ntry:\n';
-    pyfile += '  data = np.loadtxt("' + datafile +'")\n';
-    pyfile += 'except:\n';
-    pyfile += '  try:\n';
-    pyfile += '    data = np.loadtxt("' + datafile + '", delimiter=",")\n';
-    pyfile += '  except:\n';
-    pyfile += '    errval = DATA_READ_ERR\n\n';
+    var readdata = 'try:\n';
+    readdata += '  data = np.loadtxt("' + datafile +'")\n';
+    readdata += 'except:\n';
+    readdata += '  try:\n';
+    readdata += '    data = np.loadtxt("' + datafile + '", delimiter=",")\n';
+    readdata += '  except:\n';
+    readdata += '    errval = DATA_READ_ERR\n\n';
+    
+    outputStrings['readdata'] = readdata;
     
     // read in abscissa
-    pyfile += '\ntry:\n';
-    pyfile += '  ' + abscissavar + ' = np.loadtxt("' + absfile + '")\n';
-    pyfile += 'except:\n';
-    pyfile += '  try:\n';
-    pyfile += '    ' + abscissavar + ' = np.loadtxt("' + absfile + '", delimiter=",")\n';
-    pyfile += '  except:\n';
-    pyfile += '    errval = ABSCISSA_READ_ERR\n\n';
+    var readabscissa = 'try:\n';
+    readabscissa += '  ' + abscissavar + ' = np.loadtxt("' + absfile + '")\n';
+    readabscissa += 'except:\n';
+    readabscissa += '  try:\n';
+    readabscissa += '    ' + abscissavar + ' = np.loadtxt("' + absfile + '", delimiter=",")\n';
+    readabscissa += '  except:\n';
+    readabscissa += '    errval = ABSCISSA_READ_ERR\n\n';
+    
+    outputStrings['readabscissa'] = readabscissa;
     
     // read in or set sigma values (for Gaussian likelihood)
+    var readsigma = "";
     var sigmavar = "";
     if ( $('#likelihood_input_type').val() == "Gaussian" ){        
       if ( $("#id_gauss_like_type").val() == "Known1" ){
@@ -777,57 +843,62 @@ from scipy.misc import factorial\n\n"
       }
       
       if ( $("#id_gauss_like_type").val() == "Known2" ){
-        pyfile += '\ntry:\n';
-        pyfile += '  sigma_data = np.loadtxt("' + sigmafile + '")\n';
-        pyfile += '  if len(sigma_data) != len(data):\n';
-        pyfile += '    errval = DATA_LENGTH_ERR\n';
-        pyfile += 'except:\n';
-        pyfile += '  try:\n';
-        pyfile += '    sigma_data = np.loadtxt("' + sigmafile + '", delimiter=",")\n';
-        pyfile += '    if len(sigma_data) != len(data):\n';
-        pyfile += '      errval = DATA_LENGTH_ERR\n';
-        pyfile += '  except:\n';
-        pyfile += '    errval = SIGMA_READ_ERR\n\n';
+        readsigma += 'try:\n';
+        readsigma += '  sigma_data = np.loadtxt("' + sigmafile + '")\n';
+        readsigma += '  if len(sigma_data) != len(data):\n';
+        readsigma += '    errval = DATA_LENGTH_ERR\n';
+        readsigma += 'except:\n';
+        readsigma += '  try:\n';
+        readsigma += '    sigma_data = np.loadtxt("' + sigmafile + '", delimiter=",")\n';
+        readsigma += '    if len(sigma_data) != len(data):\n';
+        readsigma += '      errval = DATA_LENGTH_ERR\n';
+        readsigma += '  except:\n';
+        readsigma += '    errval = SIGMA_READ_ERR\n\n';
         sigmavar += "sigma_data";
       }
     
       sigmavar += ",";
     }
     
+    outputStrings['readsigma'] = readsigma;
+    
+    var runmcmc = "";
     // check length of data and abscissa are the same
-    pyfile += "\nif len(data) != len(" + abscissavar + "):\n";
-    pyfile += "  errval = DATA_LENGTH_ERR\n\n";
+    runmcmc += "if len(data) != len(" + abscissavar + "):\n";
+    runmcmc += "  errval = DATA_LENGTH_ERR\n\n";
     
     // set MCMC to run
-    var argslist = "\nargslist = (" + abscissavar + ", " + sigmavar + " data)\n";
-    pyfile += argslist;
+    var argslist = "argslist = (" + abscissavar + ", " + sigmavar + " data)\n";
+    runmcmc += argslist;
     
-    pyfile += "\nif errval == 0:\n";
-    pyfile += "  # set up sampler\n";
-    pyfile += "  try:\n";
-    pyfile += "    sampler = emcee.EnsembleSampler(Nens, ndim, lnprob, args=argslist)\n"
-    pyfile += "  except:\n";
-    pyfile += "    errval = MCMC_INIT_ERR\n\n";
+    runmcmc += "\nif errval == 0:\n";
+    runmcmc += "  # set up sampler\n";
+    runmcmc += "  try:\n";
+    runmcmc += "    sampler = emcee.EnsembleSampler(Nens, ndim, lnprob, args=argslist)\n"
+    runmcmc += "  except:\n";
+    runmcmc += "    errval = MCMC_INIT_ERR\n\n";
     
-    pyfile += "\n  # run sampler\n";
-    pyfile += "  try:\n";
-    pyfile += "    sampler.run_mcmc(pos, Niter+Nburnin)\n";
-    pyfile += "  except:\n";
-    pyfile += "    errval = MCMC_RUN_ERR\n\n";
+    runmcmc += "  # run sampler\n";
+    runmcmc += "  try:\n";
+    runmcmc += "    sampler.run_mcmc(pos, Niter+Nburnin)\n";
+    runmcmc += "  except:\n";
+    runmcmc += "    errval = MCMC_RUN_ERR\n\n";
     
-    pyfile += "  # remove burn-in and flatten\n";
-    pyfile += "  samples = sampler.chain[:, Nburnin:, :].reshape((-1, ndim))\n";
-    pyfile += "  samples = np.vstack((samples, sampler.lnprobability[:, Nburnin:].flatten()))\n\n";
+    runmcmc += "  # remove burn-in and flatten\n";
+    runmcmc += "  samples = sampler.chain[:, Nburnin:, :].reshape((-1, ndim))\n";
+    runmcmc += "  samples = np.vstack((samples, sampler.lnprobability[:, Nburnin:].flatten()))\n\n";
     
     // output chain and log probabilities to gzipped file
-    pyfile += "  # output the samples, posterior and variables\n";
-    pyfile += "  try:\n";
-    pyfile += "    np.savetxt('posterior_samples.txt.gz', samples)\n";
-    pyfile += "    fv = open('variables.txt', 'w')\n";
-    pyfile += "    fv.write(\"" + theta.join() + "\")\n";
-    pyfile += "  except:\n";
-    pyfile += "    errval = POST_OUTPUT_ERR\n\n";
-
+    runmcmc += "  # output the posterior samples, likelihood and variables\n";
+    runmcmc += "  try:\n";
+    runmcmc += "    np.savetxt('posterior_samples.txt.gz', samples)\n";
+    runmcmc += "    fv = open('variables.txt', 'w')\n";
+    runmcmc += "    fv.write(\"" + theta.join() + "\")\n";
+    runmcmc += "  except:\n";
+    runmcmc += "    errval = POST_OUTPUT_ERR\n\n";
+    
+    outputStrings['runmcmc'] = runmcmc;
+    
     var emailaddress = $("#id_email").val();
     if( emailaddress.search('@') == -1 ){
       alert("Email address is not valid");
@@ -835,18 +906,20 @@ from scipy.misc import factorial\n\n"
     }
     
     // run a pre-written script to parse the output, create plots and an output webpage and email user
-    pyfile += "  # run post-processing script\n";
-    pyfile += "  try:\n";
-    pyfile += "    postprocessing(samples, \"" + theta.join() + "\", " + abscissavar + ", data, \"" + emailaddress + "\", \"" + window.location.host + "/" + outdir + "\")\n";
-    pyfile += "  except:\n";
-    pyfile += "    errval = POST_PROCESS_ERR\n\n";
+    var postprocess = "  # run post-processing script\n";
+    postprocess += "  try:\n";
+    postprocess += "    postprocessing(samples, \"" + theta.join() + "\", " + abscissavar + ", data, \"" + emailaddress + "\", \"" + window.location.host + "/" + outdir + "\")\n";
+    postprocess += "  except:\n";
+    postprocess += "    errval = POST_PROCESS_ERR\n\n";
     
-    pyfile += "if errval != 0:\n";
-    pyfile += "  # run different script in case error codes are encountered\n";
-    pyfile += "  errorpage(errval, \"" + emailaddress + "\", \"" + window.location.host + "/" + outdir + "\")\n\n";
+    postprocess += "if errval != 0:\n";
+    postprocess += "  # run different script in case error codes are encountered\n";
+    postprocess += "  errorpage(errval, \"" + emailaddress + "\", \"" + window.location.host + "/" + outdir + "\")\n\n";
     
-    outputdata['pyfile'] = pyfile; // the python file
-    outputdata['modelfile'] = modelfunction; // the python file containing the model function
+    outputStrings['postprocess'] = postprocess;
+    
+    outputdata['pyfile'] = pyfile.format(outputStrings); // the python file
+    outputdata['modelfile'] = modelfunction.format(modelStrings); // the python file containing the model function
     outputdata['errcodefile'] = errcodefile; // python file containing the error codes
 
     // submit abscissa data
