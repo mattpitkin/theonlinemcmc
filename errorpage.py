@@ -3,18 +3,25 @@
 from errorcodes import *
 
 def errorpage(errval, emailaddress, outdir):
+  # the string containing the webpage
+  htmlpage = """
+<!DOCTYPE HTML>
+<html>
+<head></head>
+<body>
+
+<h1>MCMC output page</h1>
+
+<p>{errormessage}</p>
+
+</body>
+"""
+  
   # the output html file
   errfile = 'error.html'
-  
   fp = open(errfile)
-  
-  # write out html header
-  fp.write("<!DOCTYPE HTML>\n<html>\n<head>\n</head>\n<body>\n")
-  
-  # check error codes and create out
-  fp.write("<p>%s</p>" % errormessages[errval])
-
-  fp.write("</body>")
+  fp.write(htmlpage.format(errormessages=errormessages[errval]))
+  fp.close()
   
   # email the page
   import emailrepsonse

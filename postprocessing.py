@@ -26,17 +26,29 @@ def postprocessing(postsamples, variables, abscissa, data, email, outdir):
   # import matplotlib
   from matplotlib import pyplot as pl
   
-  # the output html file
-  ppfile = 'postprocessing.html'
+  # the format text to include in the page
+  fm = {}
   
-  fp = open(ppfile)
-  
-  # write out html header
-  fp.write("<!DOCTYPE HTML>\n<html>\n<head>\n</head>\n<body>\n")
-  fp.write("<h1>MCMC output page</h1>\n")
-  
-  fp.write("<h2>Marginalised posteriors</h2>\n")
-  
+  # the string containing the webpage
+  htmlpage = """
+<!DOCTYPE HTML>
+<html>
+<head></head>
+<body>
+
+<h1>MCMC output page</h1>
+
+<h2>Marginalised posteriors</h2>
+
+{posteriorfig}
+
+<h2>Best fit model distribution</h2>
+
+{bestfitfig}
+
+</body>
+"""
+
   # create triangle plot
   labels = ['$%s$' % var for var in variables.split(',')] # LaTeX labels
   nvars = len(variables.split(','))
@@ -48,8 +60,8 @@ def postprocessing(postsamples, variables, abscissa, data, email, outdir):
   postfigfile = 'posterior_plots.png'
   fig.savefig(postfigfile)
   
-  fp.write('<img src="' + postfigfile + '" >')
-  
+  fm['posteriorfig'] = '<img src="' + postfigfile + '" >'
+
   # get the 68% and 95% credible intervals
   inter68 = []
   inter95 = []
@@ -104,11 +116,13 @@ def postprocessing(postsamples, variables, abscissa, data, email, outdir):
   modelplot = 'model_plot.png'
   fig2.savefig(modelplot)
   
-  fp.write("<h2>Best fit model distribution</h2>\n")
-  
-  fp.write('<img src="' + modelplot + '" >')
-  
-  fp.write("</body>")
+  fm['bestfitfig'] = '<img src="' + modelplot + '" >'
+    
+  # output page
+  ppfile = 'postprocessing.html'
+  fp = open(ppfile)
+  fp.write(htmlpage.format(**fm))
+  fp.close()
   
   # email the page
   import emailrepsonse

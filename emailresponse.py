@@ -21,30 +21,23 @@ def emailresponse(emailaddress, outdir, outfile, runerror=False):
   msg['From'] = 'TheOnlineMCMC'
   msg['Subject'] = subject
   
+  msgtext = """
+Dear user,
+
+{msgtext}
+
+Regards,
+
+TheOnlineMCMC
+"""
+
   # message if there's been an error
   if runerror:
-    msgtext = """
-Dear user,
-
-Unfortunately there was an error in running your MCMC. Please see %s for more information on the
-error that occured.
-
-Regards,
-
-TheOnlineMCMC
-  """ % link
+    msgtext = "Unfortunately there was an error in running your MCMC. Please see {0} for more information on the error that occured.".format(link)
   else:
-    msgtext = """
-Dear user,
-
-You data has been analysed. The results can be found at %s.
-
-Regards,
-
-TheOnlineMCMC
-  """ % link
+    msgtext = "You data has been analysed. The results can be found at {0}."format(link)
   
-  msg.attach(MIMEText(msgtext))
+  msg.attach(MIMEText(msgtext.format(msgtext=msgtext)))
   
   # set server and send email
   server = smtplib.SMTP_SSL('smtp.gmail.com:465')
