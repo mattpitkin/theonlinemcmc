@@ -1,4 +1,6 @@
 # script for sending email repsonse
+import os
+import json
 
 # import module for emailing
 import smtplib
@@ -6,16 +8,21 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
 def emailresponse(emailaddress, outdir, outfile, runerror=False):
+  # read info for emailing
+  einf = open(os.environ['EMAILFILE'], 'r')
+  edata = json.load(einf)
+  einf.close()
+
   # email a link to the webpage
-  fromaddr = 'theonlinemcmc@gmail.com'
+  fromaddr = edata['fromaddress']
   toaddr = emailaddress
 
   link = 'http://www.theonlinemcmc.com/%s/%s' % (outdir, outfile)
 
   subject = 'Your results from TheOnlineMCMC'
 
-  username = 'theonlinemcmc'
-  password = 'XXXXXX' # will need to sort out reading this from a file that is not in the repo
+  username = edata['username']
+  password = edata['password'] # will need to sort out reading this from a file that is not in the repo
 
   msg = MIMEMultipart()
   msg['From'] = 'TheOnlineMCMC'
@@ -40,7 +47,7 @@ TheOnlineMCMC
   msg.attach(MIMEText(msgtext.format(msgtext=msgtext)))
   
   # set server and send email
-  server = smtplib.SMTP_SSL('smtp.gmail.com:465')
+  server = smtplib.SMTP_SSL(edata['server'])
   server.login(username,password)
   server.sendmail(fromaddr, toaddrs, msg.as_string())
   server.quit()
