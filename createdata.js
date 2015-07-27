@@ -364,11 +364,11 @@ from mymodel import mymodel\n\
 # import error codes\n\
 from errorcodes import *\n\
 \n\
-# import post-processing function\
-from postprocessing import *\n\
+# import post-processing function\n\
+from ..postprocessing import *\n\
 \n\
 # import error page creation function\n\
-from errorpage import *\n\
+from ..errorpage import *\n\
 \n\
 # initialise error code value\n\
 errval = 0\n\
