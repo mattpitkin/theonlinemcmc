@@ -177,6 +177,8 @@ def postprocessing(postsamples, variables, abscissa, data, email, outdir):
       data = np.loadtxt(datafile)
     except:
       # this should work as the file must have been read in for the MCMC to run
+      import sys
+      sys.exit(0)
   
   # load abscissa
   absfile = 'abscissa_file.txt'
@@ -187,6 +189,8 @@ def postprocessing(postsamples, variables, abscissa, data, email, outdir):
       xdata = np.loadtxt(absfile)
     except:
       # this should work as the file must have been read in for the MCMC to run
+      import sys
+      sys.exit(0)
   
   fig2 = pl.figure()
   pl.plot(xdata, data, 'k.', ms=1, label='Data')

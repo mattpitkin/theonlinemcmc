@@ -365,10 +365,12 @@ from mymodel import mymodel\n\
 from errorcodes import *\n\
 \n\
 # import post-processing function\n\
-from ..postprocessing import *\n\
+import sys\n\
+sys.path.append('..')\n\
+from postprocessing import *\n\
 \n\
 # import error page creation function\n\
-from ..errorpage import *\n\
+from errorpage import *\n\
 \n\
 # initialise error code value\n\
 errval = 0\n\
@@ -881,13 +883,12 @@ def mymodel({arguments}):\n\
     runmcmc += "  # run sampler\n";
     runmcmc += "  try:\n";
     runmcmc += "    sampler.run_mcmc(pos, Niter+Nburnin)\n";
+    runmcmc += "    # remove burn-in and flatten\n";
+    runmcmc += "    samples = sampler.chain[:, Nburnin:, :].reshape((-1, ndim))\n";
+    runmcmc += "    samples = np.vstack((samples, sampler.lnprobability[:, Nburnin:].flatten()))\n";
     runmcmc += "  except:\n";
     runmcmc += "    errval = MCMC_RUN_ERR\n\n";
-    
-    runmcmc += "  # remove burn-in and flatten\n";
-    runmcmc += "  samples = sampler.chain[:, Nburnin:, :].reshape((-1, ndim))\n";
-    runmcmc += "  samples = np.vstack((samples, sampler.lnprobability[:, Nburnin:].flatten()))\n\n";
-    
+
     // output chain and log probabilities to gzipped file
     runmcmc += "  # output the posterior samples, likelihood and variables\n";
     runmcmc += "  try:\n";
