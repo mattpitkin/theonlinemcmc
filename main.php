@@ -51,17 +51,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // output data to file
     file_put_contents($outdir.'/mymodel.py', $modelfile);
   }
-  
-  if (!empty($_POST["errcodefile"])) {
-    $outdir = $_POST["outdir"];
-    if(!file_exists($outdir)){
-      mkdir($outdir, 0777, true);
-    }
-    
-    $errcodefile = $_POST["errcodefile"];
-    // output the error code to a file
-    file_put_contents($outdir.'/errorcodes.py', $errcodefile);
-  }
 
   if(!empty($_POST["labelab"])){
     if ($_POST["labelab"] == "abscissafile"){

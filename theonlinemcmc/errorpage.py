@@ -1,6 +1,6 @@
 # output html page in case of errors
 
-from errorcodes import *
+from theonlinemcmc import *
 
 def errorpage(errval, emailaddress, outdir):
   # the string containing the webpage
@@ -19,11 +19,10 @@ def errorpage(errval, emailaddress, outdir):
   
   # the output html file
   errfile = 'error.html'
-  fp = open(errfile)
+  fp = open(errfile, 'w')
   fp.write(htmlpage.format(errormessages=errormessages[errval]))
   fp.close()
   
   # email the page
-  import emailrepsonse
-  emailresponse.emailrepsonse(email, outdir, errfile, runerror=True)
+  emailresponse(email, outdir, errfile, runerror=True)
   

@@ -1,6 +1,8 @@
 # define a function that performs the post-processing of the posterior values and creates a results page
 import numpy  as np
 
+from theonlinemcmc import *
+
 # convert a floating point number into a string in X.X x 10^Z format
 def exp_str(f, p=1):
   if p > 16:
@@ -217,10 +219,9 @@ def postprocessing(postsamples, variables, abscissa, data, email, outdir):
     
   # output page
   ppfile = 'postprocessing.html'
-  fp = open(ppfile)
+  fp = open(ppfile, 'w')
   fp.write(htmlpage.format(**fm))
   fp.close()
   
   # email the page
-  import emailrepsonse
-  emailresponse.emailrepsonse(email, outdir, ppfile)
+  emailresponse(email, outdir, ppfile)

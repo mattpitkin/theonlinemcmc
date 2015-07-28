@@ -42,7 +42,7 @@ TheOnlineMCMC
   if runerror:
     msgtext = "Unfortunately there was an error in running your MCMC. Please see {0} for more information on the error that occured.".format(link)
   else:
-    msgtext = "You data has been analysed. The results can be found at {0}."format(link)
+    msgtext = "You data has been analysed. The results can be found at {0}.".format(link)
   
   msg.attach(MIMEText(msgtext.format(msgtext=msgtext)))
   

@@ -361,16 +361,8 @@ from scipy.misc import factorial\n\
 # import model function from separate file\n\
 from mymodel import mymodel\n\
 \n\
-# import error codes\n\
-from errorcodes import *\n\
-\n\
-# import post-processing function\n\
-import sys\n\
-sys.path.append('..')\n\
-from postprocessing import *\n\
-\n\
-# import error page creation function\n\
-from errorpage import *\n\
+# import post-processing function from theonlinemcmc package\n\
+from theonlinemcmc import *\n\
 \n\
 # initialise error code value\n\
 errval = 0\n\
@@ -401,32 +393,11 @@ errval = 0\n\
 \n\
 # run the MCMC\n\
 {runmcmc}\
+{postprocess}\
 \n\
 ";
     
     var outputStrings = {}; // object to pass to formatter
-    
-    // some error codes
-    errcodefile = "DATA_READ_ERR = 1001\n";
-    errcodefile += "ABSCISSA_READ_ERR = 1002\n";
-    errcodefile += "SIGMA_READ_ERR = 1003\n";
-    errcodefile += "MCMC_RUN_ERR = 1004\n";
-    errcodefile += "PRIOR_INIT_ERR = 1005\n";
-    errcodefile += "MCMC_INIT_ERR = 1006\n";
-    errcodefile += "POST_OUTPUT_ERR = 1007\n";
-    errcodefile += "POST_PROCESS_ERR = 1008\n";
-    errcodefile += "DATA_LENGTH_ERR = 1009\n\n";
-    
-    errcodefile += 'errormessages = {}\n';
-    errcodefile += 'errormessages[DATA_READ_ERR] = "There was a problem reading in the data."\n';
-    errcodefile += 'errormessages[ABSCISSA_READ_ERR] = "There was a problem reading in the abscissa variable file."\n';
-    errcodefile += 'errormessages[SIGMA_READ_ERR] = "There was a problem reading in the data standard deviation file."\n';
-    errcodefile += 'errormessages[MCMC_RUN_ERR] = "There was a problem running the MCMC."\n';
-    errcodefile += 'errormessages[PRIOR_INIT_ERR] = "There was a problem initialising the prior values."\n';
-    errcodefile += 'errormessages[MCMC_INIT_ERR] = "There was a problem initialising the MCMC."\n';
-    errcodefile += 'errormessages[POST_OUTPUT_ERR] = "There was a problem outputing the posterior file."\n';
-    errcodefile += 'errormessages[POST_PROCESS_ERR] = "There was a problem running the post-processing page."\n';
-    errcodefile += 'errormessages[DATA_LENGTH_ERR] = "There are inconsistent lengths between data, abscissa, and/or sigma lengths."\n';
     
     var theta = []; // array for unpacking variables that require fitting
 
@@ -590,7 +561,7 @@ def mymodel({arguments}):\n\
     posteriorfunction += ", data):\n  lp = lnprior(theta)\n\
   if not np.isfinite(lp):\n\
     return -np.inf\n\n\
-  return lp + lnlike(theta, " + abscissastring + gauss_like_sigma + ")\n\n";
+  return lp + lnlike(theta, " + abscissastring + gauss_like_sigma + ", data)\n\n";
 
     outputStrings["posteriorfunction"] = posteriorfunction;
 
@@ -749,8 +720,8 @@ def mymodel({arguments}):\n\
     // need to add inputs for MCMC - number of ensemble samples, burn-in and MCMC interations
     var nens = $("#mcmc_nensemble").val();
     if ( isNumber(nens) ){
-      if ( nens < theta.length && !(nens%1===0) ){
-        alert("Number of ensemble points must be an integer greater than the number of variables");
+      if ( nens < theta.length || !(nens%1===0) || !(nens%2===0) ){
+        alert("Number of ensemble points must be an even integer greater than the number of variables");
         return false;
       }
     }
@@ -882,10 +853,10 @@ def mymodel({arguments}):\n\
     
     runmcmc += "  # run sampler\n";
     runmcmc += "  try:\n";
-    runmcmc += "    sampler.run_mcmc(pos, Niter+Nburnin)\n";
+    runmcmc += "    sampler.run_mcmc(pos, Nmcmc+Nburnin)\n";
     runmcmc += "    # remove burn-in and flatten\n";
     runmcmc += "    samples = sampler.chain[:, Nburnin:, :].reshape((-1, ndim))\n";
-    runmcmc += "    samples = np.vstack((samples, sampler.lnprobability[:, Nburnin:].flatten()))\n";
+    runmcmc += "    samples = np.hstack((samples, np.reshape(sampler.lnprobability[:, Nburnin:].flatten(), (-1,1))))\n";
     runmcmc += "  except:\n";
     runmcmc += "    errval = MCMC_RUN_ERR\n\n";
 
@@ -895,6 +866,7 @@ def mymodel({arguments}):\n\
     runmcmc += "    np.savetxt('posterior_samples.txt.gz', samples)\n";
     runmcmc += "    fv = open('variables.txt', 'w')\n";
     runmcmc += "    fv.write(\"" + theta.join() + "\")\n";
+    runmcmc += "    fv.close()\n";
     runmcmc += "  except:\n";
     runmcmc += "    errval = POST_OUTPUT_ERR\n\n";
     
@@ -921,7 +893,6 @@ def mymodel({arguments}):\n\
     
     outputdata['pyfile'] = pyfile.format(outputStrings); // the python file
     outputdata['modelfile'] = modelfunction.format(modelStrings); // the python file containing the model function
-    outputdata['errcodefile'] = errcodefile; // python file containing the error codes
 
     // submit abscissa data
     if ( !$.isEmptyObject( abscissaformData ) ){
