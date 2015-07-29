@@ -14,6 +14,9 @@
 </script>
 -->
 
+<!-- Include HTML2canvas for creating a screenshot of the form -->
+<script type="text/javascript" src="http://html2canvas.hertzen.com/build/html2canvas.js"></script>
+
 <!-- Include script to create the input data table and output the python script -->
 <script type="text/javascript" src="createdata.js"></script>
 
@@ -124,6 +127,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
   }
   
+  // get screenshot of form and output it
+  // (see http://permadi.com/blog/2010/10/html5-saving-canvas-image-data-using-php-and-ajax/)
+  // [doesn't work at the moment]
+  //if(!empty($_POST["pageimage"])){
+  //  $imageData = $_POST["pageimage"];
+  //  $filteredData=substr($imageData, strpos($imageData, ",")+1); // strip initial string
+  //  $unencodedData=base64_decode($filteredData); // decode
+  //  $fp = fopen( $outdir.'/screenshot.png', ‘wb’ ); // output the image
+  //  fwrite($fp, $unencodedData);
+  //  fclose( $fp );
+  //}
+
   // re-direct to page that will run the MCMC python script
   header('Location: http://'.$_SERVER['SERVER_NAME'].'/submitted.php');
 }
@@ -172,6 +187,8 @@ model is defined (e.g. in the above example the <code>t</code> (time) value coul
 values [in the future xls or ods could be used])</li>
 </ul>
 </p>
+
+<div id="id_image_area">
 
 <div>
   Model equation: <input type="test" name="modeleq" id="modeleq" value="">
@@ -239,6 +256,8 @@ Please supply your email address to be able to get your results: <input type="em
 
 <input type="button" id="id_submit_variables" value="Submit">
 </form>
+
+</div>
 
 <br>
 <div>&copy; Matthew Pitkin (2015)</div>

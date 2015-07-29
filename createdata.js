@@ -79,7 +79,7 @@ $(document).ready(function() {
 
         var gausstype = $(this).val();
         var newcell2 = liketablerow.insertCell(-1);
-    
+
         if ( gausstype == "Known1" ){  
           newcell2.innerHTML = "<input type=\"text\" id=\"id_gauss_known\" value=\"&sigma;\">";
         }
@@ -938,7 +938,16 @@ def mymodel({arguments}):\n\
         console.log( data );
       });
     }
-    
+
+    // submit a screenshot of the form (doesn't work properly at the moment)
+    //var canvasData;
+    //html2canvas($("#id_image_area"), {
+    //  onrendered: function(canvas) {
+    //    canvasData = canvas.toDataURL("image/png");
+    //    outputdata['pageimage'] = canvasData;
+    //  }
+    //});
+
     // submit final data (python file and any inputs)
     $.ajax({
       method: 'POST',
@@ -946,8 +955,10 @@ def mymodel({arguments}):\n\
       success: function(data){
         alert("Successfully submitted data");
       }
+    }).done(function(data){
+      console.log( data );
     });
-    
+
     // actually submit the form
     $("#id_formvariables").submit();
   });

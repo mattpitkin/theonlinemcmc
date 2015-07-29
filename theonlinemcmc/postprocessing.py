@@ -213,6 +213,8 @@ def postprocessing(postsamples, variables, abscissa, data, email, outdir):
 
   pl.legend(loc='best')
   modelplot = 'model_plot.png'
+  
+  # later try converting to d3 figure using http://mpld3.github.io/ (e.g. import mpld3; mpld3.save_html(fig2))
   fig2.savefig(modelplot)
   
   fm['bestfitfig'] = '<img src="' + modelplot + '" >'
