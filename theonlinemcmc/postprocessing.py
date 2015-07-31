@@ -1,7 +1,7 @@
 # define a function that performs the post-processing of the posterior values and creates a results page
 import numpy  as np
 
-from theonlinemcmc import *
+from theonlinemcmc import emailresponse
 
 # convert a floating point number into a string in X.X x 10^Z format
 def exp_str(f, p=1):

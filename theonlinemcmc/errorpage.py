@@ -20,9 +20,9 @@ def errorpage(errval, emailaddress, outdir):
   # the output html file
   errfile = 'error.html'
   fp = open(errfile, 'w')
-  fp.write(htmlpage.format(errormessages=errormessages[errval]))
+  fp.write(htmlpage.format(errormessage=errormessages[errval]))
   fp.close()
   
   # email the page
-  emailresponse(email, outdir, errfile, runerror=True)
+  emailresponse(emailaddress, outdir, errfile, runerror=True)
   

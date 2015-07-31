@@ -26,10 +26,10 @@ def emailresponse(emailaddress, outdir, outfile, runerror=False):
 
   msg = MIMEMultipart()
   msg['From'] = 'TheOnlineMCMC'
+  msg['To'] = toaddr
   msg['Subject'] = subject
   
-  msgtext = """
-Dear user,
+  msgtext = """Dear user,
 
 {msgtext}
 
@@ -40,14 +40,14 @@ TheOnlineMCMC
 
   # message if there's been an error
   if runerror:
-    msgtext = "Unfortunately there was an error in running your MCMC. Please see {0} for more information on the error that occured.".format(link)
+    message = "Unfortunately there was an error in running your MCMC. Please see {0} for more information on the error that occured.".format(link)
   else:
-    msgtext = "You data has been analysed. The results can be found at {0}.".format(link)
+    message = "You data has been analysed. The results can be found at {0}.".format(link)
   
-  msg.attach(MIMEText(msgtext.format(msgtext=msgtext)))
+  msg.attach(MIMEText(msgtext.format(msgtext=message)))
   
   # set server and send email
   server = smtplib.SMTP_SSL(edata['server'])
   server.login(username,password)
-  server.sendmail(fromaddr, toaddrs, msg.as_string())
+  server.sendmail(fromaddr, [toaddr], msg.as_string())
   server.quit()

@@ -18,4 +18,3 @@ errormessages[MCMC_INIT_ERR] = "There was a problem initialising the MCMC."
 errormessages[POST_OUTPUT_ERR] = "There was a problem outputing the posterior file."
 errormessages[POST_PROCESS_ERR] = "There was a problem running the post-processing page."
 errormessages[DATA_LENGTH_ERR] = "There are inconsistent lengths between data, abscissa, and/or sigma lengths."
-
