@@ -74,8 +74,8 @@ def postprocessing(postsamples, variables, abscissa, data, email, outdir):
   varnames = variables.split(',')
 
   # create triangle plot
-  labels = ['$%s$' % var for var in variables.split(',')] # LaTeX labels
-  nvars = len(variables.split(','))
+  labels = ['$%s$' % var for var in varnames] # LaTeX labels
+  nvars = len(varnames)
   levels = 1.-np.exp(-0.5*np.array([1., 2.])**2) # plot 1 and 2 sigma contours
   
   fig = triangle.corner(postsamples[:nvars,:], labels=labels, levels=levels)
@@ -170,32 +170,8 @@ def postprocessing(postsamples, variables, abscissa, data, email, outdir):
   # create plot of data along with distribution of best fit models
   from mymodel import mymodel
   
-  # load data
-  datafile = 'data_file.txt'
-  try:
-    data = np.loadtxt(datafile)
-  except:
-    try:
-      data = np.loadtxt(datafile)
-    except:
-      # this should work as the file must have been read in for the MCMC to run
-      import sys
-      sys.exit(0)
-  
-  # load abscissa
-  absfile = 'abscissa_file.txt'
-  try:
-    xdata = np.loadtxt(absfile)
-  except:
-    try:
-      xdata = np.loadtxt(absfile)
-    except:
-      # this should work as the file must have been read in for the MCMC to run
-      import sys
-      sys.exit(0)
-  
   fig2 = pl.figure()
-  pl.plot(xdata, data, 'k.', ms=1, label='Data')
+  pl.plot(abscissa, data, 'k.', ms=1, label='Data')
   varidxs = range(nvars)
   if 'sigma' in variables:
     sigmaidx = variables.index('sigma')
@@ -207,9 +183,9 @@ def postprocessing(postsamples, variables, abscissa, data, email, outdir):
   # overplot models for 100 random draws from the posterior
   for i in range(100):
     thesevars = postsamples[varidxs, randidxs[i]].tolist()
-    thesevars.append(xdata)
+    thesevars.append(abscissa)
     thismodel = mymodel(*thesevars) # unpack list as arguments of model function
-    pl.plot(xdata, thismodel, '-', color='mediumblue', lw=3, alpha=0.05)
+    pl.plot(abscissa, thismodel, '-', color='mediumblue', lw=3, alpha=0.05)
 
   pl.legend(loc='best')
   modelplot = 'model_plot.png'
