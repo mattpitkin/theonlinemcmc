@@ -585,8 +585,8 @@ def mymodel({arguments}):\n\
           initialpoint += "  " + priorvar + "ini = " + fitarray[priorvar].minval + " + np.random.rand(Nens)*" + (fitarray[priorvar].maxval - fitarray[priorvar].minval).toString() + "\n";
         }
         if ( priortype == "LogUniform" ){
-          priorfunction += "log(" + fitarray[priorvar].minval + ") < " + priorvar + " < log(" + fitarray[priorvar].maxval + "):\n";
-          initialpoint += "  " + priorvar + "ini = " + "log(" + fitarray[priorvar].minval + " + np.random.rand(Nens)*" + (fitarray[priorvar].maxval - fitarray[priorvar].minval).toString() + ")\n";
+          priorfunction += priorvar + " > 0.0 and (log(" + fitarray[priorvar].minval + ") < log(" + priorvar + ") < log(" + fitarray[priorvar].maxval + ")):\n";
+          initialpoint += "  " + priorvar + "ini = exp(" + "log(" + fitarray[priorvar].minval + ") + np.random.rand(Nens)*(" + "log(" + fitarray[priorvar].maxval.toString() +") - log(" + fitarray[priorvar].minval.toString() + ")))\n";
         }
 
         priorfunction += "    lp = 0\n  else:\n    return -np.inf\n\n";
@@ -772,31 +772,33 @@ def mymodel({arguments}):\n\
     outputStrings['initialpoint'] = initialpoint;
     
     // read in data
-    var readdata = 'try:\n';
-    readdata += '  data = np.loadtxt("' + datafile +'")\n';
-    readdata += 'except:\n';
+    var readdata = 'if errval == 0:\n';
     readdata += '  try:\n';
-    readdata += '    data = np.loadtxt("' + datafile + '", delimiter=",")\n';
+    readdata += '    data = np.loadtxt("' + datafile +'")\n';
     readdata += '  except:\n';
-    readdata += '    errval = DATA_READ_ERR\n\n';
+    readdata += '    try:\n';
+    readdata += '      data = np.loadtxt("' + datafile + '", delimiter=",")\n';
+    readdata += '    except:\n';
+    readdata += '      errval = DATA_READ_ERR\n\n';
     
     outputStrings['readdata'] = readdata;
     
     // read in abscissa
-    var readabscissa = 'try:\n';
-    readabscissa += '  ' + abscissavar + ' = np.loadtxt("' + absfile + '")\n';
-    readabscissa += 'except:\n';
+    var readabscissa = 'if errval == 0:\n';
     readabscissa += '  try:\n';
-    readabscissa += '    ' + abscissavar + ' = np.loadtxt("' + absfile + '", delimiter=",")\n';
+    readabscissa += '    ' + abscissavar + ' = np.loadtxt("' + absfile + '")\n';
     readabscissa += '  except:\n';
-    readabscissa += '    errval = ABSCISSA_READ_ERR\n\n';
+    readabscissa += '    try:\n';
+    readabscissa += '      ' + abscissavar + ' = np.loadtxt("' + absfile + '", delimiter=",")\n';
+    readabscissa += '    except:\n';
+    readabscissa += '      errval = ABSCISSA_READ_ERR\n\n';
     
     outputStrings['readabscissa'] = readabscissa;
     
     // read in or set sigma values (for Gaussian likelihood)
     var readsigma = "";
     var sigmavar = "";
-    if ( $('#likelihood_input_type').val() == "Gaussian" ){        
+    if ( $('#likelihood_input_type').val() == "Gaussian" ){
       if ( $("#id_gauss_like_type").val() == "Known1" ){
         var sigmanum = $("#id_gauss_known").val();
         if ( isNumber(sigmanum) ){
@@ -816,17 +818,18 @@ def mymodel({arguments}):\n\
       }
       
       if ( $("#id_gauss_like_type").val() == "Known2" ){
-        readsigma += 'try:\n';
-        readsigma += '  sigma_data = np.loadtxt("' + sigmafile + '")\n';
-        readsigma += '  if len(sigma_data) != len(data):\n';
-        readsigma += '    errval = DATA_LENGTH_ERR\n';
-        readsigma += 'except:\n';
+        readsigma += 'if errval == 0:\n'
         readsigma += '  try:\n';
-        readsigma += '    sigma_data = np.loadtxt("' + sigmafile + '", delimiter=",")\n';
+        readsigma += '    sigma_data = np.loadtxt("' + sigmafile + '")\n';
         readsigma += '    if len(sigma_data) != len(data):\n';
         readsigma += '      errval = DATA_LENGTH_ERR\n';
         readsigma += '  except:\n';
-        readsigma += '    errval = SIGMA_READ_ERR\n\n';
+        readsigma += '    try:\n';
+        readsigma += '      sigma_data = np.loadtxt("' + sigmafile + '", delimiter=",")\n';
+        readsigma += '      if len(sigma_data) != len(data):\n';
+        readsigma += '        errval = DATA_LENGTH_ERR\n';
+        readsigma += '    except:\n';
+        readsigma += '      errval = SIGMA_READ_ERR\n\n';
         sigmavar += "sigma_data";
       }
     
@@ -835,13 +838,13 @@ def mymodel({arguments}):\n\
     
     outputStrings['readsigma'] = readsigma;
     
-    var runmcmc = "";
+    var runmcmc = "if errval == 0:\n";
     // check length of data and abscissa are the same
-    runmcmc += "if len(data) != len(" + abscissavar + "):\n";
-    runmcmc += "  errval = DATA_LENGTH_ERR\n\n";
+    runmcmc += "  if len(data) != len(" + abscissavar + "):\n";
+    runmcmc += "    errval = DATA_LENGTH_ERR\n\n";
     
     // set MCMC to run
-    var argslist = "argslist = (" + abscissavar + ", " + sigmavar + " data)\n";
+    var argslist = "  argslist = (" + abscissavar + ", " + sigmavar + " data)\n";
     runmcmc += argslist;
     
     runmcmc += "\nif errval == 0:\n";
@@ -856,7 +859,8 @@ def mymodel({arguments}):\n\
     runmcmc += "    sampler.run_mcmc(pos, Nmcmc+Nburnin)\n";
     runmcmc += "    # remove burn-in and flatten\n";
     runmcmc += "    samples = sampler.chain[:, Nburnin:, :].reshape((-1, ndim))\n";
-    runmcmc += "    samples = np.hstack((samples, np.reshape(sampler.lnprobability[:, Nburnin:].flatten(), (-1,1))))\n";
+    runmcmc += "    lnp = np.reshape(sampler.lnprobability[:, Nburnin:].flatten(), (-1,1))\n";
+    runmcmc += "    samples = np.hstack((samples, lnp))\n";
     runmcmc += "  except:\n";
     runmcmc += "    errval = MCMC_RUN_ERR\n\n";
 
