@@ -78,7 +78,7 @@ def postprocessing(postsamples, variables, abscissa, data, email, outdir):
   nvars = len(varnames)
   levels = 1.-np.exp(-0.5*np.array([1., 2.])**2) # plot 1 and 2 sigma contours
   
-  fig = triangle.corner(postsamples[:nvars,:], labels=labels, levels=levels)
+  fig = triangle.corner(postsamples[:,:nvars], labels=labels, levels=levels)
   
   # output the figure
   postfigfile = 'posterior_plots.png'
@@ -90,71 +90,71 @@ def postprocessing(postsamples, variables, abscissa, data, email, outdir):
   inter68 = []
   inter95 = []
   for i in range(nvars):
-    inter68.append(credible_interval(postsamples[i,:], 0.68))
-    inter95.append(credible_interval(postsamples[i,:], 0.95))
+    inter68.append(credible_interval(postsamples[:,i], 0.68))
+    inter95.append(credible_interval(postsamples[:,i], 0.95))
   
   # output the results table
   resultstable = "<table>\n<tr><th>Variable</th><th>Mean</th><th>Median</th><th>Mode</th><th>&sigma;</th><th>68%% CI</th><th>95%% CI</th></tr>\n"
   for i in range(nvars):
     resstrs = [varnames[i]]
     
-    meanv = np.mean(postsamples[i,:])
-    if meanv > 1e3 or meanv < 1e-2:
+    meanv = np.mean(postsamples[:,i])
+    if np.fabs(meanv) > 1e3 or np.fabs(meanv) < 1e-2:
       meanstr = exp_str(meanv)
     else:
       meanstr = '%.1f' % meanv
-    resstrs.append(menastr)
+    resstrs.append(meanstr)
     
-    medianv = np.median(postsamples[i,:])
-    if medianv > 1e3 or medianv < 1e-2:
+    medianv = np.median(postsamples[:,i])
+    if np.fabs(medianv) > 1e3 or np.fabs(medianv) < 1e-2:
       medianstr = exp_str(medianv)
     else:
       medianstr = '%.1f' % medianv
     resstrs.append(medianstr)
     
-    modev = postsamples[i,np.argmax(postsamples[i,:])]
-    if modev > 1e3 or modev < 1e-2:
+    modev = postsamples[np.argmax(postsamples[:,i]),i]
+    if np.fabs(modev) > 1e3 or np.fabs(modev) < 1e-2:
       modestr = exp_str(modev)
     else:
       modestr = '%.1f' % modev
     resstrs.append(modestr)
-    
-    sigmav = np.std(postsamples[i,:])
-    if sigmav > 1e3 or sigmav < 1e-2:
+
+    sigmav = np.std(postsamples[:,i])
+    if np.fabs(sigmav) > 1e3 or np.fabs(sigmav) < 1e-2:
       sigmastr = exp_str(sigmav)
     else:
       sigmastr = '%.1f' % sigmav
     resstrs.append(sigmastr)
     
     ci68str = "[{0}, {1}]"
-    if inter68[i][0] > 1e3 or inter68[i][0] < 1e-2:
+    if np.fabs(inter68[i][0]) > 1e3 or np.fabs(inter68[i][0]) < 1e-2:
       cis1 = exp_str(inter68[i][0])
     else:
-      cis1 = '%.1f' % inter68[i][1]
-    if inter68[i][1] > 1e3 or inter68[i][1] < 1e-2:
+      cis1 = '%.1f' % inter68[i][0]
+    if np.fabs(inter68[i][1]) > 1e3 or np.fabs(inter68[i][1]) < 1e-2:
       cis2 = exp_str(inter68[i][1])
     else:
       cis2 = '%.1f' % inter68[i][1]
     resstrs.append(ci68str.format(cis1, cis2))
     
     ci95str = "[{0}, {1}]"
-    if inter95[i][0] > 1e3 or inter95[i][0] < 1e-2:
+    if np.fabs(inter95[i][0]) > 1e3 or np.fabs(inter95[i][0]) < 1e-2:
       cis1 = exp_str(inter95[i][0])
     else:
-      cis1 = '%.1f' % inter95[i][1]
-    if inter95[i][1] > 1e3 or inter95[i][1] < 1e-2:
+      cis1 = '%.1f' % inter95[i][0]
+    if np.fabs(inter95[i][1]) > 1e3 or np.fabs(inter95[i][1]) < 1e-2:
       cis2 = exp_str(inter95[i][1])
     else:
       cis2 = '%.1f' % inter95[i][1]
     resstrs.append(ci95str.format(cis1, cis2))
-    
-    resultstable += "<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td><td>{5}</td><td>{6}</td></tr>".format(resstrs)
+
+    resultstable += "<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td><td>{5}</td><td>{6}</td></tr>".format(*resstrs)
   resultstable += "</table>\n"
   
   fm['resultstable'] = resultstable
   
   # get the correlation coefficient matrix
-  corrcoef = np.corrcoef(postsamples[:nvars,:])
+  corrcoef = np.corrcoef(postsamples[:,:nvars].T)
   
   corrcoeftable = "<table><th></th>"
   for i in range(nvars):
@@ -167,6 +167,8 @@ def postprocessing(postsamples, variables, abscissa, data, email, outdir):
     corrcoeftable += "</tr>\n"
   corrcoeftable += "</table>\n"
   
+  fm['corrcoeftable'] = corrcoeftable
+  
   # create plot of data along with distribution of best fit models
   from mymodel import mymodel
   
@@ -178,16 +180,16 @@ def postprocessing(postsamples, variables, abscissa, data, email, outdir):
     varidxs.remove(sigmaidx)
   varidxs = np.array(varidxs)
   
-  randidxs = np.random.permutation(len(postsamples))[0:100]
+  randidxs = np.random.permutation(postsamples.shape[0])[0:100]
   
   # overplot models for 100 random draws from the posterior
   for i in range(100):
-    thesevars = postsamples[varidxs, randidxs[i]].tolist()
+    thesevars = postsamples[randidxs[i], varidxs].tolist()
     thesevars.append(abscissa)
     thismodel = mymodel(*thesevars) # unpack list as arguments of model function
     pl.plot(abscissa, thismodel, '-', color='mediumblue', lw=3, alpha=0.05)
 
-  pl.legend(loc='best')
+  pl.legend(loc='best', numpoints=1)
   modelplot = 'model_plot.png'
   
   # later try converting to d3 figure using http://mpld3.github.io/ (e.g. import mpld3; mpld3.save_html(fig2))
