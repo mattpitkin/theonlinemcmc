@@ -75,16 +75,16 @@ def postprocessing(postsamples, variables, abscissa, data, email, outdir):
 <h2>Code links</h2>
 
 <ul>
-<li><a href="pyfile.py">pyfile.py</a> - the python file used to run the MCMC</li>
-<li><a href="mymodel.py">here</a> - the python model function</li>
+<li><a href="pyfile.py"><code>pyfile.py</code></a> - the python file used to run the MCMC</li>
+<li><a href="mymodel.py"><code>mymodel.py</code></a> - the python model function</li>
 </ul>
 
 <h2>Data links</h2>
 
 <ul>
-<li><a href="posterior_samples.txt.gz">posterior_samples.txt.gz</a> - a gzipped tarball 
+<li><a href="posterior_samples.txt.gz"><code>posterior_samples.txt.gz</code></a> - a gzipped tarball 
 containing the posterior samples</li>
-<li><a href="variables.txt">variables.txt</a> - the variables in the order of the posterior file</li>
+<li><a href="variables.txt"><code>variables.txt</code></a> - the variables in the order of the posterior file</li>
 </ul>
 
 <!-- include footer file -->
