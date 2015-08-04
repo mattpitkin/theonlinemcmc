@@ -45,8 +45,12 @@ def postprocessing(postsamples, variables, abscissa, data, email, outdir):
   htmlpage = """
 <!DOCTYPE HTML>
 <html>
-<head></head>
+<head>
+<title>The Online MCMC: Results page</title>
+<link rel="stylesheet" type="text/css" href="../simple.css"/>
+</head>
 <body>
+<div id="page-wrap">
 
 <h1>MCMC output page</h1>
 
@@ -68,6 +72,25 @@ def postprocessing(postsamples, variables, abscissa, data, email, outdir):
 
 {bestfitfig}
 
+<h2>Code links</h2>
+
+<ul>
+<li><a href="pyfile.py">pyfile.py</a> - the python file used to run the MCMC</li>
+<li><a href="mymodel.py">here</a> - the python model function</li>
+</ul>
+
+<h2>Data links</h2>
+
+<ul>
+<li><a href="posterior_samples.txt.gz">posterior_samples.txt.gz</a> - a gzipped tarball 
+containing the posterior samples</li>
+<li><a href="variables.txt">variables.txt</a> - the variables in the order of the posterior file</li>
+</ul>
+
+<!-- include footer file -->
+<?php include('../footer.inc'); ?>
+
+</div>
 </body>
 """
 
@@ -198,7 +221,7 @@ def postprocessing(postsamples, variables, abscissa, data, email, outdir):
   fm['bestfitfig'] = '<img src="' + modelplot + '" >'
     
   # output page
-  ppfile = 'postprocessing.html'
+  ppfile = 'postprocessing.php'
   fp = open(ppfile, 'w')
   fp.write(htmlpage.format(**fm))
   fp.close()

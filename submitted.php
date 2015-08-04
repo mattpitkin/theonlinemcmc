@@ -1,7 +1,8 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-
+<title>The Online MCMC: Submitted</title>
+<link rel="stylesheet" type="text/css" href="simple.css"/>
 </head>
 <body>
 
@@ -19,6 +20,8 @@ $pycommand = './pyfile.py';
 $pid = shell_exec(sprintf('cd %s; %s > %s 2>&1 & echo $!', $outdir, $pycommand, $errfile));
 ?>
 
+<div id="page-wrap">
+
 <h1>Submission successful</h1>
 
 <p>
@@ -26,7 +29,11 @@ Your submission has been successful. You should receive an email when the result
 </p>
 
 <br>
-<div>&copy; Matthew Pitkin (2015)</div>
+
+<!-- include footer file -->
+<?php include('footer.inc'); ?>
+
+</div>
 </body>
 </html>
 

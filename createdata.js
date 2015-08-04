@@ -65,7 +65,7 @@ $(document).ready(function() {
 
     if ( $(this).val() == "Gaussian" ){
       var newcell = liketablerow.insertCell(-1);
-      newcell.innerHTML = "<select id=\"id_gauss_like_type\">\
+      newcell.innerHTML = "<select id=\"id_gauss_like_type\" class=\"form-control\">\
   <option value=\"\">--Type--</option>\
   <option value=\"Known1\">Input &sigma; value</option>\
   <option value=\"Known2\">Input &sigma; values</option>\
@@ -81,10 +81,10 @@ $(document).ready(function() {
         var newcell2 = liketablerow.insertCell(-1);
 
         if ( gausstype == "Known1" ){  
-          newcell2.innerHTML = "<input type=\"text\" id=\"id_gauss_known\" value=\"&sigma;\">";
+          newcell2.innerHTML = "<input type=\"text\" id=\"id_gauss_known\" class=\"form-control\" value=\"&sigma;\">";
         }
         if ( gausstype == "Known2" ){
-          newcell2.innerHTML = "<select id=\"id_gauss_known2_type\">\
+          newcell2.innerHTML = "<select id=\"id_gauss_known2_type\" class=\"form-control\">\
   <option value=\"\">--Type--</option>\
   <option value=\"Input\">Input</option>\
   <option value=\"Upload\">Upload</option>\
@@ -98,16 +98,16 @@ $(document).ready(function() {
             var newcell3 = liketablerow.insertCell(-1);
 
             if ( $(this).val() == "Input" ){
-              newcell3.innerHTML = "<textarea rows=\"1\" cols=\"20\" id=\"id_gauss_like_sigma_input\"></textarea>";
+              newcell3.innerHTML = "<textarea rows=\"1\" cols=\"20\" id=\"id_gauss_like_sigma_input\" class=\"form-control\"></textarea>";
             }
             if ( $(this).val() == "Upload" ){
-              newcell3.innerHTML = "<input type=\"file\" id=\"id_gauss_like_sigma_upload\">";
+              newcell3.innerHTML = "<input type=\"file\" id=\"id_gauss_like_sigma_upload\" class=\"form-control\">";
             }
           });
         }
 
         if ( gausstype == "Fit" ){
-          newcell2.innerHTML = "<select id=\"sigma_gauss_prior\">\
+          newcell2.innerHTML = "<select id=\"sigma_gauss_prior\" class=\"form-control\">\
   <option value=\"\">--Prior type--</option>\
   <option value=\"Uniform\">Uniform</option>\
   <option value=\"LogUniform\">Log(Uniform)</option>\
@@ -121,16 +121,16 @@ $(document).ready(function() {
 
             if ( $(this).val() == "Uniform" || $(this).val() == "LogUniform" ){
               var newcell3 = liketablerow.insertCell(-1);
-              newcell3.innerHTML = "<input type=\"text\" id=\"sigma_gauss_prior_min\" value=\"Min.\">";
+              newcell3.innerHTML = "<input type=\"text\" id=\"sigma_gauss_prior_min\" value=\"Min.\" class=\"form-control\">";
               newcell3 = liketablerow.insertCell(-1);
-              newcell3.innerHTML = "<input type=\"text\" id=\"sigma_gauss_prior_max\" value=\"Max.\">";
+              newcell3.innerHTML = "<input type=\"text\" id=\"sigma_gauss_prior_max\" value=\"Max.\" class=\"form-control\">";
             }
 
             if ( $(this).val() == "Gaussian" ){
               var newcell3 = liketablerow.insertCell(-1);
-              newcell3.innerHTML = "<input type=\"text\" id=\"sigma_gauss_prior_mean\" value=\"Mean\">";
+              newcell3.innerHTML = "<input type=\"text\" id=\"sigma_gauss_prior_mean\" value=\"Mean\" class=\"form-control\">";
               newcell3 = liketablerow.insertCell(-1);
-              newcell3.innerHTML = "<input type=\"text\" id=\"sigma_gauss_prior_sigma\" value=\"Standard deviation\">";
+              newcell3.innerHTML = "<input type=\"text\" id=\"sigma_gauss_prior_sigma\" value=\"Standard deviation\" class=\"form-control\">";
             }
           });
         }
@@ -214,7 +214,7 @@ $(document).ready(function() {
   function createSelection(row, variable){
     var cell = row.insertCell(-1);
     var idvartype = "id_vartype_"+variable;
-    cell.innerHTML = "<select id=\""+idvartype+"\">\
+    cell.innerHTML = "<select id=\""+idvartype+"\" class=\"form-control\">\
   <option value=\"\">--Type--</option>\
   <option value=\"Constant\">Constant</option>\
   <option value=\"Variable\">Variable</option>\
@@ -238,14 +238,14 @@ $(document).ready(function() {
       if( vartype == "Constant" ){
         // place input form in cell
         var newcell = row.insertCell(-1);
-        newcell.innerHTML = "<input type=\"text\" id=\"id_constant_"+variable+"\" value=\"Value\">";
+        newcell.innerHTML = "<input type=\"text\" id=\"id_constant_"+variable+"\" value=\"Value\" class=\"form-control\">";
       }
         
       if( vartype == "Variable" ){
         // place select for in cell
         var newcell = row.insertCell(-1);
         var idpriortype = "id_priortype_"+variable;
-        newcell.innerHTML = "<select id=\""+idpriortype+"\">\
+        newcell.innerHTML = "<select id=\""+idpriortype+"\" class=\"form-control\">\
     <option value=\"\">--Prior--</option>\
     <option value=\"Uniform\">Uniform</option>\
     <option value=\"LogUniform\">Log(Uniform)</option>\
@@ -272,7 +272,7 @@ $(document).ready(function() {
 
           var newcell = row.insertCell(-1);
           var idabscissatype = "id_abscissa_"+variable;
-          newcell.innerHTML = "<select id=\""+idabscissatype+"\">\
+          newcell.innerHTML = "<select id=\""+idabscissatype+"\" class=\"form-control\">\
     <option value=\"\">--Input type--</option>\
     <option value=\"Input\">Input</option>\
     <option value=\"Upload\">Upload</option>\
@@ -299,16 +299,16 @@ $(document).ready(function() {
         
       if( priortype == "Uniform" || priortype == "LogUniform" ){
         var cell = row.insertCell(-1);
-        cell.innerHTML = "<input type=\"text\" id=\"minval_"+variable+"\" value=\"Min.\">";
+        cell.innerHTML = "<input type=\"text\" id=\"minval_"+variable+"\" value=\"Min.\" class=\"form-control\">";
         cell = row.insertCell(-1);
-        cell.innerHTML = "<input type=\"text\" id=\"maxval_"+variable+"\" value=\"Max.\">";
+        cell.innerHTML = "<input type=\"text\" id=\"maxval_"+variable+"\" value=\"Max.\" class=\"form-control\">";
       }
 
       if( priortype == "Gaussian" ){
         var cell = row.insertCell(-1);
-        cell.innerHTML = "<input type=\"text\" name=\"meanval_"+variable+"\" value=\"Mean\">";
+        cell.innerHTML = "<input type=\"text\" name=\"meanval_"+variable+"\" value=\"Mean\" class=\"form-control\">";
         cell = row.insertCell(-1);
-        cell.innerHTML = "<input type=\"text\" name=\"sigmaval_"+variable+"\" value=\"Standard deviation\">";
+        cell.innerHTML = "<input type=\"text\" name=\"sigmaval_"+variable+"\" value=\"Standard deviation\" class=\"form-control\">";
       }
     });
   }
@@ -331,13 +331,13 @@ $(document).ready(function() {
       if ( abscissatype == "Input" ){
         var cell = row.insertCell(-1);
         //cell.innerHTML = "<input type=\"text\" id=\"id_abscissaval_"+variable+"\" value=\"\">";
-        cell.innerHTML = "<textarea rows=\"1\" cols=\"20\" id=\"id_abscissaval\"></textarea>";
+        cell.innerHTML = "<textarea rows=\"1\" cols=\"20\" id=\"id_abscissaval\" class=\"form-control\"></textarea>";
       }
 
       if ( abscissatype == "Upload" ){
         var cell = row.insertCell(-1);
         var idabscissafile = "id_abscissafile";
-        cell.innerHTML = "<input type=\"file\" id=\""+idabscissafile+"\" value=\"\">";
+        cell.innerHTML = "<input type=\"file\" id=\""+idabscissafile+"\" value=\"\" class=\"form-control\">";
       }
 
     });
@@ -582,14 +582,16 @@ def mymodel({arguments}):\n\
         
         if ( priortype == "Uniform" ){
           priorfunction += fitarray[priorvar].minval + " < " + priorvar + " < " + fitarray[priorvar].maxval + ":\n";
+          priorfunction += "    lp = 0.\n";
           initialpoint += "  " + priorvar + "ini = " + fitarray[priorvar].minval + " + np.random.rand(Nens)*" + (fitarray[priorvar].maxval - fitarray[priorvar].minval).toString() + "\n";
         }
         if ( priortype == "LogUniform" ){
           priorfunction += priorvar + " > 0.0 and (log(" + fitarray[priorvar].minval + ") < log(" + priorvar + ") < log(" + fitarray[priorvar].maxval + ")):\n";
+          priorfunction += "    lp -= np.log(" + priorvar + ")\n";
           initialpoint += "  " + priorvar + "ini = exp(" + "log(" + fitarray[priorvar].minval + ") + np.random.rand(Nens)*(" + "log(" + fitarray[priorvar].maxval.toString() +") - log(" + fitarray[priorvar].minval.toString() + ")))\n";
         }
 
-        priorfunction += "    lp = 0\n  else:\n    return -np.inf\n\n";
+        priorfunction += "  else:\n    return -np.inf\n\n";
       }
 
       if ( priortype == "Gaussian" ){

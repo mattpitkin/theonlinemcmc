@@ -7,18 +7,26 @@ def errorpage(errval, emailaddress, outdir):
   htmlpage = """
 <!DOCTYPE HTML>
 <html>
-<head></head>
+<head>
+<title>The Online MCMC: Error page</title>
+<link rel="stylesheet" type="text/css" href="../simple.css"/>
+</head>
 <body>
+<div id="page-wrap">
 
 <h1>MCMC output page</h1>
 
 <p>{errormessage}</p>
 
+<!-- include footer file -->
+<?php include('../footer.inc'); ?>
+
+</div>
 </body>
 """
   
   # the output html file
-  errfile = 'error.html'
+  errfile = 'error.php'
   fp = open(errfile, 'w')
   fp.write(htmlpage.format(errormessage=errormessages[errval]))
   fp.close()

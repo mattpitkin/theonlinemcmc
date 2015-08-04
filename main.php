@@ -1,6 +1,8 @@
 <!DOCTYPE HTML>
 <html>
 <head>
+<title>The Online MCMC</title>
+
 <!-- Include jQuery -->
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 
@@ -14,16 +16,16 @@
 </script>
 -->
 
-<!-- Include HTML2canvas for creating a screenshot of the form -->
-<script type="text/javascript" src="http://html2canvas.hertzen.com/build/html2canvas.js"></script>
-
 <!-- Include script to create the input data table and output the python script -->
 <script type="text/javascript" src="createdata.js"></script>
+
+<!-- custom CSS file -->
+<link rel="stylesheet" type="text/css" href="simple.css"/>
 
 </head>
 <body>
 
-<!-- start a session to share variables -->
+<!-- start a session to share variables across pages -->
 <?php
 session_start();
 ?>
@@ -139,14 +141,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   //  fclose( $fp );
   //}
 
+  // output some user info to either a straight text file or a database
+  
   // re-direct to page that will run the MCMC python script
   header('Location: http://'.$_SERVER['SERVER_NAME'].'/submitted.php');
 }
 ?>
 
+<div id="page-wrap">
+
 <h1>The Online MCMC</h1>
 
-<p>
+<p class="container">
 Do you have some data and a model that you want to fit to it? Well here's the website for you.
 On this website you can input a model function defined by a set of parameters including those that you want
 fit, and your data, and it will run a <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo">Markov
@@ -191,7 +197,7 @@ values [in the future xls or ods could be used])</li>
 <div id="id_image_area">
 
 <div>
-  Model equation: <input type="test" name="modeleq" id="modeleq" value="">
+  Model equation: <input type="test" name="modeleq" id="modeleq" class="form-control" value="">
  <input type="button" id="id_model_button" value="Submit">
 </div>
 
@@ -203,12 +209,12 @@ values [in the future xls or ods could be used])</li>
   </table>
 <br>
 <!-- Allow conditions on parameters e.g. x > y or x < 0 && y > 2 to be set -->
-<input type="hidden" id="id_conditions" value="Conditions (e.g. x < 0 && y > z)" size="30">
+<input type="hidden" id="id_conditions" class="form-control" value="Conditions (e.g. x < 0 && y > z)" size="30">
 </div>
 
 <h2 id="id_data_header">Data input</h2>
 <div id="id_data_div">
-<select id="data_input_type">
+<select id="data_input_type" class="form-control">
   <option value="">--Type--</option>
   <option value="Input">Input</option>
   <option value="Upload">Upload</option>
@@ -216,13 +222,13 @@ values [in the future xls or ods could be used])</li>
 <br>
 </div>
 <input type="hidden" id="id_submit_data_upload">
-<textarea style="display:none" id="id_submit_data_form"></textarea>
+<textarea style="display:none" class="form-control" id="id_submit_data_form"></textarea>
 
 <h2 id="id_likelihood_header">Likelihood input</h2>
 <div id="id_likelihood_div">
   <table id="like_table">
     <tr id="like_row"><td>
-      <select id="likelihood_input_type">
+      <select id="likelihood_input_type" class="form-control">
         <option value="">--Type--</option>
         <option value="Gaussian">Gaussian</option>
         <option value="Studentst">Student's t</option>
@@ -236,22 +242,22 @@ values [in the future xls or ods could be used])</li>
 <table id="mcmc_table">
   <tr>
     <td>Number of ensemble points (default: 100)</td>
-    <td><input type="text" id="mcmc_nensemble" value="100"></td>
+    <td><input type="text" class="form-control" id="mcmc_nensemble" value="100"></td>
   </tr>
   <tr>
     <td>Number of MCMC interations (default: 1000)</td>
-    <td><input type="text" id="mcmc_niteration" value="1000"></td>
+    <td><input type="text" class="form-control" id="mcmc_niteration" value="1000"></td>
   </tr>
   <tr>
     <td>Number of MCMC burn-in interations (default: 1000)</td>
-    <td><input type="text" id="mcmc_nburnin" value="1000"></td>
+    <td><input type="text" class="form-control" id="mcmc_nburnin" value="1000"></td>
   </tr>
 </table>
 </div>
 <br>
 
 <p>
-Please supply your email address to be able to get your results: <input type="email" id="id_email">
+Please supply your email address to be able to get your results: <input type="email" id="id_email" class="form-control">
 </p>
 
 <input type="button" id="id_submit_variables" value="Submit">
@@ -260,7 +266,11 @@ Please supply your email address to be able to get your results: <input type="em
 </div>
 
 <br>
-<div>&copy; Matthew Pitkin (2015)</div>
+
+<!-- include footer file -->
+<?php include('footer.inc'); ?>
+
+</div>
 </body>
 </html>
 
