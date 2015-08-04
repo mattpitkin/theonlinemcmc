@@ -44,10 +44,10 @@ TheOnlineMCMC
   else:
     message = "You data has been analysed. The results can be found at {0}.".format(link)
   
-  msg.attach(MIMEText(msgtext.format(msgtext=message)))
+  msg.attach(MIMEText(msgtext.format(msgtext=message), 'plain'))
   
   # set server and send email
   server = smtplib.SMTP_SSL(edata['server'])
-  server.login(username,password)
+  server.login(username, password)
   server.sendmail(fromaddr, [toaddr], msg.as_string())
   server.quit()
