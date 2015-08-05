@@ -1,6 +1,6 @@
 # output html page in case of errors
 
-from theonlinemcmc import *
+from theonlinemcmc import errormessages, emailresponse
 
 def errorpage(errval, emailaddress, outdir):
   # the string containing the webpage
