@@ -165,7 +165,7 @@ by <a href="http://dan.iel.fm/">Dan Foreman-Mackey</a>.
 
 <p>
 Firstly, you must input the model that you want to fit to your data. When inputting this model you can use
-the standard operators "+", "-", "x", "/". You can also use the trigonometric functions "sin", "cos" and "tan"
+the standard operators "+", "-", "*" (multiplication), "/" (division). You can also use the trigonometric functions "sin", "cos" and "tan"
 including the hyperbolic versions of these functions and there inverses "asin" (or "arcsin"), "acos" (or
 "arccos") and "atan"/"atan2" (or "arctan"/"arctan2"). For the natural logarithm of a value use "log", whilst
 for log with the base 10 use "log10". For the constant <em>e</em> to the power of a value use "exp". To
