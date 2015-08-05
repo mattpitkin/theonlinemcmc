@@ -3,6 +3,9 @@ import numpy  as np
 
 from theonlinemcmc import emailresponse
 
+import matplotlib as mpl
+mpl.use("Agg")
+
 # convert a floating point number into a string in X.X x 10^Z format
 def exp_str(f, p=1):
   if p > 16:
@@ -100,13 +103,13 @@ containing the posterior samples</li>
   labels = ['$%s$' % var for var in varnames] # LaTeX labels
   nvars = len(varnames)
   levels = 1.-np.exp(-0.5*np.array([1., 2.])**2) # plot 1 and 2 sigma contours
-  
+
   fig = triangle.corner(postsamples[:,:nvars], labels=labels, levels=levels)
-  
+
   # output the figure
   postfigfile = 'posterior_plots.png'
-  fig.savefig(postfigfile)
-  
+  fig.savefig(postfigfile, transparent=True) # transparent background
+
   fm['posteriorfig'] = '<img src="' + postfigfile + '" >'
 
   # get the 68% and 95% credible intervals
@@ -173,12 +176,12 @@ containing the posterior samples</li>
 
     resultstable += "<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td><td>{5}</td><td>{6}</td></tr>".format(*resstrs)
   resultstable += "</table>\n"
-  
+
   fm['resultstable'] = resultstable
   
   # get the correlation coefficient matrix
   corrcoef = np.corrcoef(postsamples[:,:nvars].T)
-  
+
   corrcoeftable = "<table><th></th>"
   for i in range(nvars):
     corrcoeftable += "<th>%s</th>" % varnames[i]
@@ -186,15 +189,19 @@ containing the posterior samples</li>
   for i in range(nvars):
     corrcoeftable += "<tr><td>%s</td>" % varnames[i]
     for j in range(nvars):
-      corrcoeftable += "<td>%.2f</td>" % corrcoef[i,j]
+      # check if only 1d corrcoef array
+      if nvars == 1:
+        corrcoeftable += "<td>%.2f</td>" % corrcoef
+      else:
+        corrcoeftable += "<td>%.2f</td>" % corrcoef[i,j]
     corrcoeftable += "</tr>\n"
   corrcoeftable += "</table>\n"
-  
+
   fm['corrcoeftable'] = corrcoeftable
   
   # create plot of data along with distribution of best fit models
   from mymodel import mymodel
-  
+
   fig2 = pl.figure()
   pl.plot(abscissa, data, 'k.', ms=1, label='Data')
   varidxs = range(nvars)
@@ -216,7 +223,7 @@ containing the posterior samples</li>
   modelplot = 'model_plot.png'
   
   # later try converting to d3 figure using http://mpld3.github.io/ (e.g. import mpld3; mpld3.save_html(fig2))
-  fig2.savefig(modelplot)
+  fig2.savefig(modelplot, transparent=True)
   
   fm['bestfitfig'] = '<img src="' + modelplot + '" >'
     
