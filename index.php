@@ -144,7 +144,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   // output some user info to either a straight text file or a database
   
   // re-direct to page that will run the MCMC python script
-  header('Location: http://'.$_SERVER['SERVER_NAME'].'/submitted.php');
+  header('Location: http://'.$_SERVER['SERVER_NAME'].'/theonlinemcmc/submitted.php');
 }
 ?>
 
