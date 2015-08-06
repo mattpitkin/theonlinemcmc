@@ -4,4 +4,6 @@ A website to provide an online submission interface for running a Markov chain M
 
 The user will enter a model and parameters that they want to fit, the data they want the model fitted to and the likelihood function. It will then return posterior plots and statistics for the fitted parameters.
 
+A test commit
+
 &copy; Matthew Pitkin, 2015
