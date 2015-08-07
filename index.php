@@ -213,6 +213,13 @@ values [in the future xls or ods could be used])</li>
 </div>
 
 <h2 id="id_data_header">Data input</h2>
+<p>
+  Input the data that you would like to fit the model to. You can directly choose to input values directly
+  in the form below (which whitespace of comma separated values), or upload a file containing the data (again
+  with whitespace, or comma separated values). The number of input data points must be thet same as the
+  number of independent variable/abscissa values provided above.
+</p>
+
 <div id="id_data_div">
 <select id="data_input_type" class="form-control">
   <option value="">--Type--</option>
