@@ -9,7 +9,7 @@ def errorpage(errval, emailaddress, outdir):
 <html>
 <head>
 <title>The Online MCMC: Error page</title>
-<link rel="stylesheet" type="text/css" href="../simple.css"/>
+<link rel="stylesheet" type="text/css" href="../../simple.css"/>
 </head>
 <body>
 <div id="page-wrap">

@@ -50,7 +50,7 @@ def postprocessing(postsamples, variables, abscissa, abscissaname, data, email, 
 <html>
 <head>
 <title>The Online MCMC: Results page</title>
-<link rel="stylesheet" type="text/css" href="../simple.css"/>
+<link rel="stylesheet" type="text/css" href="../../simple.css"/>
 </head>
 <body>
 <div id="page-wrap">
