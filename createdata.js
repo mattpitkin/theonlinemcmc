@@ -885,15 +885,17 @@ def mymodel({arguments}):\n\
     }
     
     // run a pre-written script to parse the output, create plots and an output webpage and email user
+    var hrefloc = window.location.href;
+    var lIndex = hrefloc.lastIndexOf('/'); // strip the current page off the href
     var postprocess = "  # run post-processing script\n";
     postprocess += "  try:\n";
-    postprocess += "    postprocessing(samples, \"" + theta.join(',') + "\", " + abscissavar + ", \"" + abscissavar + "\", data, \"" + emailaddress + "\", \"http://" + window.location.host + "/results/" + outdir + "\")\n";
+    postprocess += "    postprocessing(samples, \"" + theta.join(',') + "\", " + abscissavar + ", \"" + abscissavar + "\", data, \"" + emailaddress + "\", \"" + hrefloc.substr(0, lIndex) + "/results/" + outdir + "\")\n";
     postprocess += "  except:\n";
     postprocess += "    errval = POST_PROCESS_ERR\n\n";
     
     postprocess += "if errval != 0:\n";
     postprocess += "  # run different script in case error codes are encountered\n";
-    postprocess += "  errorpage(errval, \"" + emailaddress + "\", \"http://" + window.location.host + "/results/" + outdir + "\")\n\n";
+    postprocess += "  errorpage(errval, \"" + emailaddress + "\", \"" + hrefloc.substr(0, lIndex) + "/results/" + outdir + "\")\n\n";
     
     outputStrings['postprocess'] = postprocess;
     
