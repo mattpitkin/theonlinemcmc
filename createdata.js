@@ -887,7 +887,7 @@ def mymodel({arguments}):\n\
     // run a pre-written script to parse the output, create plots and an output webpage and email user
     var postprocess = "  # run post-processing script\n";
     postprocess += "  try:\n";
-    postprocess += "    postprocessing(samples, \"" + theta.join(',') + "\", " + abscissavar + ", data, \"" + emailaddress + "\", \"" + window.location.host + "/" + outdir + "\")\n";
+    postprocess += "    postprocessing(samples, \"" + theta.join(',') + "\", " + abscissavar + ", '" + abscissavar + "', data, \"" + emailaddress + "\", \"" + window.location.host + "/" + outdir + "\")\n";
     postprocess += "  except:\n";
     postprocess += "    errval = POST_PROCESS_ERR\n\n";
     

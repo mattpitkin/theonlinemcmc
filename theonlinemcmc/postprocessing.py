@@ -34,7 +34,7 @@ def credible_interval(dsamples, ci):
 
    return (np.min(bins[histIndices[:j]]), np.max(bins[histIndices[:j]]))
 
-def postprocessing(postsamples, variables, abscissa, data, email, outdir):
+def postprocessing(postsamples, variables, abscissa, abscissaname, data, email, outdir):
   # import the triangle plot code
   import triangle
 
@@ -220,6 +220,8 @@ containing the posterior samples</li>
     pl.plot(abscissa, thismodel, '-', color='mediumblue', lw=3, alpha=0.05)
 
   pl.legend(loc='best', numpoints=1)
+  pl.xlabel(abscissaname)
+
   modelplot = 'model_plot.png'
   
   # later try converting to d3 figure using http://mpld3.github.io/ (e.g. import mpld3; mpld3.save_html(fig2))
