@@ -77,3 +77,14 @@ code {
   border-top: 1px solid #999;
   padding: 15px;
 }
+
+/* classes for the footer text */
+td.footer-right {
+  width: 30%;
+  text-align: left;
+  vertical-align: top;
+}
+
+td.footer-left {
+  vertical-align: top;   
+}
