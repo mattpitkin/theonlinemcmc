@@ -330,7 +330,6 @@ $(document).ready(function() {
       // add input form
       if ( abscissatype == "Input" ){
         var cell = row.insertCell(-1);
-        //cell.innerHTML = "<input type=\"text\" id=\"id_abscissaval_"+variable+"\" value=\"\">";
         cell.innerHTML = "<textarea rows=\"1\" cols=\"20\" id=\"id_abscissaval\" class=\"form-control\"></textarea>";
       }
 
@@ -508,8 +507,9 @@ def mymodel({arguments}):\n\
         var idconst = "#id_constant_" + variables[index];
         var constval = $(idconst).val();
         if ( constval != "Value" ){ // "Value" is the default value
-          $(idconst).css("color", "black");
-
+          $(idconst).removeClass("has-error");
+          $(idconst).addClass("form-control");
+          
           // check value is actually a number
           if ( isNumber( constval ) ){
             conststring += variables[index] + " = " + constval;
@@ -517,14 +517,16 @@ def mymodel({arguments}):\n\
           else{
             alert("Constant value is not a number!");
             // add red warning to highlight the constant that is wrong
-            $(idconst).css("color", "red");
+            $(idconst).removeClass("form-control");
+            $(idconst).addClass("has-error");
             $(idconst).val("Invalid value");
             return false; // abort submission
           }
         }
         else{
           alert("Constant value is not set");
-          $(idconst).css("color", "red");
+          $(idconst).removeClass("form-control");
+          $(idconst).addClass("has-error");
           $(idconst).val("Invalid value");
           return false;
         }
@@ -975,45 +977,52 @@ def mymodel({arguments}):\n\
   function getMinMaxValues(idminval, idmaxval){
     var minval = $(idminval).val();
     if ( minval != "Min." ){
-      $(idminval).css("color", "black");
-
+      $(idminval).addClass("form-control");
+      $(idminval).removeClass("has-error");
+        
       if ( !isNumber(minval) ){
         alert("Minimum value is not a number");
-        $(idminval).css("color", "red");
+        $(idminval).removeClass("form-control");
+        $(idminval).addClass("has-error");
         $(idminval).val("Invalid value");
         return [];
       }
     }
     else{
       alert("Minimum value not specified");
-      $(idminval).css("color", "red");
+      $(idminval).removeClass("form-control");
+      $(idminval).addClass("has-error");
       $(idminval).val("Invalid value");
       return [];
     }
 
     var maxval = $(idmaxval).val();
     if ( maxval != "Max." ){
-      $(idmaxval).css("color", "black");
-
+      $(idmaxval).addClass("form-control");
+      $(idmaxval).removeClass("has-error");
+      
       if ( isNumber(maxval) ){
         // check max val is greater than min val
         if ( parseFloat( maxval ) < parseFloat( minval ) ){
           alert("Maximum value is less than minimum value!");
-          $(idminval).css("color", "red");
-          $(idminval).val("Invalid value");
+          $(idmaxval).removeClass("form-control");
+          $(idmaxval).addClass("has-error");
+          $(idmaxval).val("Invalid value");
           return [];
         }
       }
       else{
         alert("Maximum value is not a number");
-        $(idmaxval).css("color", "red");
+        $(idmaxval).removeClass("form-control");
+        $(idmaxval).addClass("has-error");
         $(idmaxval).val("Invalid value");
         return [];
       }
     }
     else{
       alert("Maximum value not specified");
-      $(idmaxval).css("color", "red");
+      $(idmaxval).removeClass("form-control");
+      $(idmaxval).addClass("has-error");
       $(idmaxval).val("Invalid value");
       return [];
     }
@@ -1029,43 +1038,50 @@ def mymodel({arguments}):\n\
     // check and get mean and sigma values
     if ( meanval != "Mean" ){
       if ( isNumber( meanval ) ){
-       $(idmeanval).css("color", "black"); 
+       $(idmeanval).addClass("form-control");
+       $(idmeanval).removeClass("has-error");
 
        if ( sigmaval != "Standard deviation" ){
-          $(idsigmaval).css("color", "black");
+          $(idsigmaval).addClass("form-control");
+          $(idsigmaval).removeClass("has-error");
 
           if ( isNumber( sigmaval ) ){
             if ( sigmaval < 0. ){
               alert("Standard devaition must be a positive number");
-              $(idsigmaval).css("color", "red");
+              $(idsigmaval).removeClass("form-control");
+              $(idsigmaval).addClass("has-error");
               $(idsigmaval).val("Invalid value");
               return [];
             }
           }
           else{
             alert("Standard deviation value is not a number");
-            $(idsigmaval).css("color", "red");
+            $(idsigmaval).removeClass("form-control");
+            $(idsigmaval).addClass("has-error");
             $(idsigmaval).val("Invalid value");
             return [];
           }
         }
         else{
           alert("Standard deviation value not specified");
-          $(idsigmaval).css("color", "red");
+          $(idsigmaval).removeClass("form-control");
+          $(idsigmaval).addClass("has-error");
           $(idsigmaval).val("Invalid value");
           return [];
         }
       }
       else{
         alert("Mean value is not a number");
-        $(idmeanval).css("color", "red");
+        $(idmeanval).removeClass("form-control");
+        $(idmeanval).addClass("has-error");
         $(idmeanval).val("Invalid value");
         return [];
       }
     }
     else{
       alert("Mean value not specified for Gaussian prior");
-      $(idmeanval).css("color", "red");
+      $(idmeanval).removeClass("form-control");
+      $(idmeanval).addClass("has-error");
       $(idmeanval).val("Invalid value");
       return [];
     }
