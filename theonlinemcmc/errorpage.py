@@ -19,7 +19,7 @@ def errorpage(errval, emailaddress, outdir):
 <p>{errormessage}</p>
 
 <!-- include footer file -->
-<?php include('../footer.inc'); ?>
+<?php include('../../footer.inc'); ?>
 
 </div>
 </body>

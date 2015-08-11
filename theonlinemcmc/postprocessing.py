@@ -91,7 +91,7 @@ containing the posterior samples</li>
 </ul>
 
 <!-- include footer file -->
-<?php include('../footer.inc'); ?>
+<?php include('../../footer.inc'); ?>
 
 </div>
 </body>
