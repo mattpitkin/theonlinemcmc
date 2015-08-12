@@ -55,17 +55,36 @@ def postprocessing(postsamples, variables, abscissa, abscissaname, data, email, 
 <body>
 <div id="page-wrap">
 
-<h1>MCMC output page</h1>
+<!-- include footer file -->
+<?php include('../../header.inc'); ?>
 
 <h2>Marginalised posteriors</h2>
+
+The diagonal plots show the <a href="https://en.wikipedia.org/wiki/Marginal_distribution">marginal</a>
+<a href="https://en.wikipedia.org/wiki/Posterior_probability">posterior probability</a> distributions for each of your
+fitted parameters. The off-diagonal plots show 1 and 2&sigma; probability contours for the
+<a href="https://en.wikipedia.org/wiki/Joint_probability_distribution">joint</a> marginal posterior probability distributions of pairs of parameters. This has been produced with <a href="https://github.com/dfm/triangle.py">triangle.py</a>.
 
 {posteriorfig}
 
 <h2>Best fit values</h2>
 
+The <a href="https://en.wikipedia.org/wiki/Mean">mean</a>,
+<a href="https://en.wikipedia.org/wiki/Median">median</a> and
+<a href="https://en.wikipedia.org/wiki/Mode_(statistics)">mode</a>
+of the probability distributions for each parameter. Also give are the
+<a href="https://en.wikipedia.org/wiki/Standard_deviation">standard deviation</a>
+of the distributions and minimal 68% and 95%
+<a href="https://en.wikipedia.org/wiki/Credible_interval">credilble intervals</a>.
+
 <div>
 {resultstable}
 </div>
+
+<h3>Correlation coefficient matrix</h3>
+
+The <a href="https://en.wikipedia.org/wiki/Covariance_matrix#Correlation_matrix">correlation coefficients</a>
+between each of the fitted parameters.
 
 <div>
 {corrcoeftable}
@@ -73,9 +92,15 @@ def postprocessing(postsamples, variables, abscissa, abscissaname, data, email, 
 
 <h2>Best fit model distribution</h2>
 
+This plot shows the distribution of 100 models drawn randomly from the posterior distribution.
+The best fitting models will be clustered over each other.
+
 {bestfitfig}
 
 <h2>Code links</h2>
+
+The <a href="https://www.python.org/">python</a> files for running the MCMC are provided below.
+These use the <a href="http://dan.iel.fm/emcee/current/">emcee</a> python module.
 
 <ul>
 <li><a href="pyfile.py"><code>pyfile.py</code></a> - the python file used to run the MCMC</li>
@@ -104,7 +129,7 @@ containing the posterior samples</li>
   nvars = len(varnames)
   levels = 1.-np.exp(-0.5*np.array([1., 2.])**2) # plot 1 and 2 sigma contours
 
-  fig = triangle.corner(postsamples[:,:nvars], labels=labels, levels=levels)
+  fig = triangle.corner(postsamples[:,:nvars], labels=labels, levels=levels, quantiles=[0.16, 0.5, 0.84], bins=30)
 
   # output the figure
   postfigfile = 'posterior_plots.png'
@@ -120,7 +145,7 @@ containing the posterior samples</li>
     inter95.append(credible_interval(postsamples[:,i], 0.95))
   
   # output the results table
-  resultstable = "<table>\n<tr><th>Variable</th><th>Mean</th><th>Median</th><th>Mode</th><th>&sigma;</th><th>68%% CI</th><th>95%% CI</th></tr>\n"
+  resultstable = "<table class=\"table table-striped table-hover\">\n<tr><th>Variable</th><th>Mean</th><th>Median</th><th>Mode</th><th>&sigma;</th><th>68% CI<sup>*</sup></th><th>95% CI</th></tr>\n"
   for i in range(nvars):
     resstrs = [varnames[i]]
     
@@ -176,15 +201,16 @@ containing the posterior samples</li>
 
     resultstable += "<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td><td>{5}</td><td>{6}</td></tr>".format(*resstrs)
   resultstable += "</table>\n"
+  resultstable += "<br><sup>*</sup>CI - <a href=\"https://en.wikipedia.org/wiki/Credible_interval\">credible interval</a>.\n"
 
   fm['resultstable'] = resultstable
   
   # get the correlation coefficient matrix
   corrcoef = np.corrcoef(postsamples[:,:nvars].T)
 
-  corrcoeftable = "<table><th></th>"
+  corrcoeftable = "<table class=\"table table-striped table-hover\"><th></th>"
   for i in range(nvars):
-    corrcoeftable += "<th>%s</th>" % varnames[i]
+    corrcoeftable += "<td>%s</td>" % varnames[i]
   corrcoeftable += "</tr>\n"
   for i in range(nvars):
     corrcoeftable += "<tr><td>%s</td>" % varnames[i]
@@ -202,8 +228,13 @@ containing the posterior samples</li>
   # create plot of data along with distribution of best fit models
   from mymodel import mymodel
 
-  fig2 = pl.figure()
-  pl.plot(abscissa, data, 'k.', ms=1, label='Data')
+  # set some plot defaults
+  pl.rc('text', usetex=True)
+  pl.rc('font', family='serif')
+  pl.rc('font', size=14)
+
+  fig2 = pl.figure(figsize=(7,5), dpi=200)
+  pl.plot(abscissa, data, 'ko', ms=6, label='Data')
   varidxs = range(nvars)
   if 'sigma' in variables:
     sigmaidx = variables.index('sigma')
@@ -217,17 +248,17 @@ containing the posterior samples</li>
     thesevars = postsamples[randidxs[i], varidxs].tolist()
     thesevars.append(abscissa)
     thismodel = mymodel(*thesevars) # unpack list as arguments of model function
-    pl.plot(abscissa, thismodel, '-', color='mediumblue', lw=3, alpha=0.05)
+    pl.plot(abscissa, thismodel, '-', color='mediumblue', lw=4, alpha=0.05)
 
   pl.legend(loc='best', numpoints=1)
-  pl.xlabel(abscissaname)
+  pl.xlabel("$"+abscissaname+"$")
 
   modelplot = 'model_plot.png'
   
   # later try converting to d3 figure using http://mpld3.github.io/ (e.g. import mpld3; mpld3.save_html(fig2))
   fig2.savefig(modelplot, transparent=True)
   
-  fm['bestfitfig'] = '<img src="' + modelplot + '" >'
+  fm['bestfitfig'] = '<img src="' + modelplot + '" width="100%">'
     
   # output page
   ppfile = 'postprocessing.php'
