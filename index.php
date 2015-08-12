@@ -150,9 +150,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 ?>
 
+
+
 <div id="page-wrap">
 
-<h1>The Online MCMC</h1>
+<!-- include header file -->
+<?php include('header.inc'); ?>
 
 <p class="container">
 Do you have some data and a model that you want to fit to it? Well here's the website for you.

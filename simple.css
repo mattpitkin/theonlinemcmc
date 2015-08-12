@@ -93,9 +93,14 @@ code {
   font-size: 14px;
 }
 
+.header {
+  border-bottom: 1px solid #999;
+  padding: 5px;
+}
+
 .footer {
   border-top: 1px solid #999;
-  padding: 15px;
+  padding: 5px;
 }
 
 /* classes for the footer text */
