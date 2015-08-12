@@ -22,7 +22,10 @@ $pid = shell_exec(sprintf('cd %s; %s > %s 2>&1 & echo $!', $outdir, $pycommand, 
 
 <div id="page-wrap">
 
-<h1>Submission successful</h1>
+<!-- include header file -->
+<?php include('header.inc'); ?>
+
+<h2>Submission successful</h2>
 
 <p>
 Your submission has been successful. You should receive an email when the results have been completed.

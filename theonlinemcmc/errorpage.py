@@ -14,7 +14,8 @@ def errorpage(errval, emailaddress, outdir):
 <body>
 <div id="page-wrap">
 
-<h1>MCMC output page</h1>
+<!-- include header file -->
+<?php include('../../header.inc'); ?>
 
 <p>{errormessage}</p>
 
