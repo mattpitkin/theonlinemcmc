@@ -958,6 +958,8 @@ def mymodel({arguments}):\n\
     //  }
     //});
 
+    outputdata['runcode'] = 1; // if this is set run the code
+    
     // submit final data (python file and any inputs)
     $.ajax({
       method: 'POST',

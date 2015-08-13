@@ -25,11 +25,6 @@
 </head>
 <body>
 
-<!-- start a session to share variables across pages -->
-<?php
-session_start();
-?>
-
 <!-- php code to write out python and submit process -->
 <?php
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -128,25 +123,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // rename the uploaded data file to data_file.txt
         move_uploaded_file($_FILES["file"]["tmp_name"], $outdirsi."/sigma_file.txt");
       }
-    }
-  }
-  
-  // get screenshot of form and output it
-  // (see http://permadi.com/blog/2010/10/html5-saving-canvas-image-data-using-php-and-ajax/)
-  // [doesn't work at the moment]
-  //if(!empty($_POST["pageimage"])){
-  //  $imageData = $_POST["pageimage"];
-  //  $filteredData=substr($imageData, strpos($imageData, ",")+1); // strip initial string
-  //  $unencodedData=base64_decode($filteredData); // decode
-  //  $fp = fopen( $outdir.'/screenshot.png', ‘wb’ ); // output the image
-  //  fwrite($fp, $unencodedData);
-  //  fclose( $fp );
-  //}
+     }
+   }
 
   // output some user info to either a straight text file or a database
-  
-  // re-direct to page that will run the MCMC python script
+    
+  // run the MCMC python script
+  if(!empty($_POST['runcode'])){
+    $errfile = 'err_code.txt';
+    $pycommand = './pyfile.py';
+    $pid = shell_exec(sprintf('cd %s; %s > %s 2>&1 & echo $!', $outdir, $pycommand, $errfile));
+  }
+
   header('Location: http://'.$_SERVER['SERVER_NAME'].'/theonlinemcmc/submitted.php');
+  die();
 }
 ?>
 
@@ -202,8 +192,8 @@ values [in the future xls or ods could be used])</li>
 <div id="id_image_area">
 
 <div>
-  Model equation: <input type="test" name="modeleq" id="modeleq" class="form-control" value="">
- <input type="button" id="id_model_button" value="Submit">
+  Model equation: <input type="text" name="modeleq" id="modeleq" class="form-control" value="">
+ <input type="button" id="id_model_button" value="Input Model">
 </div>
 
 
@@ -231,7 +221,6 @@ values [in the future xls or ods could be used])</li>
   <option value="Input">Input</option>
   <option value="Upload">Upload</option>
 </select>
-<br>
 </div>
 <input type="hidden" id="id_submit_data_upload">
 <textarea style="display:none" class="form-control" id="id_submit_data_form"></textarea>
