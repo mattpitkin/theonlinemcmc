@@ -7,7 +7,7 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
-def emailresponse(emailaddress, outurl, outfile, runerror=False):
+def emailresponse(emailaddress, outurl, runerror=False):
   # read info for emailing
   einf = open(os.environ['EMAILFILE'], 'r')
   edata = json.load(einf)
@@ -17,7 +17,7 @@ def emailresponse(emailaddress, outurl, outfile, runerror=False):
   fromaddr = edata['fromaddress']
   toaddr = emailaddress
 
-  link = '%s/%s' % (outurl, outfile)
+  link = outurl
 
   subject = 'Your results from TheOnlineMCMC'
 

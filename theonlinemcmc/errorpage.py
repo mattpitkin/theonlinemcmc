@@ -26,12 +26,12 @@ def errorpage(errval, emailaddress, outdir):
 </body>
 """
   
-  # the output html file
-  errfile = 'error.php'
+  # the output php file
+  errfile = 'index.php'
   fp = open(errfile, 'w')
   fp.write(htmlpage.format(errormessage=errormessages[errval]))
   fp.close()
   
   # email the page
-  emailresponse(emailaddress, outdir, errfile, runerror=True)
+  emailresponse(emailaddress, outdir, runerror=True)
   

@@ -261,10 +261,10 @@ containing the posterior samples</li>
   fm['bestfitfig'] = '<img src="' + modelplot + '" width="100%">'
     
   # output page
-  ppfile = 'postprocessing.php'
+  ppfile = 'index.php'
   fp = open(ppfile, 'w')
   fp.write(htmlpage.format(**fm))
   fp.close()
   
   # email the page
-  emailresponse(email, outdir, ppfile)
+  emailresponse(email, outdir)
