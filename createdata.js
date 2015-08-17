@@ -387,12 +387,13 @@ errval = 0\n\
 # read in the abscissa values\n\
 {readabscissa}\
 \n\
-# read in sigma (standard deviation) values (there may be nothing here if it not appicable to your likelihood)\n\
+# read in sigma (standard deviation) values (there may be nothing here if it not applicable to your likelihood)\n\
 {readsigma}\
 \n\
 # run the MCMC\n\
 {runmcmc}\
 {postprocess}\
+{database}\
 \n\
 ";
     
@@ -895,11 +896,18 @@ def mymodel({arguments}):\n\
     postprocess += "  except:\n";
     postprocess += "    errval = POST_PROCESS_ERR\n\n";
     
+    postprocess += "success = True\n";
     postprocess += "if errval != 0:\n";
     postprocess += "  # run different script in case error codes are encountered\n";
-    postprocess += "  errorpage(errval, \"" + emailaddress + "\", \"" + hrefloc.substr(0, lIndex) + "/results/" + outdir + "\")\n\n";
+    postprocess += "  errorpage(errval, \"" + emailaddress + "\", \"" + hrefloc.substr(0, lIndex) + "/results/" + outdir + "\")\n";
+    postprocess += "  success = False\n\n";
     
     outputStrings['postprocess'] = postprocess;
+    
+    var database = "# submit some information to a database\n";
+    database = "database_add_row(\"" + outdir + "\", \"" + modelStrings['outputstring'] + "\", \"" + theta.join + "\", " + (theta.length).toString + ", success)\n\n";
+
+    outputStrings['database'] = database;
     
     outputdata['pyfile'] = pyfile.format(outputStrings); // the python file
     outputdata['modelfile'] = modelfunction.format(modelStrings); // the python file containing the model function
