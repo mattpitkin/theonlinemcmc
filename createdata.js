@@ -905,7 +905,7 @@ def mymodel({arguments}):\n\
     outputStrings['postprocess'] = postprocess;
     
     var database = "# submit some information to a database\n";
-    database = "database_add_row(\"" + outdir + "\", \"" + modelStrings['outputstring'] + "\", \"" + theta.join + "\", " + (theta.length).toString + ", success)\n\n";
+    database = "database_add_row(\"" + outdir + "\", \"" + modelStrings['outputstring'] + "\", \"" + theta.join(',') + "\", " + (theta.length).toString() + ", success)\n\n";
 
     outputStrings['database'] = database;
     
