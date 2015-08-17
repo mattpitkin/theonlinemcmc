@@ -135,7 +135,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $pid = shell_exec(sprintf('cd %s; %s > %s 2>&1 & echo $!', $outdir, $pycommand, $errfile));
   }
 
-  header('Location: http://'.$_SERVER['SERVER_NAME'].'/theonlinemcmc/submitted.php');
+  header('Location: http://'.$_SERVER['SERVER_NAME'].'/submitted.php');
   die();
 }
 ?>
