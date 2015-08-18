@@ -2,6 +2,20 @@
 
 define functions to insert some info into a MySQL database
 
+The MySQL database first needs to have been created, e.g.
+
+mysql -u root -p
+
+# create a database called databasename
+mysql> CREATE DATABASE databasename;
+
+# create a user (called username) for the database
+mysql> CREATE USER 'username'@'localhost' IDENTIFIED BY 'password';
+mysql> USE databasename;
+
+# grant the user (username) access to databasename
+mysql> GRANT ALL ON databasename.* TO 'username'@'localhost';
+
 """
 
 import MySQLdb as mdb
@@ -32,9 +46,9 @@ def database_add_row(uid, mfunc, variables, nvars, success):
   dbinf.close()
   
   # set database table
-  sucvar = 'FALSE'
+  sucvar = 0
   if success:
-    sucvar = 'TRUE'
+    sucvar = 1
   
   # open connection to the database
   con = mdb.connect('localhost', dbdata['user'], dbdata['password'], dbdata['database'])
@@ -43,19 +57,17 @@ def database_add_row(uid, mfunc, variables, nvars, success):
     # add values into table
     cur = con.cursor()
     
-    insertrow = """\
-INSERT INTO {table} (uid, modelfunction, variables, nvariables, success) \
-VALUES('{uid}', '{mfunc}', '{variables}', '{nvars}', '{success}')
-"""
+    insertrow = "INSERT INTO {table} (uid, modelfunction, variables, nvariables, success) VALUES('{uid}', '{mfunc}', '{variables}', '{nvars}', '{success}')"
     rowdict = {}
     rowdict['table'] = dbdata['table']
     rowdict['uid'] = uid
     rowdict['mfunc'] = mfunc
     rowdict['variables'] = variables
     rowdict['nvars'] = nvars
-    rowdict['success'] = suvar
+    rowdict['success'] = sucvar
     
     # insert into row
-    cur.execute(insertrow.format(rowdict))
+    cur.execute(insertrow.format(**rowdict))
+    con.commit()
       
   con.close()
