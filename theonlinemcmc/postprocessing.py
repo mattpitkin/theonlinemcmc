@@ -257,7 +257,7 @@ containing the posterior samples</li>
   
   # later try converting to d3 figure using http://mpld3.github.io/ (e.g. import mpld3; mpld3.save_html(fig2))
   fig2.savefig(modelplot, transparent=True)
-  
+
   fm['bestfitfig'] = '<img src="' + modelplot + '" width="100%">'
     
   # output page
