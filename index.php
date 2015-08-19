@@ -160,13 +160,11 @@ by <a href="http://dan.iel.fm/">Dan Foreman-Mackey</a>.
 
 <p>
 Firstly, you must input the model that you want to fit to your data. When inputting this model you can use
-the standard operators "+", "-", "*" (multiplication), "/" (division). You can also use the trigonometric functions "sin", "cos" and "tan"
-including the hyperbolic versions of these functions and there inverses "asin" (or "arcsin"), "acos" (or
-"arccos") and "atan"/"atan2" (or "arctan"/"arctan2"). For the natural logarithm of a value use "log", whilst
-for log with the base 10 use "log10". For the constant <em>e</em> to the power of a value use "exp". To
-raise a value to a given power use either "^" or "**". Other functions currently available are the gamma function
-"<a href="http://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.special.gamma.html">gamma</a>" and error function "<a href="http://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.special.erf.html">erf</a>". The
-factorial (!) of a value can be obtained using "factorial". The constant &pi; can be input using "pi".
+the standard operators "+", "-", "*" (multiplication), "/" (division). Allowable functions (such as
+trigonometric functions are listed <a href="#functions">below</a>. For the Euler constant <em>e</em>
+to the power of a value use "exp". To
+raise a value to a given power use either "^" or "**". The constant &pi; can be input using "pi". The
+factorial (!) of a value can be obtained using "factorial".
 </p>
 
 <p>
@@ -267,6 +265,64 @@ Please supply your email address to be able to get your results: <input type="em
 </div>
 
 <br>
+
+<p>
+Any results will be available for 15 days following completion. They will then be deleted, so please
+download any results that you would like to keep for longer.
+</p>
+
+<h2 id="functions">Allowable functions</h2>
+
+Here is a list of allowable functions within you model:
+
+<table class="functiontable">
+<tr>
+
+<td class="functiontable">
+<ul>
+<li>sin
+<li>sinh
+<li>asin/arcsin
+<li>log <div class="describe">natural logarithm (base <em>e</em>)</div>
+<li><a href="http://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.special.gamma.html">gamma</a>
+</ul>
+
+</td>
+
+<td class="functiontable">
+<ul>
+<li>cos
+<li>cosh
+<li>acos/arccos
+<li>log10 <div class="describe"> base 10 logarithm</div>
+<li><a href="http://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.special.erf.html">erf</a>
+</ul>
+
+</td>
+
+<td class="functiontable">
+<ul>
+<li>tan
+<li>tanh
+<li>atan/atan2 (arctan/arctan2)
+<li>log2 <div class="describe"> base 2 logarithm</div>
+</ul>
+</td>
+
+</tr>
+</table>
+
+<h2>Caveats</h2>
+
+<p>
+The MCMC algorithm is not guarenteed to work and your output may not contain errors or look odd. Some
+information and trouble shooting can be found <a href="http://dan.iel.fm/emcee/current/user/faq/">here</a>.
+</p>
+
+<p>
+TODO: Say about that if users really want to understand things they should try and learn some python, or other language, and 
+code it up themselves, but this site is a good starting point.
+</p>
 
 <!-- include footer file -->
 <?php include('footer.inc'); ?>

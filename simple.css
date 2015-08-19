@@ -171,3 +171,19 @@ table th[class*="col-"] {
   float: none;
   display: table-cell;
 }
+
+.functiontable {
+  font-family: Courier;
+  border: 0px;
+  padding: 0px;
+}
+
+td.functiontable {
+  width: 33%;
+  text-align: left;
+  vertical-align: top;
+}
+
+.describe {
+  font-family: Garamond, Serif;   
+}

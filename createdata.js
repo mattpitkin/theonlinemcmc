@@ -353,7 +353,7 @@ $(document).ready(function() {
 # import required packages\n\
 import emcee\n\
 import numpy as np\n\
-from numpy import pi, sin, cos, tan, exp, log, log10, arccos, arcsin, arctan, arctan2, sinh, cosh, tanh\n\
+from numpy import pi, sin, cos, tan, exp, log, log10, log2, arccos, arcsin, arctan, arctan2, sinh, cosh, tanh\n\
 from scipy.special import erf, gamma\n\
 from scipy.misc import factorial\n\
 \n\
