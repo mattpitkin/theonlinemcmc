@@ -37,7 +37,7 @@ import json
                          modelfunction TEXT, \
                          variables VARCHAR(255), \
                          nvariables TINYINT \
-                         success BOOLEAN)
+                         success BOOLEAN);
 """
 def database_add_row(uid, mfunc, variables, nvars, success):
   # get database info from a file specified by an environment variable

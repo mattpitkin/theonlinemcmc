@@ -3,6 +3,14 @@ import numpy  as np
 
 from theonlinemcmc import emailresponse
 
+# Greek letters that need conversion for LaTeX (add a prefix '\') if given as a variable name
+greekletters = ['alpha', 'beta', 'gamma', 'Gamma', \
+    'delta', 'Delta', 'epsilon', 'zeta', 'eta', \
+    'theta', 'Theta', 'iota', 'kappa', 'lambda', 'Lambda' \
+    'mu', 'nu', 'xi', 'Xi', 'pi', 'Pi' \
+    'rho', 'sigma', 'Sigma', 'tau', 'upsilon', 'Upsilon' \
+    'phi', 'Phi', 'chi', 'psi', 'Psi', 'omega', 'Omega']
+
 import matplotlib as mpl
 mpl.use("Agg")
 
@@ -51,6 +59,9 @@ def postprocessing(postsamples, variables, abscissa, abscissaname, data, email, 
 <head>
 <title>The Online MCMC: Results page</title>
 <link rel="stylesheet" type="text/css" href="../../simple.css"/>
+<script type="text/javascript"
+  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
 </head>
 <body>
 <div id="page-wrap">
@@ -75,7 +86,7 @@ The <a href="https://en.wikipedia.org/wiki/Mean">mean</a>,
 of the probability distributions for each parameter. Also give are the
 <a href="https://en.wikipedia.org/wiki/Standard_deviation">standard deviation</a>
 of the distributions and minimal 68% and 95%
-<a href="https://en.wikipedia.org/wiki/Credible_interval">credilble intervals</a>.
+<a href="https://en.wikipedia.org/wiki/Credible_interval">credilble intervals</a> (CI).
 
 <div>
 {resultstable}
@@ -124,6 +135,11 @@ containing the posterior samples</li>
 
   varnames = variables.split(',')
 
+  # convert any Greek alphabet variable names into LaTeX tags (prefix with \)
+  for i, var in enumerate(varnames):
+    if var in greekletters:
+      varnames[i] = '\\'+varnames[i]
+
   # create triangle plot
   labels = ['$%s$' % var for var in varnames] # LaTeX labels
   nvars = len(varnames)
@@ -145,9 +161,9 @@ containing the posterior samples</li>
     inter95.append(credible_interval(postsamples[:,i], 0.95))
   
   # output the results table
-  resultstable = "<table class=\"table table-striped table-hover\">\n<tr><th>Variable</th><th>Mean</th><th>Median</th><th>Mode</th><th>&sigma;</th><th>68% CI<sup>*</sup></th><th>95% CI</th></tr>\n"
+  resultstable = "<table class=\"table table-striped table-hover\">\n<tr><th>Variable</th><th>Mean</th><th>Median</th><th>Mode</th><th>&sigma;</th><th>68% CI</th><th>95% CI</th></tr>\n"
   for i in range(nvars):
-    resstrs = [varnames[i]]
+    resstrs = ['\('+varnames[i]+'\)'] # the \( \) are the MathJax equation delimiters 
     
     meanv = np.mean(postsamples[:,i])
     if np.fabs(meanv) > 1e3 or np.fabs(meanv) < 1e-2:
@@ -201,7 +217,6 @@ containing the posterior samples</li>
 
     resultstable += "<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td><td>{5}</td><td>{6}</td></tr>".format(*resstrs)
   resultstable += "</table>\n"
-  resultstable += "<br><sup>*</sup>CI - <a href=\"https://en.wikipedia.org/wiki/Credible_interval\">credible interval</a>.\n"
 
   fm['resultstable'] = resultstable
   
@@ -210,10 +225,10 @@ containing the posterior samples</li>
 
   corrcoeftable = "<table class=\"table table-striped table-hover\"><th></th>"
   for i in range(nvars):
-    corrcoeftable += "<td>%s</td>" % varnames[i]
+    corrcoeftable += "<td>%s</td>" % ('\('+varnames[i]+'\)')
   corrcoeftable += "</tr>\n"
   for i in range(nvars):
-    corrcoeftable += "<tr><td>%s</td>" % varnames[i]
+    corrcoeftable += "<tr><td>%s</td>" % ('\('+varnames[i]+'\)')
     for j in range(nvars):
       # check if only 1d corrcoef array
       if nvars == 1:
@@ -251,6 +266,8 @@ containing the posterior samples</li>
     pl.plot(abscissa, thismodel, '-', color='mediumblue', lw=4, alpha=0.05)
 
   pl.legend(loc='best', numpoints=1)
+  if abscissaname in greekletters:
+    abscissaname = '\\'+abscissaname
   pl.xlabel("$"+abscissaname+"$")
 
   modelplot = 'model_plot.png'
