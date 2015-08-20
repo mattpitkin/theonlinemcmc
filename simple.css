@@ -179,11 +179,18 @@ table th[class*="col-"] {
 }
 
 td.functiontable {
-  width: 33%;
+  width: 50%;
   text-align: left;
   vertical-align: top;
 }
 
 .describe {
   font-family: Garamond, Serif;   
+}
+
+.emphasise{
+  color: #333333;
+  text-shadow: 2px 2px 2px #ccc;
+  font-style: italic;
+  font-weight: bold;
 }

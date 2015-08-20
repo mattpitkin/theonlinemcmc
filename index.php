@@ -182,8 +182,7 @@ and <code>b</code>. Once the model is submitted you can choose the type of each 
  <li><strong>constant</strong> - the parameter is a fixed constant that you can define</li>
  <li><strong>variable</strong> - the parameter is a variable that you would like to fit for which you will need to define a prior</li>
  <li><strong>independent variable/abscissa</strong> - the parameter is a value, or set of values, at which the
-model is defined (e.g. in the above example the <code>t</code> (time) value could be such a parameter) that you can input directly or through file upload (uploaded files can be plain ascii text with whitespace or comma separated
-values [in the future xls or ods could be used])</li>
+model is defined (e.g. in the above example the <code>t</code> (time) value could be such a parameter) that you can input directly or through file upload (uploaded files can be plain ascii text with whitespace or comma separated values)</li>
 </ul>
 </p>
 
@@ -209,7 +208,7 @@ values [in the future xls or ods could be used])</li>
 <p>
   Input the data that you would like to fit the model to. You can directly choose to input values directly
   in the form below (which whitespace of comma separated values), or upload a file containing the data (again
-  with whitespace, or comma separated values). The number of input data points must be thet same as the
+  with whitespace, or comma separated values). The number of input data points must be the same as the
   number of independent variable/abscissa values provided above.
 </p>
 
@@ -224,6 +223,11 @@ values [in the future xls or ods could be used])</li>
 <textarea style="display:none" class="form-control" id="id_submit_data_form"></textarea>
 
 <h2 id="id_likelihood_header">Likelihood input</h2>
+
+<p>
+Some blurb about what the likelihood functions are...
+</p>
+
 <div id="id_likelihood_div">
   <table id="like_table">
     <tr id="like_row"><td>
@@ -237,6 +241,11 @@ values [in the future xls or ods could be used])</li>
 </div>
 
 <h2 id="id_mcmc_header">MCMC inputs</h2>
+
+<p>
+Some blurb about what these inputs are...
+</p>
+
 <div id="id_mcmc_div">
 <table id="mcmc_table">
   <tr>
@@ -266,7 +275,7 @@ Please supply your email address to be able to get your results: <input type="em
 
 <br>
 
-<p>
+<p class="emphasise">
 Any results will be available for 15 days following completion. They will then be deleted, so please
 download any results that you would like to keep for longer.
 </p>
@@ -275,37 +284,62 @@ download any results that you would like to keep for longer.
 
 Here is a list of allowable functions within you model:
 
+<h3>Trigonometric functions</h3>
+
 <table class="functiontable">
 <tr>
 
 <td class="functiontable">
 <ul>
-<li>sin
-<li>sinh
-<li>asin/arcsin
-<li>log <div class="describe">natural logarithm (base <em>e</em>)</div>
-<li><a href="http://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.special.gamma.html">gamma</a>
+<li><a href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.sin.html">sin</a>
+
+<li><a href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.cos.html">cos</a>
+
+<li><a href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.tan.html">tan</a>
+
+<li><span class="describe"><a href="https://en.wikipedia.org/wiki/Hyperbolic_function">Hyperbolic</a> sine</span> <a href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.sinh.html">sinh</a>
+
+<li><span class="describe"><a href="https://en.wikipedia.org/wiki/Hyperbolic_function">Hyperbolic</a> cosine</span> <a href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.cosh.html">cosh</a>
+
+<li><span class="describe"><a href="https://en.wikipedia.org/wiki/Hyperbolic_function">Hyperbolic</a> tangent</span> <a href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.tanh.html">tanh</a>
 </ul>
 
 </td>
 
 <td class="functiontable">
 <ul>
-<li>cos
-<li>cosh
-<li>acos/arccos
-<li>log10 <div class="describe"> base 10 logarithm</div>
-<li><a href="http://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.special.erf.html">erf</a>
-</ul>
+<li><span class="describe">Inverse sine</span> <a href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.arcsin.html">asin <span class="describe">or</span> arcsin</a>
 
+<li><span class="describe">Inverse cosine</span> <a href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.arccos.html">acos <span class="describe">or</span> arccos</a>
+
+<li><span class="describe">Inverse tangent</span> <a href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.arctan.html">atan</a>/<a href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.arctan2.html#numpy.arctan2">atan2</a> <span class="describe">or</span> arctan/arctan2
+
+<li><span class="describe"><a href="https://en.wikipedia.org/wiki/Hyperbolic_function">Inverse hyperbolic</a> sine</span> <a href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.arcsinh.html">asinh <span class="describe">or</span> arcsinh</a>
+
+<li><span class="describe"><a href="https://en.wikipedia.org/wiki/Hyperbolic_function">Inverse hyperbolic</a> cosine</span> <a href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.arccosh.html">acosh <span class="describe">or</span> arccosh</a>
+
+<li><span class="describe"><a href="https://en.wikipedia.org/wiki/Hyperbolic_function">Inverse hyperbolic</a> tangent</span> <a href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.arctanh.html">atanh <span class="describe">or</span> arctanh</a>
+</ul>
+</td>
+</tr>
+</table>
+
+<h3>Other functions</h3>
+
+<table class="functiontable">
+<tr>
+<td class="functiontable">
+<ul>
+<li><span class="describe"><a href="https://en.wikipedia.org/wiki/Natural_logarithm">natural logarithm</a> (base <em>e</em>)</span> <a href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.log.html">log</a>
+<li><span class="describe"> base 10 logarithm</span> <a href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.log10.html">log10</a>
+<li><span class="describe"><a href="https://en.wikipedia.org/wiki/Gamma_function">Gamma function</a></span> <a href="http://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.special.gamma.html">gamma</a>
+</ul>
 </td>
 
 <td class="functiontable">
 <ul>
-<li>tan
-<li>tanh
-<li>atan/atan2 (arctan/arctan2)
-<li>log2 <div class="describe"> base 2 logarithm</div>
+<li><span class="describe">base 2 logarithm</span> <a href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.log2.html">log2</a>
+<li><span class="describe"><a href="https://en.wikipedia.org/wiki/Error_function">Error function</a></span> <a href="http://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.special.erf.html">erf</a>
 </ul>
 </td>
 
@@ -315,13 +349,15 @@ Here is a list of allowable functions within you model:
 <h2>Caveats</h2>
 
 <p>
-The MCMC algorithm is not guarenteed to work and your output may not contain errors or look odd. Some
+The MCMC algorithm is not guaranteed to work and your output may not contain errors or look odd. Some
 information and trouble shooting can be found <a href="http://dan.iel.fm/emcee/current/user/faq/">here</a>.
 </p>
 
 <p>
-TODO: Say about that if users really want to understand things they should try and learn some python, or other language, and 
-code it up themselves, but this site is a good starting point.
+If users really want to understand what is being done by this code I would advise learning about
+<a href="https://en.wikipedia.org/wiki/Bayesian_statistics">Bayesian analyses</a> and <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo">Markov chain Monte Carlo</a> methods. I would also advice learning <a href="https://www.python.org/">python</a>,
+or another programming language, and coding the analysis up themselves, particularly if you have a more complex problem.
+However, this site aims to be useful starting point.
 </p>
 
 <!-- include footer file -->
