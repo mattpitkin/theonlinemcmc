@@ -152,8 +152,17 @@ $(document).ready(function() {
     modeleq = $('#modeleq').val();
     var modeleqtmp = modeleq.slice(); // copy of model equation
 
+    // list of characters to replace
+    modeleqtmp = modeleqtmp.replace(/[&\/+(),.*]/g, " ");
+    modeleqtmp = modeleqtmp.replace("^", " ");
+    modeleqtmp = modeleqtmp.replace("-", " ");
+
+    // replace all numbers with a space (using regular expression \d to represent all numbers and g to represent global replace) 
+    modeleqtmp = modeleqtmp.replace(/[\d]+/g, " ");
+
     // list of math functions that need to be removed to count variables (maybe include more functions from http://docs.scipy.org/doc/scipy-0.14.0/reference/special.html in the future)
-    var mfuncs = ["pi", "sin", "cos", "tan", "exp", "log", "log10", "sinh", "cosh", "tanh", "acos", "asin", "atan", "erf", "gamma"];
+    // the order of these is important e.g. sin should go after asin otherwise the sin in asin will be replaced!
+    var mfuncs = ["erf", "gamma", "acosh", "asinh", "atanh", "arccos", "arcsin", "arctan", "atan2", "arctan2", "arccosh", "arcsinh", "arctanh", "pi", "exp", "log2", "log10", "log", "sinh", "cosh", "tanh", "acos", "asin", "atan", "sin", "cos", "tan"];
     var index;
 
     // replace math functions with whitespace 
@@ -161,13 +170,6 @@ $(document).ready(function() {
       modeleqtmp = modeleqtmp.replace(mfuncs[index], " ");
     }
 
-    // list of characters to replace
-    modeleqtmp = modeleqtmp.replace(/[&\/+().*]/g, " ");
-    modeleqtmp = modeleqtmp.replace("^", " ");
-    modeleqtmp = modeleqtmp.replace("-", " ");
-
-    // replace all numbers with a space (using regular expression \d to represent all numbers and g to represent global replace) 
-    modeleqtmp = modeleqtmp.replace(/[\d]+/g, " ");
     modeleqtmp = modeleqtmp.trim(); // strip leading and trailing whitespace
 
     // get names of variables in model equation by splitting modeleqtpm on any whitespace
@@ -179,8 +181,8 @@ $(document).ready(function() {
     })
 
     // replace any different function names (e.g. acos -> arccos, and so on)
-    var repfuncs = ["acos", "asin", "atan2", "atan", "^"];
-    var repfuncsnew = ["arccos", "arcsin", "arctan2", "arctan", "**"];
+    var repfuncs = ["acos", "asin", "atan2", "atan", "acosh", "asinh", "atanh", "^"];
+    var repfuncsnew = ["arccos", "arcsin", "arctan2", "arctan", "arccosh", "arcsinh", "arctanh", "**"];
     for (index=0; index < repfuncs.length; index++){
       modeleq = modeleq.replace(repfuncs[index], repfuncsnew[index]);
     }
@@ -353,7 +355,7 @@ $(document).ready(function() {
 # import required packages\n\
 import emcee\n\
 import numpy as np\n\
-from numpy import pi, sin, cos, tan, exp, log, log10, log2, arccos, arcsin, arctan, arctan2, sinh, cosh, tanh\n\
+from numpy import pi, sin, cos, tan, exp, log, log10, log2, arccos, arcsin, arctan, arctan2, sinh, cosh, tanh, arccosh, arcsinh, arctanh\n\
 from scipy.special import erf, gamma\n\
 from scipy.misc import factorial\n\
 \n\
@@ -588,10 +590,10 @@ def mymodel({arguments}):\n\
           priorfunction += "    lp = 0.\n";
           initialpoint += "  " + priorvar + "ini = " + fitarray[priorvar].minval + " + np.random.rand(Nens)*" + (fitarray[priorvar].maxval - fitarray[priorvar].minval).toString() + "\n";
         }
-        if ( priortype == "LogUniform" ){
-          priorfunction += priorvar + " > 0.0 and (log(" + fitarray[priorvar].minval + ") < log(" + priorvar + ") < log(" + fitarray[priorvar].maxval + ")):\n";
-          priorfunction += "    lp -= np.log(" + priorvar + ")\n";
-          initialpoint += "  " + priorvar + "ini = exp(" + "log(" + fitarray[priorvar].minval + ") + np.random.rand(Nens)*(" + "log(" + fitarray[priorvar].maxval.toString() +") - log(" + fitarray[priorvar].minval.toString() + ")))\n";
+        if ( priortype == "LogUniform" ){ // work in log space
+          priorfunction += "log(" + fitarray[priorvar].minval + ") < " + priorvar + " < log(" + fitarray[priorvar].maxval + "):\n";
+          priorfunction += "    lp = 0.\n";
+          initialpoint += "  " + priorvar + "ini = " + "log(" + fitarray[priorvar].minval + ") + np.random.rand(Nens)*(" + "log(" + fitarray[priorvar].maxval.toString() +") - log(" + fitarray[priorvar].minval.toString() + "))\n";
         }
 
         priorfunction += "  else:\n    return -np.inf\n\n";
@@ -619,6 +621,13 @@ def mymodel({arguments}):\n\
     // create log likelihood function
     var likefunction = "def lnlike(theta, " + abscissastring + gauss_like_sigma + ", data):\n";
     likefunction += "  " + theta.join() + " = theta\n"; // unpack theta
+    // exponentiate any log uniform prior values before inputting into model
+    for ( var priorvar in fitarray ){
+      var priortype = fitarray[priorvar].priortype;
+      if ( priortype == "LogUniform" ){
+        likefunction += "  " + priorvar + " = exp(" + priorvar + ")\n";
+      }
+    }
     likefunction += "  md = mymodel(" + theta.join() + "," + abscissastring + ")\n"; // get model
     if ( $("#likelihood_input_type").val() == "Gaussian" ){
       likefunction += "  return -0.5*np.sum(((md - data)/sigma_gauss)**2)\n\n";
@@ -866,6 +875,17 @@ def mymodel({arguments}):\n\
     runmcmc += "    samples = sampler.chain[:, Nburnin:, :].reshape((-1, ndim))\n";
     runmcmc += "    lnp = np.reshape(sampler.lnprobability[:, Nburnin:].flatten(), (-1,1))\n";
     runmcmc += "    samples = np.hstack((samples, lnp))\n";
+    
+    // exponentiate any log uniform values
+    count = 0
+    for ( var priorvar in fitarray ){
+      var priortype = fitarray[priorvar].priortype;
+      if ( priortype == "LogUniform" ){
+        runmcmc += "    samples[:," + count.toString() + "] = exp(samples[:," + count.toString() + "])\n";
+      }
+      count++;
+    }
+
     runmcmc += "  except:\n";
     runmcmc += "    errval = MCMC_RUN_ERR\n\n";
 
