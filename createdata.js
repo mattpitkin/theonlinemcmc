@@ -550,6 +550,9 @@ def mymodel({arguments}):\n\
       return false;
     }
 
+    var thetanosigma = theta.slice();
+    // remove any sigma_gauss variable name if present
+    thetanosigma = thetanosigma.replace("sigma_gauss", "");
     modelStrings['arguments'] = theta.join() + ", " + abscissastring;
     modelStrings['conststring'] = conststring; // include constant values
     modelStrings['outputstring'] = modeleq.replace(/[ \t\n\r]+/, ""); // add model equation
@@ -628,7 +631,7 @@ def mymodel({arguments}):\n\
         likefunction += "  " + priorvar + " = exp(" + priorvar + ")\n";
       }
     }
-    likefunction += "  md = mymodel(" + theta.join() + "," + abscissastring + ")\n"; // get model
+    likefunction += "  md = mymodel(" + thetanogauss.join() + "," + abscissastring + ")\n"; // get model
     if ( $("#likelihood_input_type").val() == "Gaussian" ){
       likefunction += "  return -0.5*np.sum(((md - data)/sigma_gauss)**2)\n\n";
     }
