@@ -248,7 +248,7 @@ likelihood functions). If using this likelihood function there are three additio
 <li>input a set of values (either directly into the form as a set of whitespace or comma separated values, or though uploading an ascii text file of the values) of the standard deviation of the noise, with one value per data point;
 <li>choose to include the noise standard deviation as another parameter to be fit (i.e. if it is unknown). If you choose this option then a prior (as <a href="#prior">above</a>) is required.
 </ul>
-<li><strong>Student's <em>t<em></strong>: the <a href="https://en.wikipedia.org/wiki/Student%27s_t-distribution">Student's <em>t</em> likelihood</a> is similar to the Gaussian likelihood,
+<li><strong>Student's <em>t</em></strong>: the <a href="https://en.wikipedia.org/wiki/Student%27s_t-distribution">Student's <em>t</em> likelihood</a> is similar to the Gaussian likelihood,
 but it does not require a noise standard deviation to be given (the noise is assumed to be <a href="https://en.wikipedia.org/wiki/Stationary_process">stationary</a> over the
 dataset and has been analytically <a href="https://en.wikipedia.org/wiki/Marginal_distribution">marginalised</a> over). 
 </ul>
@@ -269,7 +269,21 @@ dataset and has been analytically <a href="https://en.wikipedia.org/wiki/Margina
 <h2 id="id_mcmc_header">MCMC inputs</h2>
 
 <p>
-Some blurb about what these inputs are...
+The MCMC aims to draw samples (a chain of points) from the posterior probability distributions
+of the parameters. You need to tell it how many points to draw. There are three inputs required:
+<ul>
+<li>No. of ensemble points ("walkers": this is essentially the <a href="http://dan.iel.fm/emcee/current/user/faq/#what-are-walkers">number of independent chains</a> within the MCMC. This needs to be an even number and in general should
+be at least twice the number of fitting parameters that you have. Using a large value (e.g. 100) should be fine,
+but you could run into lack-of-memory issues if the number is too high (1000s);
+<li>No. of iterations: this is the number of points in chains for each of the ensemble points. This product of
+this number and the number of ensemble points will be the total number of samples that you have for the
+posterior;
+<li>No. of <a href="http://support.sas.com/documentation/cdl/en/statug/63033/HTML/default/viewer.htm#statug_introbayes_sect007.htm">burn-in iterations</a>: this is the number of iterations (for each "walker") that are thrown
+away from the start of the chain (the iteration points above come after the burn-in points). This allows time
+for the MCMC to converge on the bulk of the posterior and for points sampled away from that to not be included
+in the final results.
+</ul>
+If in doubt use the defaults and see how things <a href="#caveats">turn out</a>.
 </p>
 
 <div id="id_mcmc_div">
