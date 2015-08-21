@@ -148,10 +148,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <?php include('header.inc'); ?>
 
 <p class="container">
-Do you have some data and a model that you want to fit to it? Well here's the website for you.
+Do you have some data and a model that you want to fit to it? Well here's the website for you (see <a href="#caveats">caveats</a>).
 On this website you can input a model function defined by a set of parameters including those that you want
 fit, and your data, and it will run a <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo">Markov
-chain Monte Carlo</a> algorithm to estimate the posterior probability distributions of those parameters.
+chain Monte Carlo</a> (MCMC) algorithm to estimate the posterior probability distributions of those parameters.
 This site makes use of the python MCMC package <a href="http://dan.iel.fm/emcee/current/">emcee</a> written
 by <a href="http://dan.iel.fm/">Dan Foreman-Mackey</a>.
 </p>
@@ -161,10 +161,8 @@ by <a href="http://dan.iel.fm/">Dan Foreman-Mackey</a>.
 <p>
 Firstly, you must input the model that you want to fit to your data. When inputting this model you can use
 the standard operators "+", "-", "*" (multiplication), "/" (division). Allowable functions (such as
-trigonometric functions are listed <a href="#functions">below</a>. For the Euler constant <em>e</em>
-to the power of a value use "exp". To
-raise a value to a given power use either "^" or "**". The constant &pi; can be input using "pi". The
-factorial (!) of a value can be obtained using "factorial".
+trigonometric functions) and constants are listed <a href="#functions">below</a>. To
+raise a value to a given power use either "^" or "**".
 </p>
 
 <p>
@@ -176,17 +174,32 @@ An example of an input model is:<br>
 <pre>
 2.2*sin(2.0*pi*f*t) + a*t^2 - (exp(2.3)/b)
 </pre>
-This webpage would parse this information and extract the parameters <code>f</code>, <code>t</code>, <code>a</code>
-and <code>b</code>. Once the model is submitted you can choose the type of each parameter:
+This webpage will parse this information and extract the parameters <code>f</code>, <code>t</code>, <code>a</code>
+and <code>b</code>.
+</p>
+
+<p>
+Once the model is submitted you can choose each parameter's <em>type</em>:
 <ul>
- <li><strong>constant</strong> - the parameter is a fixed constant that you can define</li>
- <li><strong>variable</strong> - the parameter is a variable that you would like to fit for which you will need to define a prior</li>
- <li><strong>independent variable/abscissa</strong> - the parameter is a value, or set of values, at which the
+ <li><strong>constant</strong>: the parameter is a fixed constant that you can define a numerical value for</li>
+ <li><strong>variable</strong>: the parameter is a variable that you would like to fit and for which you will need to define a <a href="https://en.wikipedia.org/wiki/Prior_probability">prior</a> (see <a href="#prior">here</a> for information on the prior type)</li>
+ <li><strong>independent variable/abscissa</strong>: the parameter is a value, or set of values, at which the
 model is defined (e.g. in the above example the <code>t</code> (time) value could be such a parameter) that you can input directly or through file upload (uploaded files can be plain ascii text with whitespace or comma separated values)</li>
 </ul>
 </p>
 
-<div id="id_image_area">
+<h3 id="prior">Prior</h3>
+
+<p>
+There are currently three <a href="https://en.wikipedia.org/wiki/Prior_probability">prior probability distributions</a> that you can choose for a variable:
+<ul>
+<li><strong>Uniform</strong>: this is a constant <a href="https://en.wikipedia.org/wiki/Uniform_distribution_(continuous)">probability distribution</a> defined within a minimum and maximum range, with zero probability outside that range. This is a <a href="https://en.wikipedia.org/wiki/Prior_probability#Uninformative_priors">non-informative prior</a> for a <a href="https://en.wikipedia.org/wiki/Location_parameter">location parameter</a> (i.e. a parameter that is invariant to shifts);</li>
+<li><strong>Log(Uniform)</strong>: this is a constant <a href="https://en.wikipedia.org/wiki/Uniform_distribution_(continuous)">probability distribution</a> in the logarithm of the parameter, defined within a minimum and maximum range, with zero probability outside that range. This is a non-informative prior for a <a href="https://en.wikipedia.org/wiki/Scale_parameter">scale parameter</a> (i.e. a parameter is invariant to scalings and can only take positive values);</li>
+<li><strong>Gaussian</strong>: this is a <a href="https://en.wikipedia.org/wiki/Normal_distribution">Gaussian probability distribution</a> for which the <a href="https://en.wikipedia.org/wiki/Mean">mean</a> and <a href="https://en.wikipedia.org/wiki/Standard_deviation">standard deviation</a> must be specified.
+</ul>
+If you are unsure about what is best to use then a <em>Uniform</em> distribution with a range broad enough
+to cover your expectations of the parameter is the simplest option.
+</p>
 
 <div>
   Model equation: <input type="text" name="modeleq" id="modeleq" class="form-control" value="">
@@ -271,8 +284,6 @@ Please supply your email address to be able to get your results: <input type="em
 <input type="button" id="id_submit_variables" value="Submit">
 </form>
 
-</div>
-
 <br>
 
 <p class="emphasise">
@@ -280,7 +291,7 @@ Any results will be available for 15 days following completion. They will then b
 download any results that you would like to keep for longer.
 </p>
 
-<h2 id="functions">Allowable functions</h2>
+<h2 id="functions">Allowable functions and constants</h2>
 
 Here is a list of allowable functions within your model. When entering your model use the form given in the <span style="font-family:Courier;">monospace</span> font, with the function argument surrounded by brackets, e.g. <span style="font-family:Courier;">sin(x)</span>.
 
@@ -318,6 +329,8 @@ Here is a list of allowable functions within your model. When entering your mode
 
 <ul class="functionlist">
 
+<li><span class="describe"><a href="https://en.wikipedia.org/wiki/Exponential_function">Exponential function</a> <em>e</em></span>: exp
+
 <li><span class="describe"><a href="https://en.wikipedia.org/wiki/Natural_logarithm">natural logarithm</a> (base <em>e</em>)</span>: <a href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.log.html">log</a>
 
 <li><span class="describe"> base 10 logarithm</span>: <a href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.log10.html">log10</a>
@@ -327,13 +340,25 @@ Here is a list of allowable functions within your model. When entering your mode
 <li><span class="describe">base 2 logarithm</span>: <a href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.log2.html">log2</a>
 
 <li><span class="describe"><a href="https://en.wikipedia.org/wiki/Error_function">Error function</a></span>: <a href="http://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.special.erf.html">erf</a>
+
+<li><span class="describe"><a href="https://en.wikipedia.org/wiki/Factorial">Factorial "!"</a></span>: factorial 
+
+<\ul>
+
+<h3>Constants</h3>
+
+These constants can be input rather than having to give their numerical values.
+
+<ul class="functionlist">
+
+<li>&pi;: pi
+
 </ul>
 
-
-<h2>Caveats</h2>
+<h2 id="caveats">Caveats</h2>
 
 <p>
-The MCMC algorithm is not guaranteed to work and your output may not contain errors or look odd. Some
+The MCMC algorithm is not guaranteed to produce sensible results every time, and your output may not contain errors or look odd. Some
 information and trouble shooting can be found <a href="http://dan.iel.fm/emcee/current/user/faq/">here</a>.
 </p>
 
