@@ -181,10 +181,10 @@ and <code>b</code>.
 <p>
 Once the model is submitted you can choose each parameter's <em>type</em>:
 <ul>
- <li><strong>constant</strong>: the parameter is a fixed constant that you can define a numerical value for</li>
- <li><strong>variable</strong>: the parameter is a variable that you would like to fit and for which you will need to define a <a href="https://en.wikipedia.org/wiki/Prior_probability">prior</a> (see <a href="#prior">here</a> for information on the prior type)</li>
- <li><strong>independent variable/abscissa</strong>: the parameter is a value, or set of values, at which the
-model is defined (e.g. in the above example the <code>t</code> (time) value could be such a parameter) that you can input directly or through file upload (uploaded files can be plain ascii text with whitespace or comma separated values)</li>
+ <li><strong>constant</strong>: the parameter is a fixed constant that you can define a numerical value for;</li>
+ <li><strong>variable</strong>: the parameter is a variable that you would like to fit and for which you will need to define a <a href="https://en.wikipedia.org/wiki/Prior_probability">prior</a> (see <a href="#prior">here</a> for information on the prior type);</li>
+ <li><strong><a href="https://en.wikipedia.org/wiki/Dependent_and_independent_variables#Independent_variable">independent variable</a>/<a href="https://en.wikipedia.org/wiki/Abscissa">abscissa</a></strong>: the parameter is a value, or set of values, at which the
+model is defined (e.g. in the above example the <code>t</code> (time) value could be such a parameter) that you can input directly or through file upload (uploaded files can be plain ascii text with whitespace or comma separated values). Currently only one parameter can be given as an <em>independent variable</em>, i.e. only one-dimensional models are allowed.</li>
 </ul>
 </p>
 
@@ -195,7 +195,7 @@ There are currently three <a href="https://en.wikipedia.org/wiki/Prior_probabili
 <ul>
 <li><strong>Uniform</strong>: this is a constant <a href="https://en.wikipedia.org/wiki/Uniform_distribution_(continuous)">probability distribution</a> defined within a minimum and maximum range, with zero probability outside that range. This is a <a href="https://en.wikipedia.org/wiki/Prior_probability#Uninformative_priors">non-informative prior</a> for a <a href="https://en.wikipedia.org/wiki/Location_parameter">location parameter</a> (i.e. a parameter that is invariant to shifts);</li>
 <li><strong>Log(Uniform)</strong>: this is a constant <a href="https://en.wikipedia.org/wiki/Uniform_distribution_(continuous)">probability distribution</a> in the logarithm of the parameter, defined within a minimum and maximum range, with zero probability outside that range. This is a non-informative prior for a <a href="https://en.wikipedia.org/wiki/Scale_parameter">scale parameter</a> (i.e. a parameter is invariant to scalings and can only take positive values);</li>
-<li><strong>Gaussian</strong>: this is a <a href="https://en.wikipedia.org/wiki/Normal_distribution">Gaussian probability distribution</a> for which the <a href="https://en.wikipedia.org/wiki/Mean">mean</a> and <a href="https://en.wikipedia.org/wiki/Standard_deviation">standard deviation</a> must be specified.
+<li><strong>Gaussian</strong>: this is a <a href="https://en.wikipedia.org/wiki/Normal_distribution">Gaussian (or Normal) probability distribution</a> for which the <a href="https://en.wikipedia.org/wiki/Mean">mean</a> and <a href="https://en.wikipedia.org/wiki/Standard_deviation">standard deviation</a> must be specified.
 </ul>
 If you are unsure about what is best to use then a <em>Uniform</em> distribution with a range broad enough
 to cover your expectations of the parameter is the simplest option.
@@ -220,9 +220,9 @@ to cover your expectations of the parameter is the simplest option.
 <h2 id="id_data_header">Data input</h2>
 <p>
   Input the data that you would like to fit the model to. You can directly choose to input values directly
-  in the form below (which whitespace of comma separated values), or upload a file containing the data (again
+  in the form below (which whitespace or comma separated values), or upload a file containing the data (again
   with whitespace, or comma separated values). The number of input data points must be the same as the
-  number of independent variable/abscissa values provided above.
+  number of values input for the independent variable/abscissa parameter provided above.
 </p>
 
 <div id="id_data_div">
@@ -238,7 +238,20 @@ to cover your expectations of the parameter is the simplest option.
 <h2 id="id_likelihood_header">Likelihood input</h2>
 
 <p>
-Some blurb about what the likelihood functions are...
+There are currently two allowed <a href="https://en.wikipedia.org/wiki/Likelihood_function">likelihood functions</a>:
+<ul>
+<li><strong>Gaussian</strong>: a <a href="https://en.wikipedia.org/wiki/Normal_distribution">Gaussian (or Normal) 
+probability distribution</a> (this is one of the most common, and is often the <a href="https://en.wikipedia.org/wiki/Prior_probability#Uninformative_priors">least informative<a/>,
+likelihood functions). If using this likelihood function there are three additional options:
+<ul>
+<li>input a single known value for the standard deviation, &sigma;, of noise in the data;
+<li>input a set of values (either directly into the form as a set of whitespace or comma separated values, or though uploading an ascii text file of the values) of the standard deviation of the noise, with one value per data point;
+<li>choose to include the noise standard deviation as another parameter to be fit (i.e. if it is unknown). If you choose this option then a prior (as <a href="#prior">above</a>) is required.
+<ul>
+<li><strong>Student's <em>t<em></strong>: the <a href="https://en.wikipedia.org/wiki/Student%27s_t-distribution">Student's <em>t</em> likelihood</a> is similar to the Gaussian likelihood,
+but it does not require a noise standard deviation to be given (the noise is assumed to be <a href="https://en.wikipedia.org/wiki/Stationary_process">stationary</a> over the
+dataset and has been analytically <a href="https://en.wikipedia.org/wiki/Marginal_distribution">marginalised</a> over). 
+</ul>
 </p>
 
 <div id="id_likelihood_div">
