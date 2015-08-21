@@ -140,6 +140,10 @@ containing the posterior samples</li>
     if var in greekletters:
       varnames[i] = '\\'+varnames[i]
 
+     # if sigma has been fit for the Gaussian likelihood change the variable name
+     if "sigma_gauss" in var:
+       varnames[i] = '\\sigma_{\\textrm{gauss}}' # convert to LaTeX
+
   # create triangle plot
   labels = ['$%s$' % var for var in varnames] # LaTeX labels
   nvars = len(varnames)
@@ -251,8 +255,8 @@ containing the posterior samples</li>
   fig2 = pl.figure(figsize=(7,5), dpi=200)
   pl.plot(abscissa, data, 'ko', ms=6, label='Data')
   varidxs = range(nvars)
-  if 'sigma' in variables:
-    sigmaidx = variables.index('sigma')
+  if 'sigma_gauss' in variables:
+    sigmaidx = variables.index('sigma_gauss')
     varidxs.remove(sigmaidx)
   varidxs = np.array(varidxs)
   
