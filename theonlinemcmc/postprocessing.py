@@ -163,7 +163,7 @@ containing the posterior samples</li>
   for i in range(nvars):
     inter68.append(credible_interval(postsamples[:,i], 0.68))
     inter95.append(credible_interval(postsamples[:,i], 0.95))
-  
+ 
   # output the results table
   resultstable = "<table class=\"table table-striped table-hover\">\n<tr><th>Variable</th><th>Mean</th><th>Median</th><th>Mode</th><th>&sigma;</th><th>68% CI</th><th>95% CI</th></tr>\n"
   for i in range(nvars):
@@ -256,10 +256,10 @@ containing the posterior samples</li>
   pl.plot(abscissa, data, 'ko', ms=6, label='Data')
   varidxs = range(nvars)
   if 'sigma_gauss' in variables:
-    sigmaidx = variables.index('sigma_gauss')
+    sigmaidx = (variables.split(',')).index('sigma_gauss')
     varidxs.remove(sigmaidx)
+
   varidxs = np.array(varidxs)
-  
   randidxs = np.random.permutation(postsamples.shape[0])[0:100]
   
   # overplot models for 100 random draws from the posterior
