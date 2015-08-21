@@ -370,7 +370,7 @@ Here is a list of allowable functions within your model. When entering your mode
 
 <li><span class="describe"><a href="https://en.wikipedia.org/wiki/Factorial">Factorial "!"</a></span>: factorial 
 
-<\ul>
+</ul>
 
 <h3>Constants</h3>
 
