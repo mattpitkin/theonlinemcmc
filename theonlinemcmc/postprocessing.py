@@ -140,9 +140,9 @@ containing the posterior samples</li>
     if var in greekletters:
       varnames[i] = '\\'+varnames[i]
 
-     # if sigma has been fit for the Gaussian likelihood change the variable name
-     if "sigma_gauss" in var:
-       varnames[i] = '\\sigma_{\\textrm{gauss}}' # convert to LaTeX
+    # if sigma has been fit for the Gaussian likelihood change the variable name
+    if "sigma_gauss" in var:
+      varnames[i] = '\\sigma_{\\textrm{gauss}}' # convert to LaTeX
 
   # create triangle plot
   labels = ['$%s$' % var for var in varnames] # LaTeX labels
