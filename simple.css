@@ -178,6 +178,8 @@ ul.functionlist{
  -webkit-columns: 2;
  -moz-columns: 2;
  font-family: Courier;
+ list-style-position: inside; /* required or bullets won't show in two column format - see http://stackoverflow.com/a/10855658 */
+ list-style-type: square;
 }
 
 .describe {
