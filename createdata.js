@@ -161,8 +161,7 @@ $(document).ready(function() {
     modeleqtmp = modeleqtmp.replace(/[\d]+/g, " ");
 
     // list of math functions that need to be removed to count variables (maybe include more functions from http://docs.scipy.org/doc/scipy-0.14.0/reference/special.html in the future)
-    // the order of these is important e.g. sin should go after asin otherwise the sin in asin will be replaced!
-    var mfuncs = ["erf", "gamma", "acosh", "asinh", "atanh", "arccos", "arcsin", "arctan", "atan2", "arctan2", "arccosh", "arcsinh", "arctanh", "pi", "exp", "log2", "log10", "log", "sinh", "cosh", "tanh", "acos", "asin", "atan", "sin", "cos", "tan"];
+    var mfuncs = ["\bsin\b", "\bcos\b", "\btan\b", "\berf\b", "\bgamma\b", "\bacosh\b", "\basinh\b", "\batanh\b", "\barccos\b", "\barcsin\b", "\barctan\b", "\batan2\b", "\barctan2\b", "\barccosh\b", "\barcsinh\b", "\barctanh\b", "\bpi\b", "\bexp\b", "\blog2\b", "\blog10\b", "\blog\b", "\bsinh\b", "\bcosh\b", "\btanh\b", "\bacos\b", "\basin\b", "\batan\b"];
     var index;
 
     // replace math functions with whitespace 
