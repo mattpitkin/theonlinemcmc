@@ -829,6 +829,8 @@ def mymodel({arguments}):\n\
           alert("Sigma value is not a number");
           return false;   
         }
+
+        sigmavar += ",";
       }
       
       if ( $("#id_gauss_like_type").val() == "Known2" ){
@@ -845,9 +847,9 @@ def mymodel({arguments}):\n\
         readsigma += '    except:\n';
         readsigma += '      errval = SIGMA_READ_ERR\n\n';
         sigmavar += "sigma_data";
+
+        sigmavar += ",";
       }
-    
-      sigmavar += ",";
     }
     
     outputStrings['readsigma'] = readsigma;
