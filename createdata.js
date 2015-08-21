@@ -161,12 +161,13 @@ $(document).ready(function() {
     modeleqtmp = modeleqtmp.replace(/[\d]+/g, " ");
 
     // list of math functions that need to be removed to count variables (maybe include more functions from http://docs.scipy.org/doc/scipy-0.14.0/reference/special.html in the future)
-    var mfuncs = ["\bsin\b", "\bcos\b", "\btan\b", "\berf\b", "\bgamma\b", "\bacosh\b", "\basinh\b", "\batanh\b", "\barccos\b", "\barcsin\b", "\barctan\b", "\batan2\b", "\barctan2\b", "\barccosh\b", "\barcsinh\b", "\barctanh\b", "\bpi\b", "\bexp\b", "\blog2\b", "\blog10\b", "\blog\b", "\bsinh\b", "\bcosh\b", "\btanh\b", "\bacos\b", "\basin\b", "\batan\b"];
+    var mfuncs = ["sin", "cos", "tan", "erf", "gamma", "acosh", "asinh", "atanh", "arccos", "arcsin", "arctan", "atan2", "arctan2", "arccosh", "arcsinh", "arctanh", "pi", "exp", "log2", "log10", "log", "sinh", "cosh", "tanh", "acos", "asin", "atan"];
     var index;
 
     // replace math functions with whitespace 
     for (index = 0; index < mfuncs.length; index++) {
-      modeleqtmp = modeleqtmp.replace(mfuncs[index], " ");
+      // the \b bounding the word will mean that only whole words are replaced
+      modeleqtmp = modeleqtmp.replace(new RegExp("\\b"+mfuncs[index]+"\\b"), " ");
     }
 
     modeleqtmp = modeleqtmp.trim(); // strip leading and trailing whitespace
