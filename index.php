@@ -272,13 +272,13 @@ dataset and has been analytically <a href="https://en.wikipedia.org/wiki/Margina
 The MCMC aims to draw samples (a chain of points) from the posterior probability distributions
 of the parameters. You need to tell it how many points to draw. There are three inputs required:
 <ul>
-<li>No. of ensemble points ("walkers": this is essentially the <a href="http://dan.iel.fm/emcee/current/user/faq/#what-are-walkers">number of independent chains</a> within the MCMC. This needs to be an even number and in general should
+<li><em>No. of ensemble points ("walkers")</em>: this is essentially the <a href="http://dan.iel.fm/emcee/current/user/faq/#what-are-walkers">number of independent chains</a> within the MCMC. This needs to be an even number and in general should
 be at least twice the number of fitting parameters that you have. Using a large value (e.g. 100) should be fine,
 but you could run into lack-of-memory issues if the number is too high (1000s);
-<li>No. of iterations: this is the number of points in chains for each of the ensemble points. This product of
+<li><em>No. of iterations</em>: this is the number of points per chain for each of the ensemble points. The product of
 this number and the number of ensemble points will be the total number of samples that you have for the
 posterior;
-<li>No. of <a href="http://support.sas.com/documentation/cdl/en/statug/63033/HTML/default/viewer.htm#statug_introbayes_sect007.htm">burn-in iterations</a>: this is the number of iterations (for each "walker") that are thrown
+<li><em>No. of <a href="http://support.sas.com/documentation/cdl/en/statug/63033/HTML/default/viewer.htm#statug_introbayes_sect007.htm">burn-in iterations</a></em>: this is the number of iterations (for each "walker") that are thrown
 away from the start of the chain (the iteration points above come after the burn-in points). This allows time
 for the MCMC to converge on the bulk of the posterior and for points sampled away from that to not be included
 in the final results.
@@ -305,7 +305,7 @@ If in doubt use the defaults and see how things <a href="#caveats">turn out</a>.
 <br>
 
 <p>
-Please supply your email address to be able to get your results: <input type="email" id="id_email" class="form-control">
+Please supply your email address. A link to your results will be sent to you once it is complete: <input type="email" id="id_email" class="form-control">
 </p>
 
 <input type="button" id="id_submit_variables" value="Submit">
