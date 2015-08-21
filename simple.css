@@ -172,16 +172,12 @@ table th[class*="col-"] {
   display: table-cell;
 }
 
-.functiontable {
-  font-family: Courier;
-  border: 0px;
-  padding: 0px;
-}
-
-td.functiontable {
-  width: 50%;
-  text-align: left;
-  vertical-align: top;
+/* create two column ul - see http://stackoverflow.com/a/14745429 */
+ul.functionlist{
+ columns: 2;
+ -webkit-columns: 2;
+ -moz-columns: 2;
+ font-family: Courier;
 }
 
 .describe {

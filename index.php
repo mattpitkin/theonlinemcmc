@@ -286,65 +286,48 @@ Here is a list of allowable functions within you model:
 
 <h3>Trigonometric functions</h3>
 
-<table class="functiontable">
-<tr>
 
-<td class="functiontable">
-<ul>
+<ul class="functionlist">
 <li><a href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.sin.html">sin</a>
+
+<li><span class="describe">Inverse sine</span> asin <span class="describe">or</span> <a href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.arcsin.html">arcsin</a>
 
 <li><a href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.cos.html">cos</a>
 
+<li><span class="describe">Inverse cosine</span> acos <span class="describe">or</span> <a href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.arccos.html">arccos</a>
+
 <li><a href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.tan.html">tan</a>
+
+<li><span class="describe">Inverse tangent</span> atan/atan2 <span class="describe">or</span> <a href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.arctan.html">arctan</a>/<a href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.arctan2.html#numpy.arctan2">arctan2</a>
 
 <li><span class="describe"><a href="https://en.wikipedia.org/wiki/Hyperbolic_function">Hyperbolic</a> sine</span> <a href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.sinh.html">sinh</a>
 
+<li><span class="describe"><a href="https://en.wikipedia.org/wiki/Hyperbolic_function">Inverse hyperbolic</a> sine</span> asinh <span class="describe">or</span> <a href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.arcsinh.html">arcsinh</a>
+
 <li><span class="describe"><a href="https://en.wikipedia.org/wiki/Hyperbolic_function">Hyperbolic</a> cosine</span> <a href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.cosh.html">cosh</a>
 
+<li><span class="describe"><a href="https://en.wikipedia.org/wiki/Hyperbolic_function">Inverse hyperbolic</a> cosine</span> acosh <span class="describe">or</span> <a href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.arccosh.html">arccosh</a>
+
 <li><span class="describe"><a href="https://en.wikipedia.org/wiki/Hyperbolic_function">Hyperbolic</a> tangent</span> <a href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.tanh.html">tanh</a>
+
+<li><span class="describe"><a href="https://en.wikipedia.org/wiki/Hyperbolic_function">Inverse hyperbolic</a> tangent</span> atanh <span class="describe">or</span> <a href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.arctanh.html">arctanh</a>
 </ul>
-
-</td>
-
-<td class="functiontable">
-<ul>
-<li><span class="describe">Inverse sine</span> <a href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.arcsin.html">asin <span class="describe">or</span> arcsin</a>
-
-<li><span class="describe">Inverse cosine</span> <a href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.arccos.html">acos <span class="describe">or</span> arccos</a>
-
-<li><span class="describe">Inverse tangent</span> <a href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.arctan.html">atan</a>/<a href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.arctan2.html#numpy.arctan2">atan2</a> <span class="describe">or</span> arctan/arctan2
-
-<li><span class="describe"><a href="https://en.wikipedia.org/wiki/Hyperbolic_function">Inverse hyperbolic</a> sine</span> <a href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.arcsinh.html">asinh <span class="describe">or</span> arcsinh</a>
-
-<li><span class="describe"><a href="https://en.wikipedia.org/wiki/Hyperbolic_function">Inverse hyperbolic</a> cosine</span> <a href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.arccosh.html">acosh <span class="describe">or</span> arccosh</a>
-
-<li><span class="describe"><a href="https://en.wikipedia.org/wiki/Hyperbolic_function">Inverse hyperbolic</a> tangent</span> <a href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.arctanh.html">atanh <span class="describe">or</span> arctanh</a>
-</ul>
-</td>
-</tr>
-</table>
 
 <h3>Other functions</h3>
 
-<table class="functiontable">
-<tr>
-<td class="functiontable">
-<ul>
-<li><span class="describe"><a href="https://en.wikipedia.org/wiki/Natural_logarithm">natural logarithm</a> (base <em>e</em>)</span> <a href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.log.html">log</a>
-<li><span class="describe"> base 10 logarithm</span> <a href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.log10.html">log10</a>
-<li><span class="describe"><a href="https://en.wikipedia.org/wiki/Gamma_function">Gamma function</a></span> <a href="http://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.special.gamma.html">gamma</a>
-</ul>
-</td>
+<ul class="functionlist">
 
-<td class="functiontable">
-<ul>
+<li><span class="describe"><a href="https://en.wikipedia.org/wiki/Natural_logarithm">natural logarithm</a> (base <em>e</em>)</span> <a href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.log.html">log</a>
+
+<li><span class="describe"> base 10 logarithm</span> <a href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.log10.html">log10</a>
+
+<li><span class="describe"><a href="https://en.wikipedia.org/wiki/Gamma_function">Gamma function</a></span> <a href="http://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.special.gamma.html">gamma</a>
+
 <li><span class="describe">base 2 logarithm</span> <a href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.log2.html">log2</a>
+
 <li><span class="describe"><a href="https://en.wikipedia.org/wiki/Error_function">Error function</a></span> <a href="http://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.special.erf.html">erf</a>
 </ul>
-</td>
 
-</tr>
-</table>
 
 <h2>Caveats</h2>
 
