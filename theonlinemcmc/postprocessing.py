@@ -142,7 +142,7 @@ containing the posterior samples</li>
 
     # if sigma has been fit for the Gaussian likelihood change the variable name
     if "sigma_gauss" in var:
-      varnames[i] = '\\sigma_{\\textrm{gauss}}' # convert to LaTeX
+      varnames[i] = '\\sigma_{\mathrm{gauss}}' # convert to LaTeX
 
   # create triangle plot
   labels = ['$%s$' % var for var in varnames] # LaTeX labels
