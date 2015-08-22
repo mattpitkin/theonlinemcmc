@@ -150,6 +150,7 @@ $(document).ready(function() {
 
     // get model equation from form
     modeleq = $('#modeleq').val();
+    modeleq = modeleq.replace(/['"]+/g, ''); // remove any quotes (" or ') in the string (hopefully this helps against insertion)
     var modeleqtmp = modeleq.slice(); // copy of model equation
 
     // list of characters to replace
@@ -910,6 +911,7 @@ def mymodel({arguments}):\n\
     outputStrings['runmcmc'] = runmcmc;
     
     var emailaddress = $("#id_email").val();
+    emailaddress = emailaddress.replace(/['"]+/g, ''); // remove any quotes (" or ') in the string (hopefully this helps against insertion)
     if( emailaddress.search('@') == -1 ){
       alert("Email address is not valid");
       return false;
