@@ -56,18 +56,9 @@ def database_add_row(uid, mfunc, variables, nvars, success):
   with con:
     # add values into table
     cur = con.cursor()
-    
-    insertrow = "INSERT INTO {table} (uid, modelfunction, variables, nvariables, success) VALUES('{uid}', '{mfunc}', '{variables}', '{nvars}', '{success}')"
-    rowdict = {}
-    rowdict['table'] = dbdata['table']
-    rowdict['uid'] = uid
-    rowdict['mfunc'] = mfunc
-    rowdict['variables'] = variables
-    rowdict['nvars'] = nvars
-    rowdict['success'] = sucvar
-    
+
     # insert into row
-    cur.execute(insertrow.format(**rowdict))
+    cur.execute("INSERT INTO %s (uid, modelfunction, variables, nvariables, success) VALUES(%s, %s, %s, %s, %s)", (dbdata['table'], uid, mfunc, variables, nvars, sucvar))
     con.commit()
       
   con.close()
