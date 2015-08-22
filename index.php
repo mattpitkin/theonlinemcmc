@@ -29,14 +29,14 @@
 <?php
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
   // sanitize the inputs that were not directly created by the javascript code (see e.g. http://uk1.php.net/manual/en/filter.filters.sanitize.php)
-  $postfilter = filter_input_array(
-    $_POST,
-    array(
-      'abscissa_data' => array('filter' => FILTER_VALIDATE_FLOAT),
-      'input_data'    => array('filter' => FILTER_VALIDATE_FLOAT),
-      'sigma_data'    => array('filter' => FILTER_VALIDATE_FLOAT)
-    )
-  );
+  //$postfilter = filter_input_array(
+  //  INPUT_POST,
+  //  array(
+  //    'abscissa_data' => array('filter' => FILTER_VALIDATE_FLOAT),
+  //    'input_data'    => array('filter' => FILTER_VALIDATE_FLOAT),
+  //    'sigma_data'    => array('filter' => FILTER_VALIDATE_FLOAT)
+  //  )
+  //);
   
   $resdir = 'results';
   
@@ -85,7 +85,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if(!file_exists($outdir)){
       mkdir($outdir, 0777, true);
     }
-    file_put_contents($outdir.'/abscissa_file.txt', $postfilter["abscissa_data"]);
+    //$absdata = filter_var($_POST["abscissa_data"], FILTER_VALIDATE_FLOAT);
+    //file_put_contents($outdir.'/abscissa_file.txt', $absdata);
+    //file_put_contents($outdir.'/abscissa_file.txt', $postfilter["abscissa_data"]);
+    file_put_contents($outdir.'/abscissa_file.txt', $_POST["abscissa_data"]);
   }
 
   // if input data values have been input output them to a file called data_file.txt
@@ -94,7 +97,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if(!file_exists($outdir)){
       mkdir($outdir, 0777, true);
     }
-    file_put_contents($outdir.'/data_file.txt', $postfilter["input_data"]);
+    //$indata = filter_var($_POST["input_data"], FILTER_VALIDATE_FLOAT);
+    //file_put_contents($outdir.'/data_file.txt', $indata);
+    //file_put_contents($outdir.'/data_file.txt', $postfilter["input_data"]);
+    file_put_contents($outdir.'/data_file.txt', $_POST["input_data"]);
   }
 
   if(!empty($_POST["labeldt"])){
@@ -118,7 +124,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if(!file_exists($outdir)){
       mkdir($outdir, 0777, true);
     }
-    file_put_contents($outdir.'/sigma_file.txt', $postfilter["sigma_data"]);
+    //$sidata = filter_var($_POST["sigma_data"], FILTER_VALIDATE_FLOAT);
+    //file_put_contents($outdir.'/sigma_file.txt', $sidata);
+    //file_put_contents($outdir.'/sigma_file.txt', $postfilter["sigma_data"]);
+    file_put_contents($outdir.'/sigma_file.txt', $_POST["sigma_data"]);
   }
 
   if(!empty($_POST["labelsi"])){
