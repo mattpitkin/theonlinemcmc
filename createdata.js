@@ -356,6 +356,7 @@ $(document).ready(function() {
 # import required packages\n\
 import emcee\n\
 import numpy as np\n\
+from numpy import exp, log\n\
 \n\
 # import model function from separate file\n\
 from mymodel import mymodel\n\
