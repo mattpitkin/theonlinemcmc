@@ -356,9 +356,6 @@ $(document).ready(function() {
 # import required packages\n\
 import emcee\n\
 import numpy as np\n\
-from numpy import pi, sin, cos, tan, exp, log, log10, log2, arccos, arcsin, arctan, arctan2, sinh, cosh, tanh, arccosh, arcsinh, arctanh\n\
-from scipy.special import erf, gamma\n\
-from scipy.misc import factorial\n\
 \n\
 # import model function from separate file\n\
 from mymodel import mymodel\n\
@@ -493,7 +490,11 @@ errval = 0\n\
     }
 
     // write model function
-    var modelfunction = "# define the model to fit to the data\n\
+    var modelfunction = "# import functions that can be used by the model\n\
+from numpy import pi, sin, cos, tan, exp, log, log10, log2, arccos, arcsin, arctan, arctan2, sinh, cosh, tanh, arccosh, arcsinh, arctanh\n\
+from scipy.special import erf, gamma\n\
+from scipy.misc import factorial\n\n\
+# define the model to fit to the data\n\
 def mymodel({arguments}):\n\
   {conststring}\n\
   \n\
