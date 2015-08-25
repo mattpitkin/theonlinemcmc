@@ -1,6 +1,9 @@
 <!DOCTYPE HTML>
 <html>
 <head>
+<meta name="author" content="Matthew Pitkin">
+<meta name="description" content="The Online MCMC">
+<meta name="keywords" content="MCMC, Markov chain Monte Carlo, Bayesian, emcee, python, data analysis, probability">
 <title>The Online MCMC</title>
 
 <!-- Include jQuery -->
