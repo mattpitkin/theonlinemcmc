@@ -155,8 +155,8 @@ $(document).ready(function() {
 
     // list of characters to replace
     modeleqtmp = modeleqtmp.replace(/[&\/+(),.*]/g, " ");
-    modeleqtmp = modeleqtmp.replace("^", " ");
-    modeleqtmp = modeleqtmp.replace("-", " ");
+    modeleqtmp = modeleqtmp.replace(/\^/g, " "); // replace carat
+    modeleqtmp = modeleqtmp.replace(/-/g, " "); // replace dash
 
     // replace all numbers with a space (using regular expression \d to represent all numbers and g to represent global replace) 
     modeleqtmp = modeleqtmp.replace(/[\d]+/g, " ");
