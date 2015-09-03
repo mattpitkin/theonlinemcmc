@@ -43,10 +43,6 @@ $(document).ready(function() {
   $("#showexample").click(function() {
     if ( $("#example").css("display") == "none" ){
       $("#example").css("display", "");
-      //$("#example").css("border", "2px solid #680000");
-      //$("#example").css("box-shadow", "2px 2px 4px #888888");
-      //$("#example").css("border-radius", "8px");
-      //$("#example").css("padding", "10px");
       $("#check").text("hide");
     }
     else if( $("#example").html() != "none" ){
