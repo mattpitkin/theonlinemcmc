@@ -39,6 +39,22 @@ var sigmafile = "sigma_file.txt";
 
 
 $(document).ready(function() {
+  // function to show examples on the page
+  $("#showexample").click(function() {
+    if ( $("#check").html() == "show" ){
+      $("#example").css("display", "");
+      $("#example").css("border", "2px solid #680000");
+      $("#example").css("box-shadow", "2px 2px 4px #888888");
+      $("#example").css("border-radius", "8px");
+      $("#example").css("padding", "10px");
+      $("#check").text("hide");
+    }
+    else if( $("#check").html() == "hide" ){
+      $("#example").css("display", "none");
+      $("#check").text("show");
+    }
+  });
+
   // change data input form type
   $('#data_input_type').change(function(){
     var vartype = $(this).val();

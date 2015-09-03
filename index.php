@@ -20,20 +20,6 @@
 <!-- custom CSS file -->
 <link rel="stylesheet" type="text/css" href="simple.css"/>
 
-<!-- script for showing examples -->
-<script type="text/javascript">
-$( "#showexample" ).click(function() {
-  if ( $("#check").html() == "show an example" ){
-    $("#example").css("display", "");
-    $("#check").text("hide an example");
-  }
-  else if( $("#check").html() == "hide an example" ){
-    $("#example").css("display", "none");
-    $("#check").text("show an example");
-  }
-});
-</script>
-
 </head>
 <body>
 
@@ -184,13 +170,13 @@ When entering the model be careful to use parentheses to group the required part
 </p>
 
 <p>
-Click <span id="showexample" style="color: red">here</span> to <span id="check">show an example</span> input model.
-<div id="example" style="display: none; border: 2.5px solid #cccccc; border-radius: 8px;">
+Click <span id="showexample" style="color: #680000; cursor: pointer;">here</span> to <span id="check">show</span> an example input model.
+<div id="example" style="display: none;">
 To input the model \(2.2*\sin{(2\pi f t)} + a t^2 - \frac{e^{2.3}}{b}\) you would write:</br>
 <pre>
 2.2*sin(2.0*pi*f*t) + a*t^2 - (exp(2.3)/b)
 </pre>
-This webpage will parse this information and extract the parameters \(f\)>, \(t\), \(a\)
+The webpage will parse this information and extract the parameters \(f\), \(t\), \(a\)
 and \(b\).
 </div>
 </p>
