@@ -17,12 +17,16 @@
   {lang: 'en-GB'}
 </script>
 
+<!-- script for sharing on Tumblr -->
+<script>!function(d,s,id){var js,ajs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://secure.assets.tumblr.com/share-button.js";ajs.parentNode.insertBefore(js,ajs);}}(document, "script", "tumblr-js");</script>
+
 <div class="social">
 <table>
 <tr>
 <td><div class="fb-share-button" data-href="http://theonlinemcmc.com" data-layout="button_count"></div></td>
 <td><a href="https://twitter.com/share" class="twitter-share-button" data-url="http://theonlinemcmc.com" data-via="theonlinemcmc">Tweet</a></td>
 <td><div class="g-plus" data-action="share" data-annotation="bubble" data-href="http://theonlinemcmc.com"></div></td>
+<td><a class="tumblr-share-button" data-color="blue" data-notes="right" href="https://embed.tumblr.com/share"></a></td>
 </tr>
 </table>
 </div>
