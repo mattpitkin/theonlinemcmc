@@ -1,4 +1,5 @@
 <!-- script for facebook sharing -->
+
 <div id="fb-root"></div>
 <script>(function(d, s, id) {
   var js, fjs = d.getElementsByTagName(s)[0];
@@ -12,14 +13,16 @@
 <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
 
 <!-- script for Google+ sharing -->
-<script src="https://apis.google.com/js/platform.js" async defer></script>
+<script src="https://apis.google.com/js/platform.js" async defer>
+  {lang: 'en-GB'}
+</script>
 
 <div class="social">
 <table>
 <tr>
 <td><div class="fb-share-button" data-href="http://theonlinemcmc.com" data-layout="button_count"></div></td>
 <td><a href="https://twitter.com/share" class="twitter-share-button" data-url="http://theonlinemcmc.com" data-via="theonlinemcmc">Tweet</a></td>
-<td><div class="g-plus" data-action="share" data-href="http://theonlinemcmc.com"></div></td>
+<td><div class="g-plus" data-action="share" data-annotation="bubble" data-href="http://theonlinemcmc.com"></div></td>
 </tr>
 </table>
 </div>
