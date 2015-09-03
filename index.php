@@ -10,20 +10,29 @@
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 
 <!-- Include MathJax -->
-<!--
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
-</script>
 <script type="text/javascript"
   src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
--->
 
 <!-- Include script to create the input data table and output the python script -->
 <script type="text/javascript" src="createdata.js"></script>
 
 <!-- custom CSS file -->
 <link rel="stylesheet" type="text/css" href="simple.css"/>
+
+<!-- script for showing examples -->
+<script type="text/javascript">
+$( "#showexample" ).click(function() {
+  if ( $("#check").html() == "show an example" ){
+    $("#example").css("display", "");
+    $("#check").text("hide an example");
+  }
+  else if( $("#check").html() == "hide an example" ){
+    $("#example").css("display", "none");
+    $("#check").text("show an example");
+  }
+});
+</script>
 
 </head>
 <body>
@@ -175,12 +184,15 @@ When entering the model be careful to use parentheses to group the required part
 </p>
 
 <p>
-An example of an input model is:<br>
+Click <span id="showexample" style="color: red">here</span> to <span id="check">show an example</span> input model.
+<div id="example" style="display: none; border: 2.5px solid #cccccc; border-radius: 8px;">
+To input the model \(2.2*\sin{(2\pi f t)} + a t^2 - \frac{e^{2.3}}{b}\) you would write:</br>
 <pre>
 2.2*sin(2.0*pi*f*t) + a*t^2 - (exp(2.3)/b)
 </pre>
-This webpage will parse this information and extract the parameters <code>f</code>, <code>t</code>, <code>a</code>
-and <code>b</code>.
+This webpage will parse this information and extract the parameters \(f\)>, \(t\), \(a\)
+and \(b\).
+</div>
 </p>
 
 <p>
