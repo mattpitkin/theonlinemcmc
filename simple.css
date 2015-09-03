@@ -103,6 +103,11 @@ code {
   padding: 5px;
 }
 
+.social {
+  border-bottom: 1px solid #999;
+  padding: 2px;
+}
+
 /* classes for the footer text */
 td.footer-right {
   width: 30%;
