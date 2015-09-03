@@ -66,8 +66,11 @@ def postprocessing(postsamples, variables, abscissa, abscissaname, data, email, 
 <body>
 <div id="page-wrap">
 
-<!-- include footer file -->
+<!-- include header file -->
 <?php include('../../header.inc'); ?>
+
+<!-- include social media sharing -->
+<?php include('../../social.inc'); ?>
 
 <h2>Marginalised posteriors</h2>
 

@@ -23,9 +23,9 @@
 <div class="social">
 <table>
 <tr>
-<td><div class="fb-share-button" data-href="http://theonlinemcmc.com" data-layout="button_count"></div></td>
-<td><a href="https://twitter.com/share" class="twitter-share-button" data-url="http://theonlinemcmc.com" data-via="theonlinemcmc">Tweet</a></td>
-<td><div class="g-plus" data-action="share" data-annotation="bubble" data-href="http://theonlinemcmc.com"></div></td>
+<td><div class="fb-share-button" data-layout="button_count"></div></td>
+<td><a href="https://twitter.com/share" class="twitter-share-button" data-via="theonlinemcmc">Tweet</a></td>
+<td><div class="g-plus" data-action="share" data-annotation="bubble"></div></td>
 <td><a class="tumblr-share-button" data-color="blue" data-notes="right" href="https://embed.tumblr.com/share"></a></td>
 </tr>
 </table>
