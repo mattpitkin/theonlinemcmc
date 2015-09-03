@@ -41,15 +41,15 @@ var sigmafile = "sigma_file.txt";
 $(document).ready(function() {
   // function to show examples on the page
   $("#showexample").click(function() {
-    if ( $("#check").html() == "show" ){
+    if ( $("#example").css("display") == "none" ){
       $("#example").css("display", "");
-      $("#example").css("border", "2px solid #680000");
-      $("#example").css("box-shadow", "2px 2px 4px #888888");
-      $("#example").css("border-radius", "8px");
-      $("#example").css("padding", "10px");
+      //$("#example").css("border", "2px solid #680000");
+      //$("#example").css("box-shadow", "2px 2px 4px #888888");
+      //$("#example").css("border-radius", "8px");
+      //$("#example").css("padding", "10px");
       $("#check").text("hide");
     }
-    else if( $("#check").html() == "hide" ){
+    else if( $("#example").html() != "none" ){
       $("#example").css("display", "none");
       $("#check").text("show");
     }
