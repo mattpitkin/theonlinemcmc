@@ -124,6 +124,7 @@ $(document).ready(function() {
   <option value=\"Uniform\">Uniform</option>\
   <option value=\"LogUniform\">Log(Uniform)</option>\
   <option value=\"Gaussian\">Gaussian</option>\
+  <option value=\"Exponential\">Exponential</option>\
 </select>";
             
           $('#sigma_gauss_prior').change(function(){
@@ -143,6 +144,11 @@ $(document).ready(function() {
               newcell3.innerHTML = "<input type=\"text\" id=\"sigma_gauss_prior_mean\" value=\"Mean\" class=\"form-control\">";
               newcell3 = liketablerow.insertCell(-1);
               newcell3.innerHTML = "<input type=\"text\" id=\"sigma_gauss_prior_sigma\" value=\"Standard deviation\" class=\"form-control\">";
+            }
+            
+            if ( $(this).val() == "Exponential" ){
+              var newcell3 = liketablerow.insertCell(-1);
+              newcell3.innerHTML = "<input type=\"text\" id=\"sigma_gauss_prior_mean\" value=\"Mean\" class=\"form-control\">";
             }
           });
         }
@@ -265,6 +271,7 @@ $(document).ready(function() {
     <option value=\"Uniform\">Uniform</option>\
     <option value=\"LogUniform\">Log(Uniform)</option>\
     <option value=\"Gaussian\">Gaussian</option>\
+    <option value=\"Exponential\">Exponential</option>\
 </select>";
 
         createPriorSelection(row, variable);
@@ -324,6 +331,11 @@ $(document).ready(function() {
         cell.innerHTML = "<input type=\"text\" name=\"meanval_"+variable+"\" value=\"Mean\" class=\"form-control\">";
         cell = row.insertCell(-1);
         cell.innerHTML = "<input type=\"text\" name=\"sigmaval_"+variable+"\" value=\"Standard deviation\" class=\"form-control\">";
+      }
+
+      if( priortype == "Exponential" ){
+        var cell = row.insertCell(-1);
+        cell.innerHTML = "<input type=\"text\" name=\"meanval_"+variable+"\" value=\"Mean\" class=\"form-control\">";
       }
     });
   }
@@ -458,6 +470,17 @@ errval = 0\n\
           fitarray[variables[index]].meanval = meanstdvals[0];
           fitarray[variables[index]].sigmaval = meanstdvals[1];
         }
+        
+        if ( priortype == "Exponential" ){
+          var idmeanval = "#meanval_" + variables[index];
+          var meanvals = getExponentialMeanValue(idmeanval);
+
+          if ( meanvals.length == 0 ){
+            return false; // there has been a problem
+          }
+
+          fitarray[variables[index]].meanval = meanvals[0];
+        }
       }
     }
 
@@ -499,6 +522,17 @@ errval = 0\n\
 
         fitarray["sigma_gauss"].meanval = meanstdvals[0];
         fitarray["sigma_gauss"].sigmaval = meanstdvals[1];
+      }
+
+      if ( priortype == "Exponential" ){
+        var idmeanval = "#sigma_gauss_prior_mean";
+        var meanvals = getExponentialMeanValue(idmeanval);
+
+        if ( meanvals.length == 0 ){
+          return false; // there has been a problem
+        }
+
+        fitarray["sigma_gauss"].meanval = meanvals[0];
       }
     }
 
@@ -621,10 +655,15 @@ def mymodel({arguments}):\n\
       }
 
       if ( priortype == "Gaussian" ){
-        priorfunction += "  lp -= 0.5*("+ priorvar + " - " + fitarray[priorvar].meanval + ")**2/" + fitarray[priorvar].sigmaval + "\n\n";
+        priorfunction += "  lp -= 0.5*(" + priorvar + " - " + fitarray[priorvar].meanval + ")**2/" + fitarray[priorvar].sigmaval + "\n\n";
         initialpoint += "  " + priorvar + "ini = " + fitarray[priorvar].meanval + "np.random.randn(Nens)*" + fitarray[priorvar].sigmaval + "\n";
       }
 
+      if ( priortype == "Exponential" ){
+        priorfunction += "  lp -= " + priorvar + "/" + fitarray[priorvar].meanval + "\n\n";
+        initialpoint += "  " + priorvar + "ini = np.random.exponential(" + fitarray[priorvar].meanval + ", Nens)\n";
+      }
+      
       // maybe have other prior type (exponential?) (plus hyperparameters?)
     }
 
@@ -1084,6 +1123,35 @@ def mymodel({arguments}):\n\
     return [minval, maxval];
   }
 
+  // function to get mean value for an exponential prior
+  function getExponentialMeanValue(idmeanval){
+    var meanval = $(idmeanval).val();
+
+    // check and get mean value
+    if ( meanval != "Mean" ){
+      if ( isNumber( meanval ) ){
+        $(idmeanval).addClass("form-control");
+        $(idmeanval).removeClass("has-error");  
+      }
+      else{
+        alert("Mean value is not a number");
+        $(idmeanval).removeClass("form-control");
+        $(idmeanval).addClass("has-error");
+        $(idmeanval).val("Invalid value");
+        return [];
+      }
+    }
+    else{
+      alert("Mean value not specified for Exponential prior");
+      $(idmeanval).removeClass("form-control");
+      $(idmeanval).addClass("has-error");
+      $(idmeanval).val("Invalid value");
+      return [];
+    }
+
+    return [meanval];
+  }
+  
   // function to get mean and sigma values for a Gaussian prior
   function getGaussianValues(idmeanval, idsigmaval){
     var meanval = $(idmeanval).val();
