@@ -215,3 +215,16 @@ ul.functionlist{
   padding: 10px;
 }
 
+/* close icon for example */
+.close {
+  float: right;
+  display: inline-block;
+  padding: 2px 5px;
+  background:#ccc;
+  content: "\00d7"; /* the times symbol */
+  cursor: pointer;
+}
+
+.close:hover{
+  box-shadow: 1px 1px 2px #777777;
+}

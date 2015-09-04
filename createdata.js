@@ -43,13 +43,15 @@ $(document).ready(function() {
   $("#showexample").click(function() {
     if ( $("#example").css("display") == "none" ){
       $("#example").css("display", "");
-      $("#check").text("hide");
-    }
-    else if( $("#example").html() != "none" ){
-      $("#example").css("display", "none");
-      $("#check").text("show");
     }
   });
+
+  // close example
+  $(".close").click(function() {
+    if ( $("#example").css("display") != "none" ){
+      $("#example").css("display", "none");  
+    }
+  }
 
   // change data input form type
   $('#data_input_type').change(function(){

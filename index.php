@@ -169,6 +169,7 @@ raise a value to a given power use either "^" or "**".
 When entering the model be careful to use parentheses to group the required parts of the equation.
 Click <span id="showexample">here</span> to <span id="check">show</span> an example input model.
 <div id="example" class="example" style="display: none;">
+<div class="close"></div>
 To input the model \(2.2 \sin{(2\pi f t)} + a t^2 - \frac{e^{2.3}}{b}\) you would write:</br>
 <pre>
 2.2*sin(2.0*pi*f*t) + a*t^2 - (exp(2.3)/b)
@@ -196,7 +197,7 @@ There are currently three <a href="https://en.wikipedia.org/wiki/Prior_probabili
 <li><strong>Uniform</strong>: this is a constant <a href="https://en.wikipedia.org/wiki/Uniform_distribution_(continuous)">probability distribution</a> defined within a minimum and maximum range, with zero probability outside that range. This is a <a href="https://en.wikipedia.org/wiki/Prior_probability#Uninformative_priors">non-informative prior</a> for a <a href="https://en.wikipedia.org/wiki/Location_parameter">location parameter</a> (i.e. a parameter that is invariant to shifts);</li>
 <li><strong>Log(Uniform)</strong>: this is a constant <a href="https://en.wikipedia.org/wiki/Uniform_distribution_(continuous)">probability distribution</a> in the logarithm of the parameter, defined within a minimum and maximum range, with zero probability outside that range. This is a non-informative prior for a <a href="https://en.wikipedia.org/wiki/Scale_parameter">scale parameter</a> (i.e. a parameter is invariant to scalings and can only take positive values);</li>
 <li><strong>Gaussian</strong>: this is a <a href="https://en.wikipedia.org/wiki/Normal_distribution">Gaussian (or Normal) probability distribution</a> for which the <a href="https://en.wikipedia.org/wiki/Mean">mean</a> and <a href="https://en.wikipedia.org/wiki/Standard_deviation">standard deviation</a> must be specified.
-<li><strong>Exponential</strong>: this is an <a href="https://en.wikipedia.org/wiki/Exponential_distribution">Exponential probability distribution</a> (\(e^{-x/\mu}\)) for which the mean, &mu;, must be specified. This is the least informative distribution if only the mean is known.
+<li><strong>Exponential</strong>: this is an <a href="https://en.wikipedia.org/wiki/Exponential_distribution">Exponential probability distribution</a> (\(e^{-x/\mu}\)) for which the mean, <em>&mu;</em>, must be specified. This is the least informative distribution if only the mean is known.
 </ul>
 If you are unsure about what is best to use then a <em>Uniform</em> distribution with a range broad enough
 to cover your expectations of the parameter is the simplest option.
