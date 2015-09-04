@@ -167,9 +167,9 @@ raise a value to a given power use either "^" or "**".
 
 <p>
 When entering the model be careful to use parentheses to group the required parts of the equation.
-Click <span id="showexample">here</span> to <span id="check">show</span> an example input model.
+Click <span id="showexample">here</span> to show an example input model.
 <div id="example" class="example" style="display: none;">
-<div class="close"></div>
+<div id="close"></div>
 To input the model \(2.2 \sin{(2\pi f t)} + a t^2 - \frac{e^{2.3}}{b}\) you would write:</br>
 <pre>
 2.2*sin(2.0*pi*f*t) + a*t^2 - (exp(2.3)/b)

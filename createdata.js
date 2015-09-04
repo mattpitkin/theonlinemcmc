@@ -47,11 +47,11 @@ $(document).ready(function() {
   });
 
   // close example
-  $(".close").click(function() {
+  $("#close").click(function() {
     if ( $("#example").css("display") != "none" ){
       $("#example").css("display", "none");  
     }
-  }
+  });
 
   // change data input form type
   $('#data_input_type').change(function(){

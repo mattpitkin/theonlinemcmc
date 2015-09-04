@@ -216,15 +216,18 @@ ul.functionlist{
 }
 
 /* close icon for example */
-.close {
+#close:after {
+  content: '\2715';
   float: right;
   display: inline-block;
-  padding: 2px 5px;
-  background:#ccc;
-  content: "\00d7"; /* the times symbol */
+  color: #444444;
   cursor: pointer;
+  line-height: 13px;
+  width: 13px;
+  text-align: center;
+  vertical-align: middle;
+  border: 1px solid #222222;
+  border-radius: 2px;
+  box-shadow: 1px 1px 2px #888888;
 }
 
-.close:hover{
-  box-shadow: 1px 1px 2px #777777;
-}
