@@ -235,3 +235,11 @@ ul.functionlist{
   box-shadow: 1px 1px 2px #888888;
 }
 
+/* the box surrounding the input section */
+.inputbox{
+  border: 1px solid #888888;
+  box-shadow: 1px 1px 2px #999999;
+  background: #f6f6f6;
+  border-radius: 4px;
+  padding: 4px;
+}

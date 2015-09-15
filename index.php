@@ -165,6 +165,8 @@ by <a href="http://dan.iel.fm/">Dan Foreman-Mackey</a>.
 
 <h2>Inputs</h2>
 
+<div class="inputbox">
+
 <div>
   Input <a href="#themodel">model</a> equation: <input type="text" name="modeleq" id="modeleq" class="form-control" value="">
  <input type="button" id="id_model_button" value="Input Model">
@@ -236,6 +238,8 @@ Please supply your email address. A link to your results will be sent to you onc
 
 <input type="button" id="id_submit_variables" value="Submit">
 </form>
+
+</div>
 
 <p class="emphasise">
 Any results will be available for 15 days following completion. They will then be deleted, so please
