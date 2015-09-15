@@ -172,6 +172,7 @@ by <a href="http://dan.iel.fm/">Dan Foreman-Mackey</a>.
 
 <h2 id="id_input_header"></h2>
 <form method="post" id="id_formvariables" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+<p>
 <div id="id_variables_div" style="display:none">
   Input parameter <a href="#themodel">types</a> and <a href="prior">priors</a>:
   <table id="table_id">
@@ -180,7 +181,9 @@ by <a href="http://dan.iel.fm/">Dan Foreman-Mackey</a>.
 <!-- Allow conditions on parameters e.g. x > y or x < 0 && y > 2 to be set -->
 <input type="hidden" id="id_conditions" class="form-control" value="Conditions (e.g. x < 0 && y > z)" size="30">
 </div>
+</p>
 
+<p>
 <div id="id_data_div">
 Input the <a href="#id_data_header">data</a>:
 <select id="data_input_type" class="form-control">
@@ -191,7 +194,9 @@ Input the <a href="#id_data_header">data</a>:
 </div>
 <input type="hidden" id="id_submit_data_upload">
 <textarea style="display:none" class="form-control" id="id_submit_data_form"></textarea>
+</p>
 
+<p>
 <div id="id_likelihood_div">
   Input the <a href="#id_likelihood_header">likelihood</a>:
   <table id="like_table">
@@ -204,24 +209,27 @@ Input the <a href="#id_data_header">data</a>:
     </tr>
 </table>
 </div>
+</p>
 
+<p>
 <div id="id_mcmc_div">
 Input the <a href="#id_mcmc_header">MCMC sampler parameters</a>:
 <table id="mcmc_table">
   <tr>
-    <td>Number of ensemble points (default: 100)</td>
+    <td>&bull; Number of ensemble points (default: 100)</td>
     <td><input type="text" class="form-control" id="mcmc_nensemble" value="100"></td>
   </tr>
   <tr>
-    <td>Number of MCMC interations (default: 1000)</td>
+    <td>&bull; Number of MCMC interations (default: 1000)</td>
     <td><input type="text" class="form-control" id="mcmc_niteration" value="1000"></td>
   </tr>
   <tr>
-    <td>Number of MCMC burn-in interations (default: 1000)</td>
+    <td>&bull; Number of MCMC burn-in interations (default: 1000)</td>
     <td><input type="text" class="form-control" id="mcmc_nburnin" value="1000"></td>
   </tr>
 </table>
 </div>
+</p>
 
 <p>
 Please supply your email address. A link to your results will be sent to you once it is complete: <input type="email" id="id_email" class="form-control">
