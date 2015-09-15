@@ -334,8 +334,6 @@ in the final results.
 If in doubt use the defaults and see how things <a href="#caveats">turn out</a>.
 </p>
 
-<br>
-
 <p class="emphasise">
 Any results will be available for 15 days following completion. They will then be deleted, so please
 download any results that you would like to keep for longer.
