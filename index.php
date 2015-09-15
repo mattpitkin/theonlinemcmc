@@ -170,11 +170,10 @@ by <a href="http://dan.iel.fm/">Dan Foreman-Mackey</a>.
  <input type="button" id="id_model_button" value="Input Model">
 </div>
 
-<h2 id="id_input_header"></h2>
 <form method="post" id="id_formvariables" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
 <p>
 <div id="id_variables_div" style="display:none">
-  Input parameter <a href="#themodel">types</a> and <a href="prior">priors</a>:
+  Input parameter <a href="#thetypes">types</a> and <a href="prior">priors</a>:
   <table id="table_id">
   </table>
 <br>
@@ -263,6 +262,7 @@ and \(b\).
 </div>
 </p>
 
+<h3 id="thetypes">Parameter types</h3>
 <p>
 Once the model is submitted you can choose each parameter's <em>type</em>:
 <ul>

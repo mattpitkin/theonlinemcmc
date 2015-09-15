@@ -159,9 +159,6 @@ $(document).ready(function() {
   });
 
   $("#id_model_button").click(function(){
-    // add input header
-    document.getElementById("id_input_header").innerHTML = "Parameter inputs";
-
     // un-hide the div element
     $("#id_variables_div").css("display", "");
     
