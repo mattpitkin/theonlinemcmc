@@ -145,7 +145,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <?php include('header.inc'); ?>
 
 <!-- include Social Media sharing file -->
-<?php include('social.inc'); ?>
+<?php
+$shareurl = "http://theonlinemcmc.com";
+include('social.inc');
+?>
 
 <p class="container">
 Do you have some data and a model that you want to fit to it? Well here's the website for you (see <a href="#caveats">caveats</a>).

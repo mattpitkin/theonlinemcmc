@@ -70,7 +70,10 @@ def postprocessing(postsamples, variables, abscissa, abscissaname, data, email, 
 <?php include('../../header.inc'); ?>
 
 <!-- include social media sharing -->
-<?php include('../../social.inc'); ?>
+<?php
+shareurl = "{outdir}";
+include('../../social.inc');
+?>
 
 <h2>Marginalised posteriors</h2>
 
@@ -135,6 +138,8 @@ containing the posterior samples</li>
 </div>
 </body>
 """
+
+  fm['outdir'] = outdir
 
   varnames = variables.split(',')
 

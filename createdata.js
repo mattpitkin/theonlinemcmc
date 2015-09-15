@@ -973,17 +973,18 @@ def mymodel({arguments}):\n\
     }
     
     // run a pre-written script to parse the output, create plots and an output webpage and email user
-    var hrefloc = 'http://theonlinemcmc.com';
+    var hrefloc = window.location.href;
+    var lIndex = hrefloc.lastIndexOf('/'); // strip the current page off the href
     var postprocess = "  # run post-processing script\n";
     postprocess += "  try:\n";
-    postprocess += "    postprocessing(samples, \"" + theta.join(',') + "\", " + abscissavar + ", \"" + abscissavar + "\", data, \"" + emailaddress + "\", \"" + hrefloc + "/results/" + outdir + "\")\n";
+    postprocess += "    postprocessing(samples, \"" + theta.join(',') + "\", " + abscissavar + ", \"" + abscissavar + "\", data, \"" + emailaddress + "\", \"" + hrefloc.substr(0, lIndex) + "/results/" + outdir + "\")\n";
     postprocess += "  except:\n";
     postprocess += "    errval = POST_PROCESS_ERR\n\n";
     
     postprocess += "success = True\n";
     postprocess += "if errval != 0:\n";
     postprocess += "  # run different script in case error codes are encountered\n";
-    postprocess += "  errorpage(errval, \"" + emailaddress + "\", \"" + hrefloc + "/results/" + outdir + "\")\n";
+    postprocess += "  errorpage(errval, \"" + emailaddress + "\", \"" + hrefloc.substr(0, lIndex) + "/results/" + outdir + "\")\n";
     postprocess += "  success = False\n\n";
     
     outputStrings['postprocess'] = postprocess;
