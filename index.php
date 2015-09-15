@@ -237,6 +237,11 @@ Please supply your email address. A link to your results will be sent to you onc
 <input type="button" id="id_submit_variables" value="Submit">
 </form>
 
+<p class="emphasise">
+Any results will be available for 15 days following completion. They will then be deleted, so please
+download any results that you would like to keep for longer.
+</p>
+
 <h2 id="instructions">Instructions</h2>
 
 <h3 id="themodel">The model</h3>
@@ -332,11 +337,6 @@ for the MCMC to converge on the bulk of the posterior and for points sampled awa
 in the final results.
 </ul>
 If in doubt use the defaults and see how things <a href="#caveats">turn out</a>.
-</p>
-
-<p class="emphasise">
-Any results will be available for 15 days following completion. They will then be deleted, so please
-download any results that you would like to keep for longer.
 </p>
 
 <h2 id="functions">Allowable functions and constants</h2>
