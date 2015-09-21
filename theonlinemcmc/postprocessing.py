@@ -71,7 +71,7 @@ def postprocessing(postsamples, variables, abscissa, abscissaname, data, email, 
 
 <!-- include social media sharing -->
 <?php
-shareurl = "{outdir}";
+$shareurl = "{outdir}";
 include('../../social.inc');
 ?>
 
