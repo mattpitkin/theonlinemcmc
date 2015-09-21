@@ -159,7 +159,96 @@ This site makes use of the python MCMC package <a href="http://dan.iel.fm/emcee/
 by <a href="http://dan.iel.fm/">Dan Foreman-Mackey</a>.
 </p>
 
-<h2>Your model</h2>
+<p>
+<a href="#instructions">Instructions</a> for using this page can be found below the input options.
+</p>
+
+<h2>Inputs</h2>
+
+<div class="inputbox">
+
+<div>
+  Input <a href="#themodel">model</a> equation: <input type="text" name="modeleq" id="modeleq" class="form-control" value="">
+ <input type="button" id="id_model_button" value="Input Model">
+</div>
+
+<form method="post" id="id_formvariables" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+<p>
+<div id="id_variables_div" style="display:none">
+  Input parameter <a href="#thetypes">types</a> and <a href="prior">priors</a>:
+  <table id="table_id">
+  </table>
+<br>
+<!-- Allow conditions on parameters e.g. x > y or x < 0 && y > 2 to be set -->
+<input type="hidden" id="id_conditions" class="form-control" value="Conditions (e.g. x < 0 && y > z)" size="30">
+</div>
+</p>
+
+<p>
+<div id="id_data_div">
+Input the <a href="#id_data_header">data</a>:
+<select id="data_input_type" class="form-control">
+  <option value="">--Type--</option>
+  <option value="Input">Input</option>
+  <option value="Upload">Upload</option>
+</select>
+</div>
+<input type="hidden" id="id_submit_data_upload">
+<textarea style="display:none" class="form-control" id="id_submit_data_form"></textarea>
+</p>
+
+<p>
+<div id="id_likelihood_div">
+  Input the <a href="#id_likelihood_header">likelihood</a>:
+  <table id="like_table">
+    <tr id="like_row"><td>
+      <select id="likelihood_input_type" class="form-control">
+        <option value="">--Type--</option>
+        <option value="Gaussian">Gaussian</option>
+        <option value="Studentst">Student's t</option>
+      </select></td>
+    </tr>
+</table>
+</div>
+</p>
+
+<p>
+<div id="id_mcmc_div">
+Input the <a href="#id_mcmc_header">MCMC sampler parameters</a>:
+<table id="mcmc_table">
+  <tr>
+    <td>&bull; Number of ensemble points (default: 100)</td>
+    <td><input type="text" class="form-control" id="mcmc_nensemble" value="100"></td>
+  </tr>
+  <tr>
+    <td>&bull; Number of MCMC interations (default: 1000)</td>
+    <td><input type="text" class="form-control" id="mcmc_niteration" value="1000"></td>
+  </tr>
+  <tr>
+    <td>&bull; Number of MCMC burn-in interations (default: 1000)</td>
+    <td><input type="text" class="form-control" id="mcmc_nburnin" value="1000"></td>
+  </tr>
+</table>
+</div>
+</p>
+
+<p>
+Please supply your email address. A link to your results will be sent to you once it is complete: <input type="email" id="id_email" class="form-control">
+</p>
+
+<input type="button" id="id_submit_variables" value="Submit">
+</form>
+
+</div>
+
+<p class="emphasise">
+Any results will be available for 15 days following completion. They will then be deleted, so please
+download any results that you would like to keep for longer.
+</p>
+
+<h2 id="instructions">Instructions</h2>
+
+<h3 id="themodel">The model</h3>
 
 <p>
 Firstly, you must input the model that you want to fit to your data. When inputting this model you can use
@@ -182,6 +271,7 @@ and \(b\).
 </div>
 </p>
 
+<h3 id="thetypes">Parameter types</h3>
 <p>
 Once the model is submitted you can choose each parameter's <em>type</em>:
 <ul>
@@ -206,23 +296,7 @@ If you are unsure about what is best to use then a <em>Uniform</em> distribution
 to cover your expectations of the parameter is the simplest option.
 </p>
 
-<div>
-  Model equation: <input type="text" name="modeleq" id="modeleq" class="form-control" value="">
- <input type="button" id="id_model_button" value="Input Model">
-</div>
-
-
-<h2 id="id_input_header"></h2>
-<form method="post" id="id_formvariables" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
-<div id="id_variables_div" style="display:none">
-  <table id="table_id">
-  </table>
-<br>
-<!-- Allow conditions on parameters e.g. x > y or x < 0 && y > 2 to be set -->
-<input type="hidden" id="id_conditions" class="form-control" value="Conditions (e.g. x < 0 && y > z)" size="30">
-</div>
-
-<h2 id="id_data_header">Data input</h2>
+<h3 id="id_data_header">Data input</h2>
 <p>
   Input the data that you would like to fit the model to. You can directly choose to input values directly
   in the form below (which whitespace or comma separated values), or upload a file containing the data (again
@@ -230,17 +304,7 @@ to cover your expectations of the parameter is the simplest option.
   number of values input for the independent variable/abscissa parameter provided above.
 </p>
 
-<div id="id_data_div">
-<select id="data_input_type" class="form-control">
-  <option value="">--Type--</option>
-  <option value="Input">Input</option>
-  <option value="Upload">Upload</option>
-</select>
-</div>
-<input type="hidden" id="id_submit_data_upload">
-<textarea style="display:none" class="form-control" id="id_submit_data_form"></textarea>
-
-<h2 id="id_likelihood_header">Likelihood input</h2>
+<h3 id="id_likelihood_header">Likelihood input</h2>
 
 <p>
 There are currently two allowed <a href="https://en.wikipedia.org/wiki/Likelihood_function">likelihood functions</a>:
@@ -259,19 +323,7 @@ dataset and has been analytically <a href="https://en.wikipedia.org/wiki/Margina
 </ul>
 </p>
 
-<div id="id_likelihood_div">
-  <table id="like_table">
-    <tr id="like_row"><td>
-      <select id="likelihood_input_type" class="form-control">
-        <option value="">--Type--</option>
-        <option value="Gaussian">Gaussian</option>
-        <option value="Studentst">Student's t</option>
-      </select></td>
-    </tr>
-</table>
-</div>
-
-<h2 id="id_mcmc_header">MCMC inputs</h2>
+<h3 id="id_mcmc_header">MCMC inputs</h2>
 
 <p>
 The MCMC aims to draw samples (a chain of points) from the posterior probability distributions
@@ -289,38 +341,6 @@ for the MCMC to converge on the bulk of the posterior and for points sampled awa
 in the final results.
 </ul>
 If in doubt use the defaults and see how things <a href="#caveats">turn out</a>.
-</p>
-
-<div id="id_mcmc_div">
-<table id="mcmc_table">
-  <tr>
-    <td>Number of ensemble points (default: 100)</td>
-    <td><input type="text" class="form-control" id="mcmc_nensemble" value="100"></td>
-  </tr>
-  <tr>
-    <td>Number of MCMC interations (default: 1000)</td>
-    <td><input type="text" class="form-control" id="mcmc_niteration" value="1000"></td>
-  </tr>
-  <tr>
-    <td>Number of MCMC burn-in interations (default: 1000)</td>
-    <td><input type="text" class="form-control" id="mcmc_nburnin" value="1000"></td>
-  </tr>
-</table>
-</div>
-<br>
-
-<p>
-Please supply your email address. A link to your results will be sent to you once it is complete: <input type="email" id="id_email" class="form-control">
-</p>
-
-<input type="button" id="id_submit_variables" value="Submit">
-</form>
-
-<br>
-
-<p class="emphasise">
-Any results will be available for 15 days following completion. They will then be deleted, so please
-download any results that you would like to keep for longer.
 </p>
 
 <h2 id="functions">Allowable functions and constants</h2>

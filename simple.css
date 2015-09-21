@@ -103,6 +103,10 @@ code {
   padding: 5px;
 }
 
+h2 {
+  border-bottom: 1px solid #999;
+}
+
 /* class for social media buttons in social.inc. Note that the
    line-height is set so all the buttons align (otherwise the
    FB button is offset) - see http://stackoverflow.com/a/21919504/1862861 */ 
@@ -231,3 +235,11 @@ ul.functionlist{
   box-shadow: 1px 1px 2px #888888;
 }
 
+/* the box surrounding the input section */
+.inputbox{
+  border: 1px solid #aaaaaa;
+  box-shadow: 1px 1px 2px #999999;
+  background: #eeeeee;
+  border-radius: 4px;
+  padding: 10px;
+}
