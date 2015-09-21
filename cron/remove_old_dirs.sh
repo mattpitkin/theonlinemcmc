@@ -7,7 +7,7 @@
 RESDIR=$ONLINEMCMC_RESULTS_DIR
 
 # set 15 day limit on directory modificate (which should be the creation time)
-modlim=15
+modlim=+15
 
 # use find to find and delete the directories and their content
 find ${RESDIR}/* -type d -mtime ${modlim} -exec rm -rf {} +
