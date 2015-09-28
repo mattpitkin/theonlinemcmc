@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # a script to run with cron daily (place in /etc/cron/daily) to remove
 # user created directories after 15 days
