@@ -43,8 +43,8 @@ def credible_interval(dsamples, ci):
    return (np.min(bins[histIndices[:j]]), np.max(bins[histIndices[:j]]))
 
 def postprocessing(postsamples, variables, abscissa, abscissaname, data, email, outdir):
-  # import the triangle plot code
-  import triangle
+  # import the corner plot code
+  import corner
 
   # import matplotlib
   from matplotlib import pyplot as pl
@@ -157,7 +157,7 @@ containing the posterior samples</li>
   nvars = len(varnames)
   levels = 1.-np.exp(-0.5*np.array([1., 2.])**2) # plot 1 and 2 sigma contours
 
-  fig = triangle.corner(postsamples[:,:nvars], labels=labels, levels=levels, quantiles=[0.16, 0.5, 0.84], bins=30)
+  fig = corner.corner(postsamples[:,:nvars], labels=labels, levels=levels, quantiles=[0.16, 0.5, 0.84], bins=30)
 
   # output the figure
   postfigfile = 'posterior_plots.png'
