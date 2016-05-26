@@ -36,7 +36,7 @@ import json
                          uid VARCHAR(255), \
                          modelfunction TEXT, \
                          variables VARCHAR(255), \
-                         nvariables TINYINT \
+                         nvariables TINYINT, \
                          success BOOLEAN);
 """
 def database_add_row(uid, mfunc, variables, nvars, success):
