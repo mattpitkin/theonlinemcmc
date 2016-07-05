@@ -80,7 +80,7 @@ include('../../social.inc');
 The diagonal plots show the <a href="https://en.wikipedia.org/wiki/Marginal_distribution">marginal</a>
 <a href="https://en.wikipedia.org/wiki/Posterior_probability">posterior probability</a> distributions for each of your
 fitted parameters. The off-diagonal plots show 1 and 2&sigma; probability contours for the
-<a href="https://en.wikipedia.org/wiki/Joint_probability_distribution">joint</a> marginal posterior probability distributions of pairs of parameters. This has been produced with <a href="https://github.com/dfm/triangle.py">triangle.py</a>.
+<a href="https://en.wikipedia.org/wiki/Joint_probability_distribution">joint</a> marginal posterior probability distributions of pairs of parameters. This has been produced with <a href="https://github.com/dfm/corner.py">corner.py</a>.
 
 {posteriorfig}
 
@@ -92,7 +92,7 @@ The <a href="https://en.wikipedia.org/wiki/Mean">mean</a>,
 of the probability distributions for each parameter. Also give are the
 <a href="https://en.wikipedia.org/wiki/Standard_deviation">standard deviation</a>
 of the distributions and minimal 68% and 95%
-<a href="https://en.wikipedia.org/wiki/Credible_interval">credilble intervals</a> (CI).
+<a href="https://en.wikipedia.org/wiki/Credible_interval">credible intervals</a> (CI).
 
 <div>
 {resultstable}
