@@ -12,3 +12,7 @@ It is available on <a href="https://github.com/mattpitkin/theonlinemcmc">github<
 </tr>
 </table>
 </div>
+
+<div class="acknowledgment">
+This site is kindly hosted by the <a href="http://www.gla.ac.uk/schools/physics/">School of Physics & Astronomy</a> at the <a href="http://www.gla.ac.uk/">University of Glasgow</a>. They bear no reponsibility for the content of this site or the results that are produced.
+</div>
