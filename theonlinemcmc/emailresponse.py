@@ -23,10 +23,12 @@ def emailresponse(emailaddress, outurl, runerror=False):
 
   username = edata['username']
   password = edata['password'] # will need to sort out reading this from a file that is not in the repo
+  replyto = edata['replyto'] # reply-to address
 
   msg = MIMEMultipart()
-  msg['From'] = 'TheOnlineMCMC'
+  msg['From'] = 'The Online MCMC <results@theonlinemcmc.com>'
   msg['To'] = toaddr
+  msg['Reply-To'] = replyto
   msg['Subject'] = subject
   
   msgtext = """Dear user,
@@ -47,7 +49,10 @@ TheOnlineMCMC
   msg.attach(MIMEText(msgtext.format(msgtext=message), 'plain'))
   
   # set server and send email
-  server = smtplib.SMTP_SSL(edata['server'])
-  server.login(username, password)
+  if edata['server'] == 'localhost':
+    server = smtplib.SMTP('localhost')
+  else:
+    server = smtplib.SMTP_SSL(edata['server'])
+    server.login(username, password)
   server.sendmail(fromaddr, [toaddr], msg.as_string())
   server.quit()
