@@ -2,7 +2,7 @@
 <table>
 <tr>
 <td class="footer-left">
-<a href="http://theonlinemcmc.com">The Online MCMC</a><br>
+<a href="http://www.theonlinemcmc.com">The Online MCMC</a><br>
 &copy; Matthew Pitkin (2015)
 </td>
 <td class="footer-right">

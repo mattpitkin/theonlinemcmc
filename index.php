@@ -146,7 +146,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <!-- include Social Media sharing file -->
 <?php
-$shareurl = "http://theonlinemcmc.com";
+$shareurl = "http://www.theonlinemcmc.com";
 include('social.inc');
 ?>
 
@@ -410,7 +410,7 @@ These constants can be input rather than having to give their numerical values.
 <h2 id="caveats">Caveats</h2>
 
 <p>
-The MCMC algorithm is not guaranteed to produce sensible results every time, and your output may not contain errors or look odd. Some
+The MCMC algorithm is not guaranteed to produce sensible results every time, and your output may contain errors or look odd. Some
 information and trouble shooting can be found <a href="http://dan.iel.fm/emcee/current/user/faq/">here</a>.
 </p>
 
