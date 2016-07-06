@@ -29,7 +29,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   $resdir = 'results';
   
   if (!empty($_POST["pyfile"])) {
-    $outdir = $resdir.'/'.$_POST["outdir"];
+    $outdir = $resdir.'/'.filter_var($_POST["outdir"], FILTER_SANITIZE_STRING);
     $_SESSION["outdir"] = $outdir;
     if(!file_exists($outdir)){
       mkdir($outdir, 0777, true);
@@ -42,7 +42,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   }
 
   if (!empty($_POST["modelfile"])) {
-    $outdir = $resdir.'/'.$_POST["outdir"];
+    $outdir = $resdir.'/'.filter_var($_POST["outdir"], FILTER_SANITIZE_STRING);
     if(!file_exists($outdir)){
       mkdir($outdir, 0777, true);
     }
@@ -55,7 +55,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   if(!empty($_POST["labelab"])){
     if ($_POST["labelab"] == "abscissafile"){
       // get directory and check if it exists
-      $outdirab = $resdir.'/'.$_POST["outdirab"];
+      $outdirab = $resdir.'/'.filter_var($_POST["outdirab"], FILTER_SANITIZE_STRING);
       if (!file_exists($outdirab)){
         mkdir($outdirab, 0777, true);
       }
@@ -69,7 +69,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
   // if abscissa values have been input output them to a file called abscissa_file.txt
   if (!empty($_POST["abscissa_data"])){
-    $outdir = $resdir.'/'.$_POST["outdir"];
+    $outdir = $resdir.'/'.filter_var($_POST["outdir"], FILTER_SANITIZE_STRING);
     if(!file_exists($outdir)){
       mkdir($outdir, 0777, true);
     }
@@ -79,7 +79,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
   // if input data values have been input output them to a file called data_file.txt
   if (!empty($_POST["input_data"])){
-    $outdir = $resdir.'/'.$_POST["outdir"];
+    $outdir = $resdir.'/'.filter_var($_POST["outdir"], FILTER_SANITIZE_STRING);
     if(!file_exists($outdir)){
       mkdir($outdir, 0777, true);
     }
@@ -90,7 +90,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   if(!empty($_POST["labeldt"])){
     if ($_POST["labeldt"] == "datafile"){
       // get directory and check if it exists
-      $outdirdt = $resdir.'/'.$_POST["outdirdt"];
+      $outdirdt = $resdir.'/'.filter_var($_POST["outdirdt"], FILTER_SANITIZE_STRING);
       if (!file_exists($outdirdt)){
         mkdir($outdirdt, 0777, true);
       }
@@ -104,7 +104,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
   // if input sigma values have been input output them to a file called sigma_file.txt
   if (!empty($_POST["sigma_data"])){
-    $outdir = $resdir.'/'.$_POST["outdir"];
+    $outdir = $resdir.'/'.filter_var($_POST["outdir"], FILTER_SANITIZE_STRING);
     if(!file_exists($outdir)){
       mkdir($outdir, 0777, true);
     }
@@ -113,9 +113,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   }
 
   if(!empty($_POST["labelsi"])){
-    if ($_POST["labelsi"] == "sigmafile"){
+    if (filter_var($_POST["labelsi"], FILTER_SANITIZE_STRING) == "sigmafile"){
       // get directory and check if it exists
-      $outdirsi = $resdir.'/'.$_POST["outdirsi"];
+      $outdirsi = $resdir.'/'.filter_var($_POST["outdirsi"], FILTER_SANITIZE_STRING);
       if (!file_exists($outdirsi)){
         mkdir($outdirsi, 0777, true);
       }
