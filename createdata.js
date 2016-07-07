@@ -327,14 +327,14 @@ $(document).ready(function() {
 
       if( priortype == "Gaussian" ){
         var cell = row.insertCell(-1);
-        cell.innerHTML = "<input type=\"text\" name=\"meanval_"+variable+"\" value=\"Mean\" class=\"form-control\">";
+        cell.innerHTML = "<input type=\"text\" id=\"meanval_"+variable+"\" value=\"Mean\" class=\"form-control\">";
         cell = row.insertCell(-1);
-        cell.innerHTML = "<input type=\"text\" name=\"sigmaval_"+variable+"\" value=\"Standard deviation\" class=\"form-control\">";
+        cell.innerHTML = "<input type=\"text\" id=\"sigmaval_"+variable+"\" value=\"Standard deviation\" class=\"form-control\">";
       }
 
       if( priortype == "Exponential" ){
         var cell = row.insertCell(-1);
-        cell.innerHTML = "<input type=\"text\" name=\"meanval_"+variable+"\" value=\"Mean\" class=\"form-control\">";
+        cell.innerHTML = "<input type=\"text\" id=\"meanval_"+variable+"\" value=\"Mean\" class=\"form-control\">";
       }
     });
   }
