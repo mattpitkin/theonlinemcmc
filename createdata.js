@@ -640,12 +640,12 @@ def mymodel({arguments}):\n\
         priorfunction += "  if ";
         
         if ( priortype == "Uniform" ){
-          priorfunction += fitarray[priorvar].minval + " < " + priorvar + " < " + fitarray[priorvar].maxval + ":\n";
+          priorfunction += fitarray[priorvar].minval.toString() + " < " + priorvar + " < " + fitarray[priorvar].maxval.toString() + ":\n";
           priorfunction += "    lp = 0.\n";
-          initialpoint += "  " + priorvar + "ini = " + fitarray[priorvar].minval + " + np.random.rand(Nens)*" + (fitarray[priorvar].maxval - fitarray[priorvar].minval).toString() + "\n";
+          initialpoint += "  " + priorvar + "ini = " + fitarray[priorvar].minval.toString() + " + np.random.rand(Nens)*" + (fitarray[priorvar].maxval - fitarray[priorvar].minval).toString() + "\n";
         }
         if ( priortype == "LogUniform" ){ // work in log space
-          priorfunction += "log(" + fitarray[priorvar].minval + ") < " + priorvar + " < log(" + fitarray[priorvar].maxval + "):\n";
+          priorfunction += "log(" + fitarray[priorvar].minval.toString() + ") < " + priorvar + " < log(" + fitarray[priorvar].maxval.toString() + "):\n";
           priorfunction += "    lp = 0.\n";
           initialpoint += "  " + priorvar + "ini = " + "log(" + fitarray[priorvar].minval + ") + np.random.rand(Nens)*(" + "log(" + fitarray[priorvar].maxval.toString() +") - log(" + fitarray[priorvar].minval.toString() + "))\n";
         }
@@ -654,13 +654,13 @@ def mymodel({arguments}):\n\
       }
 
       if ( priortype == "Gaussian" ){
-        priorfunction += "  lp -= 0.5*(" + priorvar + " - " + fitarray[priorvar].meanval + ")**2/" + fitarray[priorvar].sigmaval + "\n\n";
-        initialpoint += "  " + priorvar + "ini = " + fitarray[priorvar].meanval + "np.random.randn(Nens)*" + fitarray[priorvar].sigmaval + "\n";
+        priorfunction += "  lp -= 0.5*(" + priorvar + " - " + fitarray[priorvar].meanval.toString() + ")**2/" + fitarray[priorvar].sigmaval.toString() + "\n\n";
+        initialpoint += "  " + priorvar + "ini = " + fitarray[priorvar].meanval.toString() + " + np.random.randn(Nens)*" + fitarray[priorvar].sigmaval.toString() + "\n";
       }
 
       if ( priortype == "Exponential" ){
-        priorfunction += "  lp -= " + priorvar + "/" + fitarray[priorvar].meanval + "\n\n";
-        initialpoint += "  " + priorvar + "ini = np.random.exponential(" + fitarray[priorvar].meanval + ", Nens)\n";
+        priorfunction += "  lp -= " + priorvar + "/" + fitarray[priorvar].meanval.toString() + "\n\n";
+        initialpoint += "  " + priorvar + "ini = np.random.exponential(" + fitarray[priorvar].meanval.toString() + ", Nens)\n";
       }
       
       // maybe have other prior type (exponential?) (plus hyperparameters?)
