@@ -191,7 +191,7 @@ containing the posterior samples</li>
       medianstr = '%.1f' % medianv
     resstrs.append(medianstr)
     
-    modev = postsamples[np.argmax(postsamples[:,i]),i]
+    modev = postsamples[np.argmax(postsamples[:,-1]),i]
     if np.fabs(modev) > 1e3 or np.fabs(modev) < 1e-2:
       modestr = exp_str(modev)
     else:
