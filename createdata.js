@@ -168,6 +168,10 @@ $(document).ready(function() {
     // get model equation from form
     modeleq = $('#modeleq').val();
     modeleq = modeleq.replace(/['"]+/g, ''); // remove any quotes (" or ') in the string (hopefully this helps against insertion)
+    
+    // check model equation for matching parentheses
+    
+      
     var modeleqtmp = modeleq.slice(); // copy of model equation
 
     // list of characters to replace
@@ -208,6 +212,26 @@ $(document).ready(function() {
     makeTable();
   });
 
+  // function to check for matching '(' and ')' parentheses in model equation (from https://stackoverflow.com/a/19712146/1862861)
+  function CheckParentheses(str){
+    if (str.isEmpty()){ return true; }
+
+    Stack<Character> stack = new Stack<Character>();
+    for (int i = 0; i < str.length(); i++) {
+      char current = str.charAt(i);
+      if (current == '(') { stack.push(current); }
+
+      if (current == ')') {
+        if (stack.isEmpty()) { return false; }
+        char last = stack.peek();
+        if (current == ')' && last == '(') { stack.pop(); }
+        else { return false; }
+      }
+    }
+
+    return stack.isEmpty();
+  }
+    
   function makeTable(){
     if ( variables.length > 0 ){
       var tableel = document.getElementById("table_id");
@@ -260,7 +284,7 @@ $(document).ready(function() {
         var newcell = row.insertCell(-1);
         newcell.innerHTML = "<input type=\"text\" id=\"id_constant_"+variable+"\" value=\"Value\" class=\"form-control\">";
       }
-        
+
       if( vartype == "Variable" ){
         // place select for in cell
         var newcell = row.insertCell(-1);
