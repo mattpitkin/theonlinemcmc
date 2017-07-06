@@ -215,24 +215,27 @@ $(document).ready(function() {
     makeTable();
   });
 
-  // function to check for matching '(' and ')' parentheses in model equation (from https://stackoverflow.com/a/19712146/1862861)
+  // function to check for matching '(' and ')' parentheses in model equation (from https://codereview.stackexchange.com/a/46039)
   function CheckParentheses(str){
-    if (str.isEmpty()){ return true; }
+    var parentheses = "()", stack = [], i, character, bracePosition;
 
-    Stack<Character> stack = new Stack<Character>();
-    for (int i = 0; i < str.length(); i++) {
-      char current = str.charAt(i);
-      if (current == '(') { stack.push(current); }
+    for(i = 0; character = str[i]; i++) {
+      bracePosition = parentheses.indexOf(character);
 
-      if (current == ')') {
-        if (stack.isEmpty()) { return false; }
-        char last = stack.peek();
-        if (current == ')' && last == '(') { stack.pop(); }
-        else { return false; }
+      if(bracePosition === -1) {
+        continue;
+      }
+
+      if(bracePosition % 2 === 0) {
+        stack.push(bracePosition + 1); // push next expected brace position
+      } else {
+        if(stack.pop() !== bracePosition) {
+          return false;
+        }
       }
     }
 
-    return stack.isEmpty();
+    return stack.length === 0;
   }
     
   function makeTable(){
