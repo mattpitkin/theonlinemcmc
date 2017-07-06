@@ -11,7 +11,7 @@
 
 <!-- Include MathJax -->
 <script type="text/javascript"
-  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
 
 <!-- Include script to create the input data table and output the python script -->
@@ -22,6 +22,8 @@
 
 </head>
 <body>
+<!-- site data tracking -->
+<?php include_once("analyticstracking.php") ?>
 
 <!-- php code to write out python and submit process -->
 <?php
