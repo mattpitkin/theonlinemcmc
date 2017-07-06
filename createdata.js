@@ -168,10 +168,13 @@ $(document).ready(function() {
     // get model equation from form
     modeleq = $('#modeleq').val();
     modeleq = modeleq.replace(/['"]+/g, ''); // remove any quotes (" or ') in the string (hopefully this helps against insertion)
-    
+
     // check model equation for matching parentheses
-    
-      
+    if ( !CheckParentheses(modeleq) ){
+      alert("Unbalanced parentheses in model equation");
+      return false;
+    }
+
     var modeleqtmp = modeleq.slice(); // copy of model equation
 
     // list of characters to replace
