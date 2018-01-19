@@ -76,6 +76,9 @@ def postprocessing(postsamples, variables, abscissa, abscissaname, data, email, 
 <!-- custom CSS file -->
 <link rel="stylesheet" type="text/css" href="simple.css"/>
 
+<!-- include MathJax -->
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
 <title>The Online MCMC: Results page</title>
 </head>
 
