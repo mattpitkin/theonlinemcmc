@@ -57,84 +57,113 @@ def postprocessing(postsamples, variables, abscissa, abscissaname, data, email, 
 <!DOCTYPE HTML>
 <html>
 <head>
-<title>The Online MCMC: Results page</title>
-<link rel="stylesheet" type="text/css" href="../../simple.css"/>
-<script type="text/javascript"
-  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>
-</head>
-<body>
-<div id="page-wrap">
+  <!-- Theme Made By www.w3schools.com - No Copyright -->
+<meta name="author" content="Matthew Pitkin">
+<meta name="description" content="The Online MCMC">
+<meta name="keywords" content="MCMC, Markov chain Monte Carlo, Bayesian, emcee, python, data analysis, probability">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.css">
 
-<!-- include header file -->
-<?php include('../../header.inc'); ?>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+<!-- Include theme font -->
+<link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+
+<!-- Include jQuery -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+<!-- custom CSS file -->
+<link rel="stylesheet" type="text/css" href="simple.css"/>
+
+<title>The Online MCMC: Results page</title>
+</head>
+
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-default">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>                        
+      </button>
+      <a class="navbar-brand">THE ONLINE MCMC</a>
+    </div>
+    <div class="collapse navbar-collapse" id="myNavbar">
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="#margpos">MARGINALISED POSTERIORS</a></li>
+        <li><a href="#bestfit">BEST FIT VALUES & DISTRIBUTION</a></li>        
+        <li><a href="#links">LINKS</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container-top bg-1 text-center">
+  <h2 class="title">RESULTS</h2>
+  <h3>Your results have been generated and are displayed below.</h3>
+</div>
+
+<div id="margpos" class="container-fluid bg-2 text-left">
+  <h3 class="text-center" id="instructions">MARGINALISED POSTERIORS</h3>
+  <p>
+    The diagonal plots show the <a style="color: #BD5D38" href="https://en.wikipedia.org/wiki/Marginal_distribution">marginal</a> <a style="color: #BD5D38" href="https://en.wikipedia.org/wiki/Posterior_probability">posterior probability</a> distributions for each of your fitted parameters. The off-diagonal plots show 1 and 2&sigma; probability contours for the <a style="color: #BD5D38" href="https://en.wikipedia.org/wiki/Joint_probability_distribution">joint</a> marginal posterior probability distributions of pairs of parameters. This has been produced with <a style="color: #BD5D38" href="https://github.com/dfm/corner.py">corner.py</a>.
+  </p>
+  {posteriorfig}
+</div>
+
+<div id="bestfit" class="container-fluid bg-3 text-left">
+  <h3 class="text-center" id="functions">BEST FIT VALUES</h3>
+  
+  The <a href="https://en.wikipedia.org/wiki/Mean">mean</a>, <a href="https://en.wikipedia.org/wiki/Median">median</a> and <a href="https://en.wikipedia.org/wiki/Mode_(statistics)">mode</a> of the probability distributions for each parameter. Also give are the <a href="https://en.wikipedia.org/wiki/Standard_deviation">standard deviation</a> of the distributions and minimal 68% and 95% <a href="https://en.wikipedia.org/wiki/Credible_interval">credible intervals</a> (CI).
+  <div>
+    {resultstable}
+  </div>
+
+  <h3>Correlation coefficient matrix</h3>
+
+  The <a href="https://en.wikipedia.org/wiki/Covariance_matrix#Correlation_matrix">correlation coefficients</a> between each of the fitted parameters.
+  <div>
+    {corrcoeftable}
+  </div>
+</div>
+
+<div class="container-fluid bg-1 text-left">
+  <h3 class="text-center" id="instructions">BEST FIT MODEL DISTRIBUTION</h3>
+  <p>
+    This plot shows the distribution of 100 models drawn randomly from the posterior distribution. The best fitting models will be clustered over each other.
+  </p>
+  {bestfitfig}
+</div>
+
+<div id="links" class="container-fluid bg-3 text-left">
+  <h2 class="text-center">LINKS</h2>
+  <h3>Code links</h3>
+  The <a href="https://www.python.org/">python</a> files for running the MCMC are provided below. These use the <a href="http://dan.iel.fm/emcee/current/">emcee</a> python module.
+  <ul>
+    <li><a href="pyfile.py"><code>pyfile.py</code></a> - the python file used to run the MCMC</li>
+    <li><a href="mymodel.py"><code>mymodel.py</code></a> - the python model function</li>
+  </ul>
+
+  <h3>Data links</h3>
+  <ul>
+    <li><a href="posterior_samples.txt.gz"><code>posterior_samples.txt.gz</code></a> - a gzipped tarball containing the posterior samples</li>
+    <li><a href="variables.txt"><code>variables.txt</code></a> - the variables in the order of the posterior file</li>
+  </ul>
+</div>
+
+ <footer class="container-fluid bg-2 text-center">
+  <p class="footer"> <strong> &copy; Matthew Pitkin (2015). </strong>The code for this site is licensed under the <a style="color: #BD5D38" href="http://opensource.org/licenses/MIT">MIT license</a>. It is available on <a style="color: #BD5D38" href="https://github.com/mattpitkin/theonlinemcmc">github</a> and <a style="color: #BD5D38" href="https://bitbucket.org/mattpitkin/theonlinemcmc">bitbucket</a>.<br>This site is kindly hosted by the <a style="color: #BD5D38" href="http://www.gla.ac.uk/schools/physics/">School of Physics & Astronomy</a> at the <a style="color: #BD5D38" href="http://www.gla.ac.uk/">University of Glasgow</a>. They bear no reponsibility for the content of this site or the results that are produced.
+  </p>
 
 <!-- include social media sharing -->
 <?php
 $shareurl = "{outdir}";
 include('../../social.inc');
 ?>
-
-<h2>Marginalised posteriors</h2>
-
-The diagonal plots show the <a href="https://en.wikipedia.org/wiki/Marginal_distribution">marginal</a>
-<a href="https://en.wikipedia.org/wiki/Posterior_probability">posterior probability</a> distributions for each of your
-fitted parameters. The off-diagonal plots show 1 and 2&sigma; probability contours for the
-<a href="https://en.wikipedia.org/wiki/Joint_probability_distribution">joint</a> marginal posterior probability distributions of pairs of parameters. This has been produced with <a href="https://github.com/dfm/corner.py">corner.py</a>.
-
-{posteriorfig}
-
-<h2>Best fit values</h2>
-
-The <a href="https://en.wikipedia.org/wiki/Mean">mean</a>,
-<a href="https://en.wikipedia.org/wiki/Median">median</a> and
-<a href="https://en.wikipedia.org/wiki/Mode_(statistics)">mode</a>
-of the probability distributions for each parameter. Also give are the
-<a href="https://en.wikipedia.org/wiki/Standard_deviation">standard deviation</a>
-of the distributions and minimal 68% and 95%
-<a href="https://en.wikipedia.org/wiki/Credible_interval">credible intervals</a> (CI).
-
-<div>
-{resultstable}
-</div>
-
-<h3>Correlation coefficient matrix</h3>
-
-The <a href="https://en.wikipedia.org/wiki/Covariance_matrix#Correlation_matrix">correlation coefficients</a>
-between each of the fitted parameters.
-
-<div>
-{corrcoeftable}
-</div>
-
-<h2>Best fit model distribution</h2>
-
-This plot shows the distribution of 100 models drawn randomly from the posterior distribution.
-The best fitting models will be clustered over each other.
-
-{bestfitfig}
-
-<h2>Code links</h2>
-
-The <a href="https://www.python.org/">python</a> files for running the MCMC are provided below.
-These use the <a href="http://dan.iel.fm/emcee/current/">emcee</a> python module.
-
-<ul>
-<li><a href="pyfile.py"><code>pyfile.py</code></a> - the python file used to run the MCMC</li>
-<li><a href="mymodel.py"><code>mymodel.py</code></a> - the python model function</li>
-</ul>
-
-<h2>Data links</h2>
-
-<ul>
-<li><a href="posterior_samples.txt.gz"><code>posterior_samples.txt.gz</code></a> - a gzipped tarball 
-containing the posterior samples</li>
-<li><a href="variables.txt"><code>variables.txt</code></a> - the variables in the order of the posterior file</li>
-</ul>
-
-<!-- include footer file -->
-<?php include('../../footer.inc'); ?>
-
 </div>
 </body>
 """
@@ -163,7 +192,7 @@ containing the posterior samples</li>
   postfigfile = 'posterior_plots.png'
   fig.savefig(postfigfile, transparent=True) # transparent background
 
-  fm['posteriorfig'] = '<img src="' + postfigfile + '" >'
+  fm['posteriorfig'] = '<img class="center-block bg-3" src="' + postfigfile + '" >'
 
   # get the 68% and 95% credible intervals
   inter68 = []
@@ -287,7 +316,7 @@ containing the posterior samples</li>
   # later try converting to d3 figure using http://mpld3.github.io/ (e.g. import mpld3; mpld3.save_html(fig2))
   fig2.savefig(modelplot, transparent=True)
 
-  fm['bestfitfig'] = '<img src="' + modelplot + '" width="100%">'
+  fm['bestfitfig'] = '<img class="center-block bg-3" src="' + modelplot + '" width="60%">'
     
   # output page
   ppfile = 'index.php'
