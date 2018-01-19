@@ -738,7 +738,7 @@ def mymodel({arguments}):\n\
     // get abscissa data
     if( $("#id_abscissa_"+abscissavar).val() == "Input" ){
       // check all values are numbers
-      var abscissa_data = ($("#id_abscissaval").val()).split(/[ \t\t\r, ]+/);
+      var abscissa_data = ($("#id_abscissaval").val()).split(/[ \t\n\r, ]+/);
       for ( index = 0; index < abscissa_data.length; index++ ){
         if ( !isNumber(abscissa_data[index]) ){
           alert("Non-number value in independent variable/abscissa data");
@@ -1019,7 +1019,7 @@ def mymodel({arguments}):\n\
     var database = "# submit some information to a database\n";
     database = "database_add_row(\"" + outdir + "\", \"" + modelStrings['outputstring'] + "\", \"" + theta.join(',') + "\", " + (theta.length).toString() + ", success)\n\n";
 
-    outputStrings['database'] = "";
+    outputStrings['database'] = database;
     
     outputdata['pyfile'] = pyfile.format(outputStrings); // the python file
     outputdata['modelfile'] = modelfunction.format(modelStrings); // the python file containing the model function
