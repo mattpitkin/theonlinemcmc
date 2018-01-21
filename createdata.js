@@ -738,14 +738,14 @@ def mymodel({arguments}):\n\
     // get abscissa data
     if( $("#id_abscissa_"+abscissavar).val() == "Input" ){
       // check all values are numbers
-      var abscissa_data = ($("#id_abscissaval").val()).split(',');
+      var abscissa_data = ($("#id_abscissaval").val()).split(/[ \t\n\r, ]+/);
       for ( index = 0; index < abscissa_data.length; index++ ){
         if ( !isNumber(abscissa_data[index]) ){
           alert("Non-number value in independent variable/abscissa data");
           return false;
         }
       }
-      outputdata['abscissa_data'] = abscissa_data;
+      outputdata['abscissa_data'] = abscissa_data.join(' ');
     }
 
     // upload abscissa data
@@ -766,14 +766,14 @@ def mymodel({arguments}):\n\
     // read in input data
     if ( $("#data_input_type").val() == "Input" ){ // get input data
       // check all values are numbers
-      var input_data = ($(data_form_id).val()).split(',');
+      var input_data = ($(data_form_id).val()).split(/[ \t\n\r, ]+/);
       for ( index = 0; index < input_data.length; index++ ){
         if ( !isNumber(input_data[index]) ){
           alert("Non-number value in input data");
           return false;
         }
       }
-      outputdata['input_data'] = input_data;
+      outputdata['input_data'] = input_data.join(' ');
     }
 
     // upload abscissa data
@@ -796,14 +796,14 @@ def mymodel({arguments}):\n\
     if ( $("#id_gauss_like_type").val() == "Known2" ){
       if( $("#id_gauss_known2_type").val() == "Input" ){
         // check all values are numbers
-        var sigma_data = ($("#id_gauss_like_sigma_input").val()).split(',');
+        var sigma_data = ($("#id_gauss_like_sigma_input").val()).split(/[ \t\n\r, ]+/);
         for ( index = 0; index < sigma_data.length; index++ ){
           if ( !isNumber(sigma_data[index]) ){
             alert("Non-number value in sigma input data");
             return false;
           }
         }
-        outputdata['sigma_data'] = sigma_data;
+        outputdata['sigma_data'] = sigma_data.join(' ');
       }
 
       if( $("#id_gauss_known2_type").val() == "Upload" ){

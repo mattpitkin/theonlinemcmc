@@ -1,32 +1,75 @@
 body {
-  font: 16px Garamond, Serif;
-  line-height: 24px;
-  color: #333333;
-  background: #f5f5f5;
-}
+      font: 16px Montserrat, sans-serif;
+      line-height: 1.8;
+      color: #f5f6f7;
+  }
 
-#page-wrap {
-  width: 800px;
-  margin: 40px 100px 60px;
-}
+h3
+  .title {
+    font-size: 50px;
+  }
 
-a {
-  color: #680000;
-  text-decoration: none;
-  border-bottom: none;
-}
+  a {
+       color: #842400; /* changed to #BD5D38 in areas with bg-2 */
+  }
 
-a:hover {
-  color: #680000;
-  text-shadow: 2px 2px 2px #ccc
-}
+  a:hover {
+       color: #9b4220;
+  }
+
+  p {font-size: 16px;}
+  .footer {font-size: 14px;}
+  .margin {margin-bottom: 45px;}
+  .bg-1 { 
+      background-color: #BD5D38; /* Orange */
+      color: #ffffff;
+  }
+  .bg-2 { 
+      background-color: #2f2f2f; /* Black Gray */
+      color: #fff;
+  }
+  .bg-3 { 
+      background-color: #ffffff; /* White */
+      color: #555555;
+  }
+  .container-top { /* adds top padding to first section to allow for navbar */
+      padding-top: 140px;
+      padding-bottom: 70px;
+      padding-left: 12.5%;
+      padding-right: 12.5%;
+  }
+  .container-fluid {
+      padding-top: 70px;
+      padding-bottom: 70px;
+      padding-left: 12.5%;
+      padding-right: 12.5%;
+  }
+  .container-input { /* shifts input box right */
+      padding-bottom: 70px;
+      padding-left: 22%;
+  }
+  .navbar {
+      position: fixed;
+      width: 100%;
+      padding-top: 15px;
+      padding-bottom: 15px;
+      border: 0;
+      border-radius: 0;
+      margin-bottom: 0;
+      font-size: 12px;
+      letter-spacing: 5px;
+      background-color: #ffffff;
+      z-index:99; /* Sets to opaque */
+  }
+  .navbar-nav  li a:hover {
+      color: #BD5D38 !important;
+  }
 
 /* form-control copied and modified from http://bootswatch.com/spacelab/bootstrap.css */
 .form-control {
   display: block;
   padding: 3px 3px;
   font-size: 14px;
-  /* line-height: 1.42857143; */
   color: #666666;
   background-color: #ffffff;
   background-image: none;
@@ -39,7 +82,7 @@ a:hover {
   transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
 }
 .form-control:focus {
-  border-color: #66afe9;
+  border-color: #BD5D38;
   outline: 0;
   -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, 0.6);
   box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, 0.6);
@@ -58,7 +101,6 @@ a:hover {
   display: block;
   padding: 3px 3px;
   font-size: 14px;
-  /* line-height: 1.42857143; */
   color: #666666;
   background-color: #ffffff;
   background-image: none;
@@ -80,7 +122,6 @@ pre {
   padding: 9.5px;
   margin: 0 0 10px;
   font-size: 14px;
-  /* line-height: 1.42857143; */
   word-break: break-all;
   word-wrap: break-word;
   color: #333333;
@@ -91,50 +132,7 @@ pre {
 
 code {
   font-size: 14px;
-}
-
-.header {
-  border-bottom: 1px solid #999;
-  padding: 5px;
-}
-
-.footer {
-  border-top: 1px solid #999;
-  padding: 5px;
-}
-
-h2 {
-  border-bottom: 1px solid #999;
-}
-
-/* class for social media buttons in social.inc. Note that the
-   line-height is set so all the buttons align (otherwise the
-   FB button is offset) - see http://stackoverflow.com/a/21919504/1862861 */ 
-.social {
-  border-bottom: 1px solid #999;
-  padding: 2px;
-  line-height: 10px;
-}
-
-/* classes for the footer text */
-td.footer-right {
-  width: 30%;
-  text-align: left;
-  vertical-align: top;
-}
-
-td.footer-left {
-  vertical-align: top;   
-}
-
-div.acknowledgment {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: white;
-  border-top: 1px solid black;
-  padding: 4px 20px 4px 20px;
+  color: #BD5D38;
 }
 
 /* table */
@@ -180,9 +178,6 @@ th {
 .table-striped > tbody > tr:nth-of-type(odd) {
   background-color: #f9f9f9;
 }
-.table-hover > tbody > tr:hover {
-  background-color: #f5f5f5;
-}
 table col[class*="col-"] {
   position: static;
   float: none;
@@ -205,26 +200,15 @@ ul.functionlist{
  list-style-type: square;
 }
 
-.describe {
-  font-family: Garamond, Serif;   
-}
-
-.emphasise{
-  color: #333333;
-  text-shadow: 2px 2px 2px #ccc;
-  font-style: italic;
-  font-weight: bold;
-}
-
 /* styles for "examples" */
 #showexample{
-  color: #680000;
+  color: #842400;
   cursor: pointer;
 }
 
 .example{
-  border: 2px solid #680000;
-  box-shadow: 2px 2px 4px #888888;
+  border: 2px solid #BD5D38;
+  box-shadow: 2px 2px 4px #8c4428;
   border-radius: 8px;
   padding: 10px;
 }
@@ -234,22 +218,26 @@ ul.functionlist{
   content: '\2715';
   float: right;
   display: inline-block;
-  color: #444444;
+  color: #2f2f2f;
   cursor: pointer;
-  line-height: 13px;
-  width: 13px;
-  text-align: center;
+  line-height: 15px;
+  width: 16px;
   vertical-align: middle;
   border: 1px solid #222222;
   border-radius: 2px;
   box-shadow: 1px 1px 2px #888888;
 }
 
-/* the box surrounding the input section */
-.inputbox{
-  border: 1px solid #aaaaaa;
-  box-shadow: 1px 1px 2px #999999;
-  background: #eeeeee;
-  border-radius: 4px;
-  padding: 10px;
+/* class for social media buttons in social.inc. Note that the
+   line-height is set so all the buttons align (otherwise the
+   FB button is offset) - see http://stackoverflow.com/a/21919504/1862861 */ 
+.social {
+  margin: auto;
+  line-height: 10px;
 }
+
+input { /* changes input boxes to fit theme */
+    color: #2f2f2f;
+    line-height: 23px;
+}
+
