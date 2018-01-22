@@ -684,7 +684,7 @@ def mymodel({arguments}):\n\
       }
 
       if ( priortype == "Gaussian" ){
-        priorfunction += "  lp -= 0.5*(" + priorvar + " - " + fitarray[priorvar].meanval.toString() + ")**2/" + fitarray[priorvar].sigmaval.toString() + "\n\n";
+        priorfunction += "  lp -= 0.5*(" + priorvar + " - " + fitarray[priorvar].meanval.toString() + ")**2/" + fitarray[priorvar].sigmaval.toString() + "**2" + "\n\n";
         initialpoint += "  " + priorvar + "ini = " + fitarray[priorvar].meanval.toString() + " + np.random.randn(Nens)*" + fitarray[priorvar].sigmaval.toString() + "\n";
       }
 
