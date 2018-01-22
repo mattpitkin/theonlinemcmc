@@ -74,7 +74,7 @@ def postprocessing(postsamples, variables, abscissa, abscissaname, data, email, 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
 <!-- custom CSS file -->
-<link rel="stylesheet" type="text/css" href="simple.css"/>
+<link rel="stylesheet" type="text/css" href="../../simple.css"/>
 
 <!-- include MathJax -->
 <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
