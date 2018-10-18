@@ -442,7 +442,7 @@ errval = 0\n\
 {readabscissa}\
 \n\
 # read in sigma (standard deviation) values (there may be nothing here if it not applicable to your likelihood)\n\
-{readsigma}\
+sigma = {readsigma}\
 \n\
 # run the MCMC\n\
 {runmcmc}\
