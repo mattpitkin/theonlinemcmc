@@ -442,7 +442,7 @@ errval = 0\n\
 {readabscissa}\
 \n\
 # read in sigma (standard deviation) values (there may be nothing here if it not applicable to your likelihood)\n\
-sigma = {readsigma}\
+{readsigma}\
 \n\
 # run the MCMC\n\
 {runmcmc}\
@@ -912,6 +912,7 @@ def mymodel({arguments}):\n\
           }
           else{
             sigmavar += sigmanum.toString();
+            readsigma += "sigma = ";
             readsigma += sigmavar; 
           }
         }
@@ -927,6 +928,7 @@ def mymodel({arguments}):\n\
         readsigma += 'if errval == 0:\n'
         readsigma += '  try:\n';
         readsigma += '    sigma_data = np.loadtxt("' + sigmafile + '")\n';
+        readsigma += '    sigma = sigma_data\n';
         readsigma += '    if len(sigma_data) != len(data):\n';
         readsigma += '      errval = DATA_LENGTH_ERR\n';
         readsigma += '  except:\n';
