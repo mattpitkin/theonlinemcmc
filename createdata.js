@@ -634,7 +634,7 @@ def mymodel({arguments}):\n\
     if ( tindex > -1 ){
       thetanosigma.splice(tindex, 1);
     }
-    modelStrings['arguments'] = thetanosigma.join() + ", " + abscissastring;
+    modelStrings['arguments'] = abscissastring + ", " + thetanosigma.join();
     modelStrings['conststring'] = conststring; // include constant values
     modelStrings['outputstring'] = modeleq.replace(/[ \t\n\r]+/, ""); // add model equation
 
