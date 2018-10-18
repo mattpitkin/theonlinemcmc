@@ -911,7 +911,8 @@ def mymodel({arguments}):\n\
             //return false;
           }
           else{
-            readsigma += sigmanum.toString();   
+            sigmavar += sigmanum.toString();
+            readsigma += sigmavar; 
           }
         }
         else{
