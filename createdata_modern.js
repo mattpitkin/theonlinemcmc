@@ -407,7 +407,9 @@ $(document).ready(function() {
 #!/usr/bin/env python\n\n\
 \
 # import required packages\n\
+from __future__ import division\n\
 import emcee\n\
+import bilby\n\
 import numpy as np\n\
 from numpy import exp, log\n\
 \n\
@@ -429,6 +431,9 @@ errval = 0\n\
 # define log likelihood function\n\
 {likefunction}\
 \n\
+# Define our signal model, in this case a simple linear function\n\
+{signalmodel}\
+\n\
 # set number of MCMC points\n\
 {setnmcmc}\
 \n\
@@ -442,14 +447,27 @@ errval = 0\n\
 {readabscissa}\
 \n\
 # read in sigma (standard deviation) values (there may be nothing here if it not applicable to your likelihood)\n\
-sigma = None\n\
 {readsigma}\
 \n\
 # run the MCMC\n\
 {runmcmc}\
 {postprocess}\
-{database}\
 \n\
+# Lets try and replicate in bilby\n\
+\n\
+# Set up priors\n\
+{priordict}\
+\n\
+# Check for valid sigma\n\
+{sigmacheck}\
+# Caclulate likelihood\n\
+{runlikelihood}\
+\n\
+result = bilby.run_sampler(likelihood = likelihood,\n\
+          priors=priors, sampler='emcee', nwalkers=Nburnin, \n\
+          iterations=Nmcmc)\n\
+result.plot_corner()\n\
+result.plot_with_data(model,x,data)\n\
 ";
     
     var outputStrings = {}; // object to pass to formatter
@@ -645,7 +663,6 @@ def mymodel({arguments}):\n\
         gauss_like_sigma += ", sigma_gauss";
       }
     }
-
     // create log posterior function
     var posteriorfunction = "def lnprob(theta, " + abscissastring + gauss_like_sigma;   
     posteriorfunction += ", data):\n  lp = lnprior(theta)\n\
@@ -659,6 +676,20 @@ def mymodel({arguments}):\n\
     var priorfunction = "def lnprior(theta):\n";
     priorfunction += "  lp = 0.\n";
     priorfunction += "  " + theta.join() + " = theta\n\n"; // unpack variables 
+
+    // create signal model
+    var signalmodel = "def model("+modelStrings['arguments']+"):\n";
+    signalmodel += "  "+modelStrings['conststring']+"\n";
+    signalmodel += "  return "+modelStrings['outputstring']+"\n";
+    outputStrings["signalmodel"] = signalmodel;
+
+    // set up priors dictionary
+    var priordict = "priors = dict()\n";
+    for ( var priorvar in fitarray ){
+      var priortype = fitarray[priorvar].priortype;
+      priordict += "priors['"+priorvar+"'] = bilby.core.prior.Uniform("+fitarray[priorvar].minval.toString()+", "+fitarray[priorvar].maxval.toString()+", '"+priorvar+"')\n";
+    }
+    outputStrings["priordict"] = priordict;
 
     // initial points for MCMC
     var initialpoint = "try:\n";
@@ -913,8 +944,6 @@ def mymodel({arguments}):\n\
           }
           else{
             sigmavar += sigmanum.toString();
-            readsigma += "sigma = ";
-            readsigma += sigmavar; 
           }
         }
         else{
@@ -938,7 +967,7 @@ def mymodel({arguments}):\n\
         readsigma += '      if len(sigma_data) != len(data):\n';
         readsigma += '        errval = DATA_LENGTH_ERR\n';
         readsigma += '    except:\n';
-        readsigma += '      errval = SIGMA_READ_ERR\n\n';
+        readsigma += '      errval = SIGMA_READ_ERR\n';
         sigmavar += "sigma_data";
 
         sigmavar += ",";
@@ -946,6 +975,34 @@ def mymodel({arguments}):\n\
     }
     
     outputStrings['readsigma'] = readsigma;
+
+    // run likelihood 
+    if ( $("#likelihood_input_type").val() == "Gaussian" ){
+      // sigma check for bilby only required if 
+      var sigmacheck = "";
+      if (sigmavar == ""){
+        bilbysigmavar = ",sigma";
+        sigmacheck += "try: # no fixed values of sigma given so attempting to generate normal random list between allowed values\n";
+        sigmacheck += " sigma = abs(np.random.normal((priors['sigma_gauss'].maximum+priors['sigma_gauss'].minimum)/2,priors['sigma_gauss'].maximum-priors['sigma_gauss'].minimum, len(x)))\n";
+        sigmacheck += "except:\n";
+        sigmacheck += " sigma = 0.1\n";
+      } // this is a botched job at the moment to try and make sure variable sigma can run in bilby
+      else{
+        sigmacheck = sigmavar.substring(0, sigmavar.length - 1);
+        sigmacheck += ",\n";
+        bilbysigmavar = ",";
+        bilbysigmavar += sigmacheck;
+      }
+      bilbylikefunction = "Gaussian";
+    }
+    else if( $("#likelihood_input_type").val() == "Studentst" ){
+      bilbysigmavar = ", nu=None, sigma=1";
+      sigmacheck = "";
+      bilbylikefunction = "StudentT";
+    }
+    outputStrings["sigmacheck"] = sigmacheck;
+    var runlikelihood = "likelihood = bilby.likelihood."+bilbylikefunction+"Likelihood"+"(x, data, model "+bilbysigmavar+")\n";
+    outputStrings["runlikelihood"] = runlikelihood;
     
     var runmcmc = "if errval == 0:\n";
     // check length of data and abscissa are the same
