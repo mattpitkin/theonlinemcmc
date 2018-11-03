@@ -442,7 +442,7 @@ errval = 0\n\
 \n\
 result = bilby.run_sampler(likelihood = likelihood,\n\
           priors=priors, sampler='emcee', nwalkers=Nens, nburn=Nburnin, \n\
-          iterations=Nmcmc)\n\
+          iterations=Nmcmc+Nburnin)\n\
 result.plot_corner()\n\
 result.plot_with_data(mymodel,x,data)\n\
 {postprocess}\
