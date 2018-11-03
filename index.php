@@ -14,7 +14,7 @@
 <!-- Include theme font -->
 <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
 
-<!-- Include jQuery --> 
+<!-- Include jQuery -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
 <!-- Include MathJax -->
@@ -22,7 +22,7 @@
 </script>
 
 <!-- Include script to create the input data table and output the python script -->
-<script type="text/javascript" src="createdata.js"></script>
+<script type="text/javascript" src="bilbycreatedata2.js"></script>
 
 <!-- custom CSS file -->
 <link rel="stylesheet" type="text/css" href="simple.css"/>
@@ -31,25 +31,26 @@
 </head>
 
 <body>
+
 <!-- site data tracking -->
-<?php include_once("analyticstracking.php") ?>
+<!-- ?php include_once("analyticstracking.php") ?> -->
 
 <!-- php code to write out python and submit process -->
 <?php
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
   $resdir = 'results';
-  
-  if (!empty($_POST["pyfile"])) {
+
+  if (!empty($_POST["bilbypyfile"])) {
     $outdir = $resdir.'/'.filter_var($_POST["outdir"], FILTER_SANITIZE_STRING);
     $_SESSION["outdir"] = $outdir;
     if(!file_exists($outdir)){
       mkdir($outdir, 0777, true);
     }
 
-    $pyfile = $_POST["pyfile"];
+    $bilbypyfile = $_POST["bilbypyfile"];
     // output data to file
-    file_put_contents($outdir.'/pyfile.py', $pyfile);
-    chmod($outdir.'/pyfile.py',0755); // make executable
+    file_put_contents($outdir.'/bilbypyfile.py', $bilbypyfile);
+    chmod($outdir.'/bilbypyfile.py',0755); // make executable
   }
 
   if (!empty($_POST["modelfile"])) {
@@ -141,7 +142,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   // run the MCMC python script
   if(!empty($_POST['runcode'])){
     $errfile = 'err_code.txt';
-    $pycommand = './pyfile.py';
+    $pycommand = './bilbypyfile.py';
     $pid = shell_exec(sprintf('cd %s; %s > %s 2>&1 & echo $!', $outdir, $pycommand, $errfile));
   }
 
@@ -151,20 +152,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 ?>
 
 <!-- Navbar -->
-<nav class="navbar navbar-default">
+<nav class="navbar navbar-default navbar-fixed-top">
   <div class="container">
     <div class="navbar-header">
       <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
-        <span class="icon-bar"></span>                        
+        <span class="icon-bar"></span>
       </button>
       <a class="navbar-brand" href="#">THE ONLINE MCMC</a>
     </div>
     <div class="collapse navbar-collapse" id="myNavbar">
       <ul class="nav navbar-nav navbar-right">
         <li><a href="#about">ABOUT</a></li>
-        <li><a href="#examples">EXAMPLES</a></li>        
+        <li><a href="#examples">EXAMPLES</a></li>
         <li><a href="#input">INPUT</a></li>
         <li><a href="#instructions">INSTRUCTIONS</a></li>
         <li><a href="#caveats">CAVEATS</a></li>
@@ -179,7 +180,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 On this website you can input a model function defined by a set of parameters including those that you want fit, and your data, and it will run a <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo">Markov chain Monte Carlo</a> (MCMC) algorithm to estimate the posterior probability distributions of those parameters. This site makes use of the python MCMC package <a href="http://dan.iel.fm/emcee/current/">emcee</a> written by <a href="http://dan.iel.fm/">Dan Foreman-Mackey</a>.</h3>
 </div>
 
-<div id="examples" class="container-fluid bg-3 text-center">    
+<div id="examples" class="container-fluid bg-3 text-center">
   <h3 class="margin">EXAMPLES</h3>
   <br>
   <div class="row">
@@ -189,13 +190,13 @@ On this website you can input a model function defined by a set of parameters in
       </p>
       <img src="posterior_plots.png" class="img-responsive margin" style="width:100%" alt="Image">
     </div>
-    <div class="col-sm-4"> 
+    <div class="col-sm-4">
       <p>
         ... and another showing the distribution of all the best fit models that were drawn randomly from the posterior distribution.
       </p>
       <img src="model_plot.png" class="img-responsive margin" style="width:100%" alt="Image">
     </div>
-    <div class="col-sm-4"> 
+    <div class="col-sm-4">
       <p>
         While full instructions and explanations can be found <a href="#instructions">here</a>, the following video showing how to use the website might also be useful. In this case a basic linear model and a small data set were used for simplicity.
       </p>
@@ -214,7 +215,7 @@ On this website you can input a model function defined by a set of parameters in
   </p>
   <script>
   $(document).ready(function(){
-      $('[data-toggle="tooltip"]').tooltip();    
+      $('[data-toggle="tooltip"]').tooltip();
   });
   </script> <!-- script for tooltips -->
 
@@ -261,8 +262,24 @@ On this website you can input a model function defined by a set of parameters in
   </p>
 
   <p>
+  <div id="id_sampler_div">
+    <br><br>Input the <a style="color: #BD5D38" href="#id_sampler_header">sampler</a>: <span data-toggle="tooltip" title="Define the sampler using the options below." class="glyphicon glyphicon-question-sign"></span>
+    <table id="like_table">
+      <tr id="like_row"><td>
+        <select id="sampler_input_type" class="form-control">
+          <option value="">--Type--</option>
+          <option value="Emcee">Emcee</option>
+          <option value="Dynesty">Dynesty</option>
+        </select></td>
+      </tr>
+    </table>
+  </div>
+  </p>
+  
+
+  <p>
   <div id="id_likelihood_div">
-    <br><br>Input the <a style="color: #BD5D38" href="#id_likelihood_header">likelihood</a>: <span data-toggle="tooltip" title="Define the likelihood function using the options below." class="glyphicon glyphicon-question-sign"></span>
+    <br>Input the <a style="color: #BD5D38" href="#id_likelihood_header">likelihood</a>: <span data-toggle="tooltip" title="Define the likelihood function using the options below." class="glyphicon glyphicon-question-sign"></span>
     <table id="like_table">
       <tr id="like_row"><td>
         <select id="likelihood_input_type" class="form-control">
@@ -362,6 +379,12 @@ On this website you can input a model function defined by a set of parameters in
   </p>
   <br>
 
+  <h3 class="text-left" id="id_sampler_header">Sampler input</h3>
+  <p>
+  This section needs updated.
+  </p>
+  <br>
+
   <h3 class="text-left" id="id_likelihood_header">Likelihood input</h3>
   <p>
     There are currently two allowed <a href="https://en.wikipedia.org/wiki/Likelihood_function">likelihood functions</a>:
@@ -372,7 +395,7 @@ On this website you can input a model function defined by a set of parameters in
         <li>input a set of values (either directly into the form as a set of whitespace or comma separated values, or though uploading an ascii text file of the values) of the standard deviation of the noise, with one value per data point;
         <li>choose to include the noise standard deviation as another parameter to be fit (i.e. if it is unknown). If you choose this option then a prior (as <a href="#prior">above</a>) is required.
       </ul>
-      <li><strong>Student's <em>t</em></strong>: the <a href="https://en.wikipedia.org/wiki/Student%27s_t-distribution">Student's <em>t</em> likelihood</a> is similar to the Gaussian likelihood, but it does not require a noise standard deviation to be given (the noise is assumed to be <a href="https://en.wikipedia.org/wiki/Stationary_process">stationary</a> over the dataset and has been analytically <a href="https://en.wikipedia.org/wiki/Marginal_distribution">marginalised</a> over). 
+      <li><strong>Student's <em>t</em></strong>: the <a href="https://en.wikipedia.org/wiki/Student%27s_t-distribution">Student's <em>t</em> likelihood</a> is similar to the Gaussian likelihood, but it does not require a noise standard deviation to be given (the noise is assumed to be <a href="https://en.wikipedia.org/wiki/Stationary_process">stationary</a> over the dataset and has been analytically <a href="https://en.wikipedia.org/wiki/Marginal_distribution">marginalised</a> over).
     </ul>
   </p>
   <br>
@@ -475,18 +498,7 @@ $shareurl = "http://www.theonlinemcmc.com";
 include('social.inc');
 ?>
 
-<!-- include Google Analytics script -->
-<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-  ga('create', 'UA-66532820-1', 'auto');
-  ga('send', 'pageview');
-
-</script>
 </div>
 </body>
 </html>
-
