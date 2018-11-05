@@ -264,12 +264,12 @@ On this website you can input a model function defined by a set of parameters in
   <p>
   <div id="id_sampler_div">
     <br><br>Input the <a style="color: #BD5D38" href="#id_sampler_header">sampler</a>: <span data-toggle="tooltip" title="Define the sampler using the options below." class="glyphicon glyphicon-question-sign"></span>
-    <table id="like_table">
-      <tr id="like_row"><td>
+    <table id="sample_table">
+      <tr id="sample_row"><td>
         <select id="sampler_input_type" class="form-control">
           <option value="">--Type--</option>
-          <option value="Emcee">Emcee</option>
-          <option value="Dynesty">Dynesty</option>
+          <option value="emcee">Emcee</option>
+          <option value="dynesty">Dynesty</option>
         </select></td>
       </tr>
     </table>

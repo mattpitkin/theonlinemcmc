@@ -441,7 +441,7 @@ errval = 0\n\
 {runlikelihood}\
 \n\
 result = bilby.run_sampler(likelihood = likelihood,\n\
-          priors=priors, sampler='emcee', nwalkers=Nens, nburn=Nburnin, \n\
+          priors=priors, sampler='{samplertype}', nwalkers=Nens, nburn=Nburnin, \n\
           iterations=Nmcmc+Nburnin)\n\
 result.plot_corner()\n\
 result.plot_with_data(mymodel,x,data)\n\
@@ -513,6 +513,10 @@ result.plot_with_data(mymodel,x,data)\n\
         }
       }
     }
+
+    // check sampler is valid
+    var samplertype = $("#sampler_input_type").val(); // read in desired sampler
+    outputStrings["samplertype"] = samplertype;
 
     // check for fit parameters in likelihood function i.e. fitting a sigma value
     var gausstype = $('#id_gauss_like_type').val();
