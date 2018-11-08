@@ -158,6 +158,19 @@ $(document).ready(function() {
     }
   });
 
+  // Show only relevant argument inputs depending on sampler
+  $('#sampler_input_type').change(function(){
+    var vartype = $(this).val();
+    if (vartype == "emcee"){
+      // un-hide the div element
+      $("#id_mcmc_div").css("display", "");
+    }
+    if (vartype == "dynesty"){
+      // un-hide the div element
+      $("#id_mcmc_div").css("display", "");
+    }
+  });
+
   $("#id_model_button").click(function(){
     // un-hide the div element
     $("#id_variables_div").css("display", "");

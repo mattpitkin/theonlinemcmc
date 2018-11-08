@@ -262,24 +262,8 @@ On this website you can input a model function defined by a set of parameters in
   </p>
 
   <p>
-  <div id="id_sampler_div">
-    <br><br>Input the <a style="color: #BD5D38" href="#id_sampler_header">sampler</a>: <span data-toggle="tooltip" title="Define the sampler using the options below." class="glyphicon glyphicon-question-sign"></span>
-    <table id="sample_table">
-      <tr id="sample_row"><td>
-        <select id="sampler_input_type" class="form-control">
-          <option value="">--Type--</option>
-          <option value="emcee">Emcee</option>
-          <option value="dynesty">Dynesty</option>
-        </select></td>
-      </tr>
-    </table>
-  </div>
-  </p>
-  
-
-  <p>
   <div id="id_likelihood_div">
-    <br>Input the <a style="color: #BD5D38" href="#id_likelihood_header">likelihood</a>: <span data-toggle="tooltip" title="Define the likelihood function using the options below." class="glyphicon glyphicon-question-sign"></span>
+    <br><br>Input the <a style="color: #BD5D38" href="#id_likelihood_header">likelihood</a>: <span data-toggle="tooltip" title="Define the likelihood function using the options below." class="glyphicon glyphicon-question-sign"></span>
     <table id="like_table">
       <tr id="like_row"><td>
         <select id="likelihood_input_type" class="form-control">
@@ -292,8 +276,33 @@ On this website you can input a model function defined by a set of parameters in
   </div>
   </p>
 
+    <div id="id_sampler_div">
+    Input the <a style="color: #BD5D38" href="#id_sampler_header">sampler</a>: <span data-toggle="tooltip" title="Define the sampler using the options below." class="glyphicon glyphicon-question-sign"></span>
+    <table id="sample_table">
+      <tr id="sample_row"><td>
+        <select id="sampler_input_type" class="form-control">
+          <option value="">--Type--</option>
+          <option value="emcee">Emcee</option>
+          <option value="dynesty">Dynesty</option>
+        </select></td>
+      </tr>
+    </table>
+  </div>
+  </p>
+
   <p>
-  <div id="id_mcmc_div">
+  <div id="id_emceeinput_div" style="display:none">
+    <!-- Enter emcee arguments -->
+    <br>
+  </div>
+  <div id="id_dynestyinput_div" style="display:none">
+    <!-- Enter dynesty arguments -->
+    <br>
+  </div>
+  </p>
+
+  <p>
+  <div id="id_mcmc_div" style="display:none">
     Input the <a style="color: #BD5D38" href="#id_mcmc_header">MCMC sampler parameters</a>: <span data-toggle="tooltip" title="Set the sampler parameters - use the defaults if you're unsure." class="glyphicon glyphicon-question-sign"></span>
     <table id="mcmc_table">
       <tr>
