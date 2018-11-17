@@ -165,9 +165,16 @@ $(document).ready(function() {
       // un-hide the div element
       $("#id_mcmc_div").css("display", "");
     }
-    if (vartype == "dynesty"){
+    else if(vartype == "dynesty"){
+      $("#id_dynesty_div").css("display", "");
+    }
+    else if (vartype == "nestle"){
       // un-hide the div element
-      $("#id_mcmc_div").css("display", "");
+      $("#id_nestle_div").css("display", "");
+    }
+    else{
+      alert("Invalied sampler.");
+      return False
     }
   });
 
@@ -434,7 +441,7 @@ from theonlinemcmc import *\n\
 errval = 0\n\
 \n\
 # set number of MCMC points\n\
-{setnmcmc}\
+{setargs}\
 \n\
 # read in the data\n\
 {readdata}\
@@ -454,8 +461,7 @@ errval = 0\n\
 {runlikelihood}\
 \n\
 result = bilby.run_sampler(likelihood = likelihood,\n\
-          priors=priors, sampler='{samplertype}', nwalkers=Nens, nburn=Nburnin, \n\
-          iterations=Nmcmc+Nburnin)\n\
+          priors=priors, {bilbyinput} sampler='{samplertype}')\n\
 result.plot_corner()\n\
 result.plot_with_data(mymodel,x,data)\n\
 {postprocess}\
@@ -770,7 +776,47 @@ def mymodel({arguments}):\n\
         }
       }
     }
+    
+    // Sampler keyword arguments - id values stored in php file
+    sampler_args = {
+      'emcee':['#mcmc_nensemble','#mcmc_nburnin','#mcmc_niteration'],
+      'nestle':['#nestle_nlive','#nestle_method'],
+      'dynesty':['#dynesty_nlive']
+    };
+    // Sampler keyword argument names required by bilby in python file
+    real_sampler_args = {
+      'emcee':['nwalkers','nburn','nsteps'],
+      'nestle':['npoints','Method'],
+      'dynesty':['nlive']
+    };
+    // values expected for input arguments to check against - doesn't have checks for parity etc
+    args_expectation = {
+      '#nestle_nlive':1000,
+      '#nestle_method':"'classic'",
+      '#mcmc_nensemble' : 1000,
+      '#nmcmc_niteration' : 1000,
+      '#mcmc_nburnin' : 1000,
+      '#dynesty_nlive' : 1000
+    };
+    var varsampler = $('#sampler_input_type').val(); // which bilby sampler to call
+    var setargs = ""; // inputting arguments to python file
+    var bilbyinput = ""; // same as above but formatted for function input
+    var input = "";
+    var theta_length = sampler_args[varsampler].length
+    for (index = 0; index < theta_length; index++){
+        input = $(sampler_args[varsampler][index]).val(); 
+        // if (typeof input != typeof args_expectation[sampler_args[varsampler][index]]){ // check for correct data type
+        //  alert("Incorrect data input type.");                                         // This does not yet check for further valdiation
+        //  return False                                                                 // such as even or positive integer values.
+        // }
+        setargs += real_sampler_args[varsampler][index]  + " = " + input + "\n";
+        bilbyinput += real_sampler_args[varsampler][index] + " = " + input + ",";
+    }
 
+    outputStrings['setargs'] = setargs + "ndim = " + theta_length;   
+    outputStrings['bilbyinput'] = bilbyinput + "ndim = " + theta_length + ","; 
+    
+    /*
     // need to add inputs for MCMC - number of ensemble samples, burn-in and MCMC interations
     var nens = $("#mcmc_nensemble").val();
     if ( isNumber(nens) ){
@@ -812,7 +858,7 @@ def mymodel({arguments}):\n\
     setnmcmc += "ndim = " + theta.length.toString() + "\n";
 
     outputStrings['setnmcmc'] = setnmcmc;
-    
+    */
     // read in data
     var readdata = 'if errval == 0:\n';
     readdata += '  try:\n';

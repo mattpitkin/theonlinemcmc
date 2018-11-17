@@ -22,7 +22,7 @@
 </script>
 
 <!-- Include script to create the input data table and output the python script -->
-<script type="text/javascript" src="bilbycreatedata2.js"></script>
+<script type="text/javascript" src="bilbycreatedata.js"></script>
 
 <!-- custom CSS file -->
 <link rel="stylesheet" type="text/css" href="simple.css"/>
@@ -284,20 +284,10 @@ On this website you can input a model function defined by a set of parameters in
           <option value="">--Type--</option>
           <option value="emcee">Emcee</option>
           <option value="dynesty">Dynesty</option>
+          <option value="nestle">Nestle</option>
         </select></td>
       </tr>
     </table>
-  </div>
-  </p>
-
-  <p>
-  <div id="id_emceeinput_div" style="display:none">
-    <!-- Enter emcee arguments -->
-    <br>
-  </div>
-  <div id="id_dynestyinput_div" style="display:none">
-    <!-- Enter dynesty arguments -->
-    <br>
   </div>
   </p>
 
@@ -318,6 +308,40 @@ On this website you can input a model function defined by a set of parameters in
         <td><input type="text" class="form-control" id="mcmc_nburnin" value="1000"></td>
       </tr>
     </table>
+  </div>
+  </p>
+
+  <p>
+  <div id="id_dynesty_div" style="display:none">
+    Input the <a style="color: #BD5D38" href="#id_mcmc_header">Dynesty sampler parameters</a>: <span data-toggle="tooltip" title="Set the sampler parameters - use the defaults if you're unsure." class="glyphicon glyphicon-question-sign"></span>
+    <table id="dynesty_table">
+      <tr>
+        <td>&bull; Number of live points (default: 1000)</td>
+        <td><input type="text" class="form-control" id="dynesty_nlive" value="1000"></td>
+      </tr>
+    </table>
+  </div>
+  </p>
+
+  <p>
+  <div id="id_nestle_div" style="display:none">
+  Input the <a style="color: #BD5D38" href="#id_nestle_header">Nestle sampler parameters</a>: <span data-toggle="tooltip" title="Set the sampler parameters - use the defaults if you're unsure." class="glyphicon glyphicon-question-sign"></span>
+    <table id="nestle_table">
+      <tr>
+        <td>&bull; Number of live points (default: 1000)</td> 
+        <td><input type="text" class="form-control" id="nestle_nlive" value="1000"></td> 
+      </tr>
+      <tr>
+        <td>&bull; Method used to select new points </td>
+        <td><select id="nestle_method" class="form-control">
+          <option value="">--Method--</option>
+          <option value="'classic'">Classic</option>
+          <option value="'single'">Single</option>
+          <option value="'multi'">Multi</option>
+        </select></td>
+      </tr>
+    </table>
+    
   </div>
   </p>
 
