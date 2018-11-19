@@ -174,7 +174,7 @@ $(document).ready(function() {
     }
     else{
       alert("Invalied sampler.");
-      return False
+      return false;
     }
   });
 
@@ -791,24 +791,24 @@ def mymodel({arguments}):\n\
     };
     // values expected for input arguments to check against - doesn't have checks for parity etc
     args_expectation = {
-      '#nestle_nlive':1000,
-      '#nestle_method':"'classic'",
-      '#mcmc_nensemble' : 1000,
-      '#nmcmc_niteration' : 1000,
-      '#mcmc_nburnin' : 1000,
-      '#dynesty_nlive' : 1000
+      '#nestle_nlive':function(nlive){return (nlive === parseInt(nlive, 10) && nlive > 0 )},
+      '#nestle_method':function(nmethod){return true},
+      '#mcmc_nensemble' : function(nens){return (nens === parseInt(nens, 10) && nens > 1 && (nens%2===0))}, // even integer - no check for number of variables yet, currently set for ndim == 1
+      '#nmcmc_niteration' : function(niter){return (niter === parseInt(niter, 10) && niter > 0 )}, // positive integer value
+      '#mcmc_nburnin' : function(nburn){return (nburn === parseInt(nburn, 10) && nburn > -1)},
+      '#dynesty_nlive' : function(nlive){return (nlive === parseInt(nlive, 10) && nlive > 0 )}
     };
     var varsampler = $('#sampler_input_type').val(); // which bilby sampler to call
     var setargs = ""; // inputting arguments to python file
     var bilbyinput = ""; // same as above but formatted for function input
     var input = "";
-    var theta_length = sampler_args[varsampler].length
+    var theta_length = sampler_args[varsampler].length;
     for (index = 0; index < theta_length; index++){
-        input = $(sampler_args[varsampler][index]).val(); 
-        // if (typeof input != typeof args_expectation[sampler_args[varsampler][index]]){ // check for correct data type
-        //  alert("Incorrect data input type.");                                         // This does not yet check for further valdiation
-        //  return False                                                                 // such as even or positive integer values.
-        // }
+        input = $(sampler_args[varsampler][index]).val();
+        if (args_expectation[sampler_args[varsampler][index]](input) == false){ // check for correct data type
+          alert("Incorrect data input type.");                                        
+          return false;                                                               
+        }                                                                             
         setargs += real_sampler_args[varsampler][index]  + " = " + input + "\n";
         bilbyinput += real_sampler_args[varsampler][index] + " = " + input + ",";
     }

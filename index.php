@@ -317,7 +317,7 @@ On this website you can input a model function defined by a set of parameters in
     <table id="dynesty_table">
       <tr>
         <td>&bull; Number of live points (default: 1000)</td>
-        <td><input type="text" class="form-control" id="dynesty_nlive" value="1000"></td>
+        <td><input type="number" class="form-control" id="dynesty_nlive" value="1000"></td>
       </tr>
     </table>
   </div>
