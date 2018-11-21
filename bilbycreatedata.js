@@ -164,16 +164,22 @@ $(document).ready(function() {
     if (vartype == "emcee"){
       // un-hide the div element
       $("#id_mcmc_div").css("display", "");
+      $("#id_dynesty_div").css("display", "none"); $("#id_nestle_div").css("display", "none"); $("#id_pymc3_div").css("display", "none");
     }
     else if(vartype == "dynesty"){
       $("#id_dynesty_div").css("display", "");
+      $("#id_mcmc_div").css("display", "none"); $("#id_nestle_div").css("display", "none"); $("#id_pymc3_div").css("display", "none");
     }
     else if (vartype == "nestle"){
-      // un-hide the div element
       $("#id_nestle_div").css("display", "");
+      $("#id_dynesty_div").css("display", "none"); $("#id_mcmc_div").css("display", "none"); $("#id_pymc3_div").css("display", "none");
+    }
+    else if (vartype == "pymc3"){
+      $("#id_pymc3_div").css("display", "");
+      $("#id_dynesty_div").css("display", "none"); $("#id_nestle_div").css("display", "none"); $("#id_mcmc_div").css("display", "none");
     }
     else{
-      alert("Invalied sampler.");
+      alert("Invalid sampler.");
       return false;
     }
   });
@@ -779,34 +785,43 @@ def mymodel({arguments}):\n\
     
     // Sampler keyword arguments - id values stored in php file
     sampler_args = {
-      'emcee':['#mcmc_nensemble','#mcmc_nburnin','#mcmc_niteration'],
-      'nestle':['#nestle_nlive','#nestle_method'],
-      'dynesty':['#dynesty_nlive']
+      'emcee':['#mcmc_nensemble','#nburn','#mcmc_niteration'],
+      'nestle':['#nlive','#nestle_method'],
+      'dynesty':['#nlive'],
+      'pymc3' :['#draws','#chains','#nburn']
     };
     // Sampler keyword argument names required by bilby in python file
     real_sampler_args = {
       'emcee':['nwalkers','nburn','nsteps'],
       'nestle':['npoints','Method'],
-      'dynesty':['nlive']
+      'dynesty':['nlive'],
+      'pymc3' :['draws','chains','nburn']
     };
     // values expected for input arguments to check against - doesn't have checks for parity etc
     args_expectation = {
-      '#nestle_nlive':function(nlive){return (nlive === parseInt(nlive, 10) && nlive > 0 )},
-      '#nestle_method':function(nmethod){return true},
-      '#mcmc_nensemble' : function(nens){return (nens === parseInt(nens, 10) && nens > 1 && (nens%2===0))}, // even integer - no check for number of variables yet, currently set for ndim == 1
-      '#nmcmc_niteration' : function(niter){return (niter === parseInt(niter, 10) && niter > 0 )}, // positive integer value
-      '#mcmc_nburnin' : function(nburn){return (nburn === parseInt(nburn, 10) && nburn > -1)},
-      '#dynesty_nlive' : function(nlive){return (nlive === parseInt(nlive, 10) && nlive > 0 )}
+      '#nlive':function(nlive){var check = (isNumber(nlive) && nlive > 0 && nlive%1==0); 
+                              if(check==false){alert("Input value for nlive must be a positive integer")}; return check},
+      '#nestle_method':function(nmethod){var check = ["'single'","'classic'","'multi'"].includes(nmethod);
+                              if(check==false){alert("Input value for nmethod must be classic, single or multi")}; return check}, 
+      '#mcmc_nensemble' : function(nens){var check = (isNumber(nens) && nens > 1 && (nens%2===0) && (nens%1==0));
+                              if(check==false){alert("Input value for the number of ensemble points must be a positive, even integer")}; return check}, // No check for number of variables yet, currently set for ndim == 1
+      '#mcmc_niteration' : function(niter){var check = (isNumber(niter) && niter > 0 && niter%1==0);
+                              if(check==false){alert("Input value for the number of iterations must be a positive integer")}; return check}, 
+      '#nburn' : function(nburn){var check = (isNumber(nburn) && nburn > -1 && nburn%1==0);
+                              if(check==false){alert("Input value for the number of burnin points must be a positive integer")}; return check},
+      '#draws' : function(draws){var check = (isNumber(draws) && draws > -1 && draws%1==0);
+                              if(check==false){alert("Input value for the number of draws must be a positive integer")}; return check},
+      '#chains' : function(chains){var check = (isNumber(chains) && chains > -1 && chains%1==0);
+                              if(check==false){alert("Input value for the number of MCMC chains must be a positive integer")}; return check}
     };
     var varsampler = $('#sampler_input_type').val(); // which bilby sampler to call
     var setargs = ""; // inputting arguments to python file
     var bilbyinput = ""; // same as above but formatted for function input
-    var input = "";
-    var theta_length = sampler_args[varsampler].length;
+    var input = ""; // empty var to store each input value
+    var theta_length = sampler_args[varsampler].length; // ndim value
     for (index = 0; index < theta_length; index++){
         input = $(sampler_args[varsampler][index]).val();
         if (args_expectation[sampler_args[varsampler][index]](input) == false){ // check for correct data type
-          alert("Incorrect data input type.");                                        
           return false;                                                               
         }                                                                             
         setargs += real_sampler_args[varsampler][index]  + " = " + input + "\n";

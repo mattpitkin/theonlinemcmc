@@ -285,15 +285,19 @@ On this website you can input a model function defined by a set of parameters in
           <option value="emcee">Emcee</option>
           <option value="dynesty">Dynesty</option>
           <option value="nestle">Nestle</option>
+          <option value="pymc3">PYMC3</option>
         </select></td>
       </tr>
+      
     </table>
   </div>
   </p>
 
   <p>
   <div id="id_mcmc_div" style="display:none">
-    Input the <a style="color: #BD5D38" href="#id_mcmc_header">MCMC sampler parameters</a>: <span data-toggle="tooltip" title="Set the sampler parameters - use the defaults if you're unsure." class="glyphicon glyphicon-question-sign"></span>
+    Input the <a style="color: #BD5D38" href="#id_mcmc_header">MCMC sampler parameters</a> : <span data-toggle="tooltip" title="Set the sampler parameters - use the defaults if you're unsure." class="glyphicon glyphicon-question-sign"></span>
+    <br> <i> <a style="color: #809793">Note - burn-in iterations are subtracted from the total number of iterations - therefore the value must be less than 
+    the total number of MCMC iterations whilst still being a positive integer.</a></i>
     <table id="mcmc_table">
       <tr>
         <td>&bull; Number of ensemble points (default: 100)</td>
@@ -304,8 +308,8 @@ On this website you can input a model function defined by a set of parameters in
         <td><input type="text" class="form-control" id="mcmc_niteration" value="1000"></td>
       </tr>
       <tr>
-        <td>&bull; Number of MCMC burn-in interations (default: 1000)</td>
-        <td><input type="text" class="form-control" id="mcmc_nburnin" value="1000"></td>
+        <td>&bull; Number of MCMC burn-in interations (default: 0)</td>
+        <td><input type="text" class="form-control" id="nburn" value="0"></td>
       </tr>
     </table>
   </div>
@@ -317,7 +321,7 @@ On this website you can input a model function defined by a set of parameters in
     <table id="dynesty_table">
       <tr>
         <td>&bull; Number of live points (default: 1000)</td>
-        <td><input type="number" class="form-control" id="dynesty_nlive" value="1000"></td>
+        <td><input type="number" class="form-control" id="nlive" value="1000"></td>
       </tr>
     </table>
   </div>
@@ -329,7 +333,7 @@ On this website you can input a model function defined by a set of parameters in
     <table id="nestle_table">
       <tr>
         <td>&bull; Number of live points (default: 1000)</td> 
-        <td><input type="text" class="form-control" id="nestle_nlive" value="1000"></td> 
+        <td><input type="text" class="form-control" id="nlive" value="1000"></td> 
       </tr>
       <tr>
         <td>&bull; Method used to select new points </td>
@@ -339,6 +343,27 @@ On this website you can input a model function defined by a set of parameters in
           <option value="'single'">Single</option>
           <option value="'multi'">Multi</option>
         </select></td>
+      </tr>
+    </table>
+    
+  </div>
+  </p>
+
+  <p>
+  <div id="id_pymc3_div" style="display:none">
+  Input the <a style="color: #BD5D38" href="#id_pymc3_header">PYMC3 sampler parameters</a>: <span data-toggle="tooltip" title="Set the sampler parameters - use the defaults if you're unsure." class="glyphicon glyphicon-question-sign"></span>
+    <table id="pymc3_table">
+      <tr>
+        <td>&bull; Number of number of sample draws from the posterior chain (default: 1000)</td> 
+        <td><input type="text" class="form-control" id="draws" value="1000"></td> 
+      </tr>
+      <tr>
+        <td>&bull; Number of MCMC chains to run (default: 2)</td> 
+        <td><input type="text" class="form-control" id="chains" value="2"></td> 
+      </tr>
+      <tr>
+        <td>&bull; Number of burn-in samples per chain (default: 500)</td> 
+        <td><input type="text" class="form-control" id="nburn" value="500"></td> 
       </tr>
     </table>
     
