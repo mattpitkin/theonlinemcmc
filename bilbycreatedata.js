@@ -161,22 +161,19 @@ $(document).ready(function() {
   // Show only relevant argument inputs depending on sampler
   $('#sampler_input_type').change(function(){
     var vartype = $(this).val();
+    $("#id_dynesty_div").css("display", "none"); $("#id_nestle_div").css("display", "none"); $("#id_pymc3_div").css("display", "none"); $("#id_mcmc_div").css("display", "none");
     if (vartype == "emcee"){
       // un-hide the div element
       $("#id_mcmc_div").css("display", "");
-      $("#id_dynesty_div").css("display", "none"); $("#id_nestle_div").css("display", "none"); $("#id_pymc3_div").css("display", "none");
     }
     else if(vartype == "dynesty"){
       $("#id_dynesty_div").css("display", "");
-      $("#id_mcmc_div").css("display", "none"); $("#id_nestle_div").css("display", "none"); $("#id_pymc3_div").css("display", "none");
     }
     else if (vartype == "nestle"){
       $("#id_nestle_div").css("display", "");
-      $("#id_dynesty_div").css("display", "none"); $("#id_mcmc_div").css("display", "none"); $("#id_pymc3_div").css("display", "none");
     }
     else if (vartype == "pymc3"){
       $("#id_pymc3_div").css("display", "");
-      $("#id_dynesty_div").css("display", "none"); $("#id_nestle_div").css("display", "none"); $("#id_mcmc_div").css("display", "none");
     }
     else{
       alert("Invalid sampler.");
@@ -814,6 +811,7 @@ def mymodel({arguments}):\n\
       '#chains' : function(chains){var check = (isNumber(chains) && chains > -1 && chains%1==0);
                               if(check==false){alert("Input value for the number of MCMC chains must be a positive integer")}; return check}
     };
+    
     var varsampler = $('#sampler_input_type').val(); // which bilby sampler to call
     var setargs = ""; // inputting arguments to python file
     var bilbyinput = ""; // same as above but formatted for function input
@@ -857,7 +855,7 @@ def mymodel({arguments}):\n\
       return false;
     }
 
-    var nburn = $("#mcmc_nburnin").val();
+    var nburn = $("#nburn").val();
     if ( isNumber(nburn) ){
       if ( nburn > -1 && !(niter%1===0) ){
         alert("Number of burn-in iterations must an integer of zero or greater");
@@ -943,7 +941,6 @@ def mymodel({arguments}):\n\
     }
     
     outputStrings['readsigma'] = readsigma;
-
     // run likelihood 
     if ( $("#likelihood_input_type").val() == "Gaussian" ){
       // sigma check for bilby only required if 
@@ -965,10 +962,11 @@ def mymodel({arguments}):\n\
       bilbylikefunction = "Gaussian";
     }
     else if( $("#likelihood_input_type").val() == "Studentst" ){
-      bilbysigmavar = ", nu="+input_data.length+", sigma=1";
+      bilbysigmavar = ", nu=data.size, sigma=1";
       sigmacheck = "sigma = 1\n";
       bilbylikefunction = "StudentT";
     }
+    
     outputStrings["sigmacheck"] = sigmacheck;
     var runlikelihood = "likelihood = bilby.likelihood."+bilbylikefunction+"Likelihood"+"(x, data, mymodel "+bilbysigmavar+")\n";
     outputStrings["runlikelihood"] = runlikelihood;
@@ -979,7 +977,7 @@ def mymodel({arguments}):\n\
       alert("Email address is not valid");
       return false;
     }
-    
+
     // run a pre-written script to parse the output, create plots and an output webpage and email user
     var hrefloc = window.location.href;
     var lIndex = hrefloc.lastIndexOf('/'); // strip the current page off the href
@@ -996,7 +994,6 @@ def mymodel({arguments}):\n\
     postprocess += "#   success = False\n\n";
     
     outputStrings['postprocess'] = postprocess;
-    
     var database = "# submit some information to a database\n";
     database = "database_add_row(\"" + outdir + "\", \"" + modelStrings['outputstring'] + "\", \"" + theta.join(',') + "\", " + (theta.length).toString() + ", success)\n\n";
 
