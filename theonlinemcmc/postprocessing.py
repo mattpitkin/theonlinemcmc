@@ -51,7 +51,7 @@ def postprocessing(postsamples, variables, abscissa, abscissaname, data, email, 
   
   # the format text to include in the page
   fm = {}
-  
+  print("Inside...")
   # the string containing the webpage
   htmlpage = """
 <!DOCTYPE HTML>
@@ -328,4 +328,4 @@ include('../../social.inc');
   fp.close()
   
   # email the page
-  emailresponse(email, outdir)
+  # emailresponse(email, outdir)

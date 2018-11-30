@@ -304,12 +304,12 @@ On this website you can input a model function defined by a set of parameters in
         <td><input type="text" class="form-control" id="mcmc_nensemble" value="100"></td>
       </tr>
       <tr>
-        <td>&bull; Number of MCMC interations (default: 1000)</td>
-        <td><input type="text" class="form-control" id="mcmc_niteration" value="1000"></td>
+        <td>&bull; Number of MCMC interations (default: 2000)</td>
+        <td><input type="text" class="form-control" id="mcmc_niteration" value="2000"></td>
       </tr>
       <tr>
-        <td>&bull; Number of MCMC burn-in interations (default: 0)</td>
-        <td><input type="text" class="form-control" id="nburn" value="0"></td>
+        <td>&bull; Number of MCMC burn-in interations (default: 1000)</td>
+        <td><input type="text" class="form-control" id="nburn" value="1000"></td>
       </tr>
     </table>
   </div>

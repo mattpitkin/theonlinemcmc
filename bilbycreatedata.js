@@ -232,7 +232,8 @@ $(document).ready(function() {
     var repfuncs = ["acos", "asin", "atan2", "atan", "acosh", "asinh", "atanh", "^"];
     var repfuncsnew = ["arccos", "arcsin", "arctan2", "arctan", "arccosh", "arcsinh", "arctanh", "**"];
     for (index=0; index < repfuncs.length; index++){
-      modeleq = modeleq.replace(repfuncs[index], repfuncsnew[index]);
+      // remove ALL function names not just first occurrence - https://stackoverflow.com/questions/1144783/how-to-replace-all-occurrences-of-a-string-in-javascript
+      modeleq = modeleq.replace(new RegExp(repfuncs[index].replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'g'), repfuncsnew[index]);
     }
 
     makeTable();
@@ -463,11 +464,16 @@ errval = 0\n\
 # Caclulate likelihood\n\
 {runlikelihood}\
 \n\
-result = bilby.run_sampler(likelihood = likelihood,\n\
+try:\n\
+  result = bilby.run_sampler(likelihood = likelihood,\n\
           priors=priors, {bilbyinput} sampler='{samplertype}')\n\
+except:\n\
+  errval = SAMPLER_RUN_ERR\n\
+{postout}\
 result.plot_corner()\n\
 result.plot_with_data(mymodel,x,data)\n\
 {postprocess}\
+#{database}\
 ";
     
     var outputStrings = {}; // object to pass to formatter
@@ -970,6 +976,19 @@ def mymodel({arguments}):\n\
     outputStrings["sigmacheck"] = sigmacheck;
     var runlikelihood = "likelihood = bilby.likelihood."+bilbylikefunction+"Likelihood"+"(x, data, mymodel "+bilbysigmavar+")\n";
     outputStrings["runlikelihood"] = runlikelihood;
+
+    // output chain and log probabilities to gzipped file
+    var postout = "";
+    postout += "  # output the posterior samples, likelihood and variables\n";
+    postout += "  try:\n";
+    postout += "    np.savetxt('posterior_samples.txt.gz', result.posterior.values)\n";
+    postout += "    fv = open('variables.txt', 'w')\n";
+    postout += "    fv.write(\"" + theta.join() + "\")\n";
+    postout += "    fv.close()\n";
+    postout += "  except:\n";
+    postout += "    errval = POST_OUTPUT_ERR\n\n";
+    
+    outputStrings['postout'] = postout;
     
     var emailaddress = $("#id_email").val();
     emailaddress = emailaddress.replace(/['"]+/g, ''); // remove any quotes (" or ') in the string (hopefully this helps against insertion)
@@ -982,16 +1001,16 @@ def mymodel({arguments}):\n\
     var hrefloc = window.location.href;
     var lIndex = hrefloc.lastIndexOf('/'); // strip the current page off the href
     var postprocess = "# run post-processing script\n";
-    postprocess += "# try:\n";
-    postprocess += "#   postprocessing(samples, \"" + theta.join(',') + "\", " + abscissavar + ", \"" + abscissavar + "\", data, \"" + emailaddress + "\", \"" + hrefloc.substr(0, lIndex) + "/results/" + outdir + "\")\n";
-    postprocess += "# except:\n";
-    postprocess += "#   errval = POST_PROCESS_ERR\n\n";
+    postprocess += "try:\n";
+    postprocess += "  postprocessing(result.posterior.values, \"" + theta.join(',') + "\", " + abscissavar + ", \"" + abscissavar + "\", data, \"" + emailaddress + "\", \"" + hrefloc.substr(0, lIndex) + "/results/" + outdir + "\")\n";
+    postprocess += "except:\n";
+    postprocess += "  errval = POST_PROCESS_ERR\n\n";
     
-    postprocess += "# success = True\n";
-    postprocess += "# if errval != 0:\n";
+    postprocess += "success = True\n";
+    postprocess += "if errval != 0:\n";
     postprocess += "  # run different script in case error codes are encountered\n";
-    postprocess += "#   errorpage(errval, \"" + emailaddress + "\", \"" + hrefloc.substr(0, lIndex) + "/results/" + outdir + "\")\n";
-    postprocess += "#   success = False\n\n";
+    postprocess += "  errorpage(errval, \"" + emailaddress + "\", \"" + hrefloc.substr(0, lIndex) + "/results/" + outdir + "\")\n";
+    postprocess += "  success = False\n\n";
     
     outputStrings['postprocess'] = postprocess;
     var database = "# submit some information to a database\n";
