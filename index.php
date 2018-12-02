@@ -14,7 +14,7 @@
 <!-- Include theme font -->
 <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
 
-<!-- Include jQuery --> 
+<!-- Include jQuery -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
 <!-- Include MathJax -->
@@ -31,14 +31,15 @@
 </head>
 
 <body>
+
 <!-- site data tracking -->
-<?php include_once("analyticstracking.php") ?>
+<!-- ?php include_once("analyticstracking.php") ?> -->
 
 <!-- php code to write out python and submit process -->
 <?php
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
   $resdir = 'results';
-  
+
   if (!empty($_POST["pyfile"])) {
     $outdir = $resdir.'/'.filter_var($_POST["outdir"], FILTER_SANITIZE_STRING);
     $_SESSION["outdir"] = $outdir;
@@ -151,20 +152,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 ?>
 
 <!-- Navbar -->
-<nav class="navbar navbar-default">
+<nav class="navbar navbar-default navbar-fixed-top">
   <div class="container">
     <div class="navbar-header">
       <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
-        <span class="icon-bar"></span>                        
+        <span class="icon-bar"></span>
       </button>
       <a class="navbar-brand" href="#">THE ONLINE MCMC</a>
     </div>
     <div class="collapse navbar-collapse" id="myNavbar">
       <ul class="nav navbar-nav navbar-right">
         <li><a href="#about">ABOUT</a></li>
-        <li><a href="#examples">EXAMPLES</a></li>        
+        <li><a href="#examples">EXAMPLES</a></li>
         <li><a href="#input">INPUT</a></li>
         <li><a href="#instructions">INSTRUCTIONS</a></li>
         <li><a href="#caveats">CAVEATS</a></li>
@@ -179,7 +180,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 On this website you can input a model function defined by a set of parameters including those that you want fit, and your data, and it will run a <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo">Markov chain Monte Carlo</a> (MCMC) algorithm to estimate the posterior probability distributions of those parameters. This site makes use of the python MCMC package <a href="http://dan.iel.fm/emcee/current/">emcee</a> written by <a href="http://dan.iel.fm/">Dan Foreman-Mackey</a>.</h3>
 </div>
 
-<div id="examples" class="container-fluid bg-3 text-center">    
+<div id="examples" class="container-fluid bg-3 text-center">
   <h3 class="margin">EXAMPLES</h3>
   <br>
   <div class="row">
@@ -189,13 +190,13 @@ On this website you can input a model function defined by a set of parameters in
       </p>
       <img src="posterior_plots.png" class="img-responsive margin" style="width:100%" alt="Image">
     </div>
-    <div class="col-sm-4"> 
+    <div class="col-sm-4">
       <p>
         ... and another showing the distribution of all the best fit models that were drawn randomly from the posterior distribution.
       </p>
       <img src="model_plot.png" class="img-responsive margin" style="width:100%" alt="Image">
     </div>
-    <div class="col-sm-4"> 
+    <div class="col-sm-4">
       <p>
         While full instructions and explanations can be found <a href="#instructions">here</a>, the following video showing how to use the website might also be useful. In this case a basic linear model and a small data set were used for simplicity.
       </p>
@@ -214,7 +215,7 @@ On this website you can input a model function defined by a set of parameters in
   </p>
   <script>
   $(document).ready(function(){
-      $('[data-toggle="tooltip"]').tooltip();    
+      $('[data-toggle="tooltip"]').tooltip();
   });
   </script> <!-- script for tooltips -->
 
@@ -275,23 +276,97 @@ On this website you can input a model function defined by a set of parameters in
   </div>
   </p>
 
+    <div id="id_sampler_div">
+    Input the <a style="color: #BD5D38" href="#id_sampler_header">sampler</a>: <span data-toggle="tooltip" title="Define the sampler using the options below." class="glyphicon glyphicon-question-sign"></span>
+    <table id="sample_table">
+      <tr id="sample_row"><td>
+        <select id="sampler_input_type" class="form-control">
+          <option value="">--Type--</option>
+          <option value="emcee">Emcee</option>
+          <option value="dynesty">Dynesty</option>
+          <option value="nestle">Nestle</option>
+          <option value="pymc3">PYMC3</option>
+        </select></td>
+      </tr>
+      
+    </table>
+  </div>
+  </p>
+
   <p>
-  <div id="id_mcmc_div">
-    Input the <a style="color: #BD5D38" href="#id_mcmc_header">MCMC sampler parameters</a>: <span data-toggle="tooltip" title="Set the sampler parameters - use the defaults if you're unsure." class="glyphicon glyphicon-question-sign"></span>
+  <div id="id_mcmc_div" style="display:none">
+    Input the <a style="color: #BD5D38" href="#id_mcmc_header">MCMC sampler parameters</a> : <span data-toggle="tooltip" title="Set the sampler parameters - use the defaults if you're unsure." class="glyphicon glyphicon-question-sign"></span>
+    <br> <i> <a style="color: #809793">Note - burn-in iterations are subtracted from the total number of iterations - therefore the value must be less than 
+    the total number of MCMC iterations whilst still being a positive integer.</a></i>
     <table id="mcmc_table">
       <tr>
         <td>&bull; Number of ensemble points (default: 100)</td>
         <td><input type="text" class="form-control" id="mcmc_nensemble" value="100"></td>
       </tr>
       <tr>
-        <td>&bull; Number of MCMC interations (default: 1000)</td>
-        <td><input type="text" class="form-control" id="mcmc_niteration" value="1000"></td>
+        <td>&bull; Number of MCMC interations (default: 2000)</td>
+        <td><input type="text" class="form-control" id="mcmc_niteration" value="2000"></td>
       </tr>
       <tr>
         <td>&bull; Number of MCMC burn-in interations (default: 1000)</td>
-        <td><input type="text" class="form-control" id="mcmc_nburnin" value="1000"></td>
+        <td><input type="text" class="form-control" id="nburn" value="1000"></td>
       </tr>
     </table>
+  </div>
+  </p>
+
+  <p>
+  <div id="id_dynesty_div" style="display:none">
+    Input the <a style="color: #BD5D38" href="#id_mcmc_header">Dynesty sampler parameters</a>: <span data-toggle="tooltip" title="Set the sampler parameters - use the defaults if you're unsure." class="glyphicon glyphicon-question-sign"></span>
+    <table id="dynesty_table">
+      <tr>
+        <td>&bull; Number of live points (default: 1000)</td>
+        <td><input type="number" class="form-control" id="nlive" value="1000"></td>
+      </tr>
+    </table>
+  </div>
+  </p>
+
+  <p>
+  <div id="id_nestle_div" style="display:none">
+  Input the <a style="color: #BD5D38" href="#id_nestle_header">Nestle sampler parameters</a>: <span data-toggle="tooltip" title="Set the sampler parameters - use the defaults if you're unsure." class="glyphicon glyphicon-question-sign"></span>
+    <table id="nestle_table">
+      <tr>
+        <td>&bull; Number of live points (default: 1000)</td> 
+        <td><input type="text" class="form-control" id="nlive" value="1000"></td> 
+      </tr>
+      <tr>
+        <td>&bull; Method used to select new points </td>
+        <td><select id="nestle_method" class="form-control">
+          <option value="">--Method--</option>
+          <option value="'classic'">Classic</option>
+          <option value="'single'">Single</option>
+          <option value="'multi'">Multi</option>
+        </select></td>
+      </tr>
+    </table>
+    
+  </div>
+  </p>
+
+  <p>
+  <div id="id_pymc3_div" style="display:none">
+  Input the <a style="color: #BD5D38" href="#id_pymc3_header">PYMC3 sampler parameters</a>: <span data-toggle="tooltip" title="Set the sampler parameters - use the defaults if you're unsure." class="glyphicon glyphicon-question-sign"></span>
+    <table id="pymc3_table">
+      <tr>
+        <td>&bull; Number of number of sample draws from the posterior chain (default: 1000)</td> 
+        <td><input type="text" class="form-control" id="draws" value="1000"></td> 
+      </tr>
+      <tr>
+        <td>&bull; Number of MCMC chains to run (default: 2)</td> 
+        <td><input type="text" class="form-control" id="chains" value="2"></td> 
+      </tr>
+      <tr>
+        <td>&bull; Number of burn-in samples per chain (default: 500)</td> 
+        <td><input type="text" class="form-control" id="nburn" value="500"></td> 
+      </tr>
+    </table>
+    
   </div>
   </p>
 
@@ -362,6 +437,12 @@ On this website you can input a model function defined by a set of parameters in
   </p>
   <br>
 
+  <h3 class="text-left" id="id_sampler_header">Sampler input</h3>
+  <p>
+  This section needs updated.
+  </p>
+  <br>
+
   <h3 class="text-left" id="id_likelihood_header">Likelihood input</h3>
   <p>
     There are currently two allowed <a href="https://en.wikipedia.org/wiki/Likelihood_function">likelihood functions</a>:
@@ -372,7 +453,7 @@ On this website you can input a model function defined by a set of parameters in
         <li>input a set of values (either directly into the form as a set of whitespace or comma separated values, or though uploading an ascii text file of the values) of the standard deviation of the noise, with one value per data point;
         <li>choose to include the noise standard deviation as another parameter to be fit (i.e. if it is unknown). If you choose this option then a prior (as <a href="#prior">above</a>) is required.
       </ul>
-      <li><strong>Student's <em>t</em></strong>: the <a href="https://en.wikipedia.org/wiki/Student%27s_t-distribution">Student's <em>t</em> likelihood</a> is similar to the Gaussian likelihood, but it does not require a noise standard deviation to be given (the noise is assumed to be <a href="https://en.wikipedia.org/wiki/Stationary_process">stationary</a> over the dataset and has been analytically <a href="https://en.wikipedia.org/wiki/Marginal_distribution">marginalised</a> over). 
+      <li><strong>Student's <em>t</em></strong>: the <a href="https://en.wikipedia.org/wiki/Student%27s_t-distribution">Student's <em>t</em> likelihood</a> is similar to the Gaussian likelihood, but it does not require a noise standard deviation to be given (the noise is assumed to be <a href="https://en.wikipedia.org/wiki/Stationary_process">stationary</a> over the dataset and has been analytically <a href="https://en.wikipedia.org/wiki/Marginal_distribution">marginalised</a> over).
     </ul>
   </p>
   <br>
@@ -475,18 +556,7 @@ $shareurl = "http://www.theonlinemcmc.com";
 include('social.inc');
 ?>
 
-<!-- include Google Analytics script -->
-<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-  ga('create', 'UA-66532820-1', 'auto');
-  ga('send', 'pageview');
-
-</script>
 </div>
 </body>
 </html>
-
