@@ -22,7 +22,7 @@
 </script>
 
 <!-- Include script to create the input data table and output the python script -->
-<script type="text/javascript" src="bilbycreatedata.js"></script>
+<script type="text/javascript" src="createdata.js"></script>
 
 <!-- custom CSS file -->
 <link rel="stylesheet" type="text/css" href="simple.css"/>

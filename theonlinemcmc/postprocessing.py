@@ -48,10 +48,10 @@ def postprocessing(postsamples, variables, abscissa, abscissaname, data, email, 
 
   # import matplotlib
   from matplotlib import pyplot as pl
-  
+
   # the format text to include in the page
   fm = {}
-  print("Inside...")
+
   # the string containing the webpage
   htmlpage = """
 <!DOCTYPE HTML>
@@ -195,7 +195,7 @@ include('../../social.inc');
   postfigfile = 'posterior_plots.png'
   fig.savefig(postfigfile, transparent=True) # transparent background
 
-  fm['posteriorfig'] = '<img class="center-block bg-3" src="' + postfigfile + '" >'
+  fm['posteriorfig'] = '<img class="center-block bg-3" src="outdir/label_corner.png" width="60%">'
 
   # get the 68% and 95% credible intervals
   inter68 = []
@@ -303,23 +303,7 @@ include('../../social.inc');
   randidxs = np.random.permutation(postsamples.shape[0])[0:100]
   
   # overplot models for 100 random draws from the posterior
-  for i in range(100):
-    thesevars = postsamples[randidxs[i], varidxs].tolist()
-    thesevars.append(abscissa)
-    thismodel = mymodel(*thesevars) # unpack list as arguments of model function
-    pl.plot(abscissa, thismodel, '-', color='mediumblue', lw=4, alpha=0.05)
-
-  pl.legend(loc='best', numpoints=1)
-  if abscissaname in greekletters:
-    abscissaname = '\\'+abscissaname
-  pl.xlabel("$"+abscissaname+"$")
-
-  modelplot = 'model_plot.png'
-  
-  # later try converting to d3 figure using http://mpld3.github.io/ (e.g. import mpld3; mpld3.save_html(fig2))
-  fig2.savefig(modelplot, transparent=True)
-
-  fm['bestfitfig'] = '<img class="center-block bg-3" src="' + modelplot + '" width="60%">'
+  fm['bestfitfig'] = '<img class="center-block bg-3" src="outdir/label_plot_with_data" width="60%">'
     
   # output page
   ppfile = 'index.php'
@@ -328,4 +312,4 @@ include('../../social.inc');
   fp.close()
   
   # email the page
-  # emailresponse(email, outdir)
+  emailresponse(email, outdir)

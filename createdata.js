@@ -158,6 +158,29 @@ $(document).ready(function() {
     }
   });
 
+  // Show only relevant argument inputs depending on sampler
+  $('#sampler_input_type').change(function(){
+    var vartype = $(this).val();
+    $("#id_dynesty_div").css("display", "none"); $("#id_nestle_div").css("display", "none"); $("#id_pymc3_div").css("display", "none"); $("#id_mcmc_div").css("display", "none");
+    if (vartype == "emcee"){
+      // un-hide the div element
+      $("#id_mcmc_div").css("display", "");
+    }
+    else if(vartype == "dynesty"){
+      $("#id_dynesty_div").css("display", "");
+    }
+    else if (vartype == "nestle"){
+      $("#id_nestle_div").css("display", "");
+    }
+    else if (vartype == "pymc3"){
+      $("#id_pymc3_div").css("display", "");
+    }
+    else{
+      alert("Invalid sampler.");
+      return false;
+    }
+  });
+
   $("#id_model_button").click(function(){
     // un-hide the div element
     $("#id_variables_div").css("display", "");
@@ -209,7 +232,8 @@ $(document).ready(function() {
     var repfuncs = ["acos", "asin", "atan2", "atan", "acosh", "asinh", "atanh", "^"];
     var repfuncsnew = ["arccos", "arcsin", "arctan2", "arctan", "arccosh", "arcsinh", "arctanh", "**"];
     for (index=0; index < repfuncs.length; index++){
-      modeleq = modeleq.replace(repfuncs[index], repfuncsnew[index]);
+      // remove ALL function names not just first occurrence - https://stackoverflow.com/questions/1144783/how-to-replace-all-occurrences-of-a-string-in-javascript
+      modeleq = modeleq.replace(new RegExp(repfuncs[index].replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'g'), repfuncsnew[index]);
     }
 
     makeTable();
@@ -402,14 +426,14 @@ $(document).ready(function() {
   $("#id_submit_variables").click(function(){
     pyfile = ""; // clear global variable    
 
-    // create python file for submission (use format function defined at the start of the code)
+    // create bilby python file for submission (use format function defined at the start of the code)
     pyfile = "\
 #!/usr/bin/env python\n\n\
-\
-# import required packages\n\
-import emcee\n\
+# import required packages \n\
+import bilby\n\
 import numpy as np\n\
 from numpy import exp, log\n\
+\
 \n\
 # import model function from separate file\n\
 from mymodel import mymodel\n\
@@ -420,20 +444,8 @@ from theonlinemcmc import *\n\
 # initialise error code value\n\
 errval = 0\n\
 \n\
-# define the log posterior function\n\
-{posteriorfunction}\
-\n\
-# define the log prior function\n\
-{priorfunction}\
-\n\
-# define log likelihood function\n\
-{likefunction}\
-\n\
 # set number of MCMC points\n\
-{setnmcmc}\
-\n\
-# initialise the start ensemble points\n\
-{initialpoint}\
+{setargs}\
 \n\
 # read in the data\n\
 {readdata}\
@@ -442,14 +454,21 @@ errval = 0\n\
 {readabscissa}\
 \n\
 # read in sigma (standard deviation) values (there may be nothing here if it not applicable to your likelihood)\n\
-sigma = None\n\
 {readsigma}\
 \n\
-# run the MCMC\n\
-{runmcmc}\
+# Set up priors\n\
+{priordict}\
+\n\
+# Check for valid sigma\n\
+{sigmacheck}\
+# Caclulate likelihood\n\
+{runlikelihood}\
+\n\
+# Run sampler\n\
+{runsampler}\
+{postout}\
 {postprocess}\
 {database}\
-\n\
 ";
     
     var outputStrings = {}; // object to pass to formatter
@@ -458,6 +477,7 @@ sigma = None\n\
 
     // get all parameters requiring fitting and put them in an object
     var fitarray = {};
+    var priordict = "priors = dict()\n"; // dictionary used for storing priors with bilby
     for( index=0; index < variables.length; index++ ){
       var idvartype = "#id_vartype_" + variables[index];      
       var typeval = $(idvartype).val();
@@ -485,6 +505,7 @@ sigma = None\n\
         
           fitarray[variables[index]].minval = minmaxvals[0];
           fitarray[variables[index]].maxval = minmaxvals[1];
+          priordict += "priors['"+variables[index]+"'] = bilby.core.prior.Uniform("+minmaxvals[0]+", "+minmaxvals[1]+", '"+variables[index]+"')\n";
         }
 
         if ( priortype == "Gaussian" ){
@@ -499,6 +520,7 @@ sigma = None\n\
 
           fitarray[variables[index]].meanval = meanstdvals[0];
           fitarray[variables[index]].sigmaval = meanstdvals[1];
+          priordict += "priors['"+variables[index]+"'] = bilby.core.prior.Gaussian("+meanstdvals[0]+", "+meanstdvals[1]+", '"+variables[index]+"')\n";
         }
         
         if ( priortype == "Exponential" ){
@@ -510,9 +532,14 @@ sigma = None\n\
           }
 
           fitarray[variables[index]].meanval = meanvals[0];
+          priordict += "priors['"+variables[index]+"'] = bilby.core.prior.Exponential("+meanvals[0]+",'"+variables[index]+"')\n";
         }
       }
     }
+
+    // check sampler is valid
+    var samplertype = $("#sampler_input_type").val(); // read in desired sampler
+    outputStrings["samplertype"] = samplertype;
 
     // check for fit parameters in likelihood function i.e. fitting a sigma value
     var gausstype = $('#id_gauss_like_type').val();
@@ -538,6 +565,7 @@ sigma = None\n\
 
         fitarray["sigma_gauss"].minval = minmaxvals[0];
         fitarray["sigma_gauss"].maxval = minmaxvals[1];
+        priordict += "priors['sigma'] = bilby.core.prior.Uniform("+minmaxvals[0]+", "+minmaxvals[1]+", 'sigma')\n";
       }
 
       if ( priortype == "Gaussian" ){
@@ -552,6 +580,7 @@ sigma = None\n\
 
         fitarray["sigma_gauss"].meanval = meanstdvals[0];
         fitarray["sigma_gauss"].sigmaval = meanstdvals[1];
+        priordict += "priors['sigma'] = bilby.core.prior.Gaussian("+meanstdvals[0]+", "+meanstdvals[1]+", 'sigma')\n";
       }
 
       if ( priortype == "Exponential" ){
@@ -563,9 +592,10 @@ sigma = None\n\
         }
 
         fitarray["sigma_gauss"].meanval = meanvals[0];
-      }
+        priordict += "priors['sigma'] = bilby.core.prior.Exponential("+meanvals[0]+",'sigma')\n";
+      } 
     }
-
+    outputStrings["priordict"] = priordict; // used in python file for bilby
     // write model function
     var modelfunction = "# import functions that can be used by the model\n\
 from numpy import pi, sin, cos, tan, exp, log, log10, log2, arccos, arcsin, arctan, arctan2, sinh, cosh, tanh, arccosh, arcsinh, arctanh\n\
@@ -645,7 +675,6 @@ def mymodel({arguments}):\n\
         gauss_like_sigma += ", sigma_gauss";
       }
     }
-
     // create log posterior function
     var posteriorfunction = "def lnprob(theta, " + abscissastring + gauss_like_sigma;   
     posteriorfunction += ", data):\n  lp = lnprior(theta)\n\
@@ -654,80 +683,11 @@ def mymodel({arguments}):\n\
   return lp + lnlike(theta, " + abscissastring + gauss_like_sigma + ", data)\n\n";
 
     outputStrings["posteriorfunction"] = posteriorfunction;
-
-    // create log prior function
-    var priorfunction = "def lnprior(theta):\n";
-    priorfunction += "  lp = 0.\n";
-    priorfunction += "  " + theta.join() + " = theta\n\n"; // unpack variables 
-
-    // initial points for MCMC
-    var initialpoint = "try:\n";
     
     // loop through fit array object
     for ( var priorvar in fitarray ){
       var priortype = fitarray[priorvar].priortype;
-
-      if ( priortype == "Uniform" || priortype == "LogUniform" ){
-        priorfunction += "  if ";
-        
-        if ( priortype == "Uniform" ){
-          priorfunction += fitarray[priorvar].minval.toString() + " < " + priorvar + " < " + fitarray[priorvar].maxval.toString() + ":\n";
-          priorfunction += "    lp = 0.\n";
-          initialpoint += "  " + priorvar + "ini = " + fitarray[priorvar].minval.toString() + " + np.random.rand(Nens)*" + (fitarray[priorvar].maxval - fitarray[priorvar].minval).toString() + "\n";
-        }
-        if ( priortype == "LogUniform" ){ // work in log space
-          priorfunction += "log(" + fitarray[priorvar].minval.toString() + ") < " + priorvar + " < log(" + fitarray[priorvar].maxval.toString() + "):\n";
-          priorfunction += "    lp = 0.\n";
-          initialpoint += "  " + priorvar + "ini = " + "log(" + fitarray[priorvar].minval + ") + np.random.rand(Nens)*(" + "log(" + fitarray[priorvar].maxval.toString() +") - log(" + fitarray[priorvar].minval.toString() + "))\n";
-        }
-
-        priorfunction += "  else:\n    return -np.inf\n\n";
-      }
-
-      if ( priortype == "Gaussian" ){
-        priorfunction += "  lp -= 0.5*(" + priorvar + " - " + fitarray[priorvar].meanval.toString() + ")**2/" + fitarray[priorvar].sigmaval.toString() + "**2" + "\n\n";
-        initialpoint += "  " + priorvar + "ini = " + fitarray[priorvar].meanval.toString() + " + np.random.randn(Nens)*" + fitarray[priorvar].sigmaval.toString() + "\n";
-      }
-
-      if ( priortype == "Exponential" ){
-        priorfunction += "  lp -= " + priorvar + "/" + fitarray[priorvar].meanval.toString() + "\n\n";
-        initialpoint += "  " + priorvar + "ini = np.random.exponential(" + fitarray[priorvar].meanval.toString() + ", Nens)\n";
-      }
-      
-      // maybe have other prior type (exponential?) (plus hyperparameters?)
     }
-
-    // add condition in prior (should check that the condition actually contains the given variables)
-    var conditions = $("#id_conditions").val();
-    if ( conditions != "Conditions (e.g. x < 0 && y > z)" ){ // the default value
-      priorfunction += "  if not (" + conditions + "):\n";
-      priorfunction += "    return -np.inf\n\n";
-    }
-
-    priorfunction += "  return lp\n\n";
-
-    outputStrings['priorfunction'] = priorfunction;
-
-    // create log likelihood function
-    var likefunction = "def lnlike(theta, " + abscissastring + gauss_like_sigma + ", data):\n";
-    likefunction += "  " + theta.join() + " = theta\n"; // unpack theta
-    // exponentiate any log uniform prior values before inputting into model
-    for ( var priorvar in fitarray ){
-      var priortype = fitarray[priorvar].priortype;
-      if ( priortype == "LogUniform" ){
-        likefunction += "  " + priorvar + " = exp(" + priorvar + ")\n";
-      }
-    }
-    likefunction += "  md = mymodel(" + thetanosigma.join() + "," + abscissastring + ")\n"; // get model
-    if ( $("#likelihood_input_type").val() == "Gaussian" ){
-      likefunction += "  return -0.5*np.sum(((md - data)/sigma_gauss)**2)\n\n";
-    }
-    else if( $("#likelihood_input_type").val() == "Studentst" ){
-      likefunction += "  nu = 0.5*len(md) # number of degrees of freedom\n";
-      likefunction += "  return -nu*log(np.sum((md - data)**2))\n\n";
-    }
-
-    outputStrings['likefunction'] = likefunction;
 
     // generate a unique output directory for the file and data
     var outdir = guuid();
@@ -820,61 +780,56 @@ def mymodel({arguments}):\n\
         }
       }
     }
-
-    // need to add inputs for MCMC - number of ensemble samples, burn-in and MCMC interations
-    var nens = $("#mcmc_nensemble").val();
-    if ( isNumber(nens) ){
-      if ( nens < theta.length || !(nens%1===0) || !(nens%2===0) ){
-        alert("Number of ensemble points must be an even integer greater than the number of variables");
-        return false;
-      }
-    }
-    else{
-      alert("Number of ensemble points is not a number");
-      return false;
-    }
-
-    var niter = $("#mcmc_niteration").val();
-    if ( isNumber(niter) ){
-      if ( niter > 0 && !(niter%1===0) ){
-        alert("Number of iterations must be an integer greater than zero");
-        return false;
-      }
-    }
-    else{
-      alert("Number of iterations is not a number");
-      return false;
-    }
-
-    var nburn = $("#mcmc_nburnin").val();
-    if ( isNumber(nburn) ){
-      if ( nburn > -1 && !(niter%1===0) ){
-        alert("Number of burn-in iterations must an integer of zero or greater");
-        return false;
-      }
-    }
-    else{
-      alert("Number of burn-in iterations is not a number");
-      return false;
-    }
     
-    var setnmcmc = "Nmcmc = " + niter.toString() + "\nNburnin = " + nburn.toString() + "\nNens = " + nens.toString() + "\n";
-    setnmcmc += "ndim = " + theta.length.toString() + "\n";
-
-    outputStrings['setnmcmc'] = setnmcmc;
+    // Sampler keyword arguments - id values stored in php file
+    sampler_args = {
+      'emcee':['#mcmc_nensemble','#nburn','#mcmc_niteration'],
+      'nestle':['#nlive','#nestle_method'],
+      'dynesty':['#nlive'],
+      'pymc3' :['#draws','#chains','#nburn']
+    };
+    // Sampler keyword argument names required by bilby in python file
+    real_sampler_args = {
+      'emcee':['nwalkers','nburn','nsteps'],
+      'nestle':['npoints','Method'],
+      'dynesty':['nlive'],
+      'pymc3' :['draws','chains','nburn']
+    };
+    // values expected for input arguments to check against - doesn't have checks for parity etc
+    args_expectation = {
+      '#nlive':function(nlive){var check = (isNumber(nlive) && nlive > 0 && nlive%1==0); 
+                              if(check==false){alert("Input value for nlive must be a positive integer")}; return check},
+      '#nestle_method':function(nmethod){var check = ["'single'","'classic'","'multi'"].includes(nmethod);
+                              if(check==false){alert("Input value for nmethod must be classic, single or multi")}; return check}, 
+      '#mcmc_nensemble' : function(nens){var check = (isNumber(nens) && nens > 1 && (nens%2===0) && (nens%1==0));
+                              if(check==false){alert("Input value for the number of ensemble points must be a positive, even integer")}; return check}, // No check for number of variables yet, currently set for ndim == 1
+      '#mcmc_niteration' : function(niter){var check = (isNumber(niter) && niter > 0 && niter%1==0);
+                              if(check==false){alert("Input value for the number of iterations must be a positive integer")}; return check}, 
+      '#nburn' : function(nburn){var check = (isNumber(nburn) && nburn > -1 && nburn%1==0);
+                              if(check==false){alert("Input value for the number of burnin points must be a positive integer")}; return check},
+      '#draws' : function(draws){var check = (isNumber(draws) && draws > -1 && draws%1==0);
+                              if(check==false){alert("Input value for the number of draws must be a positive integer")}; return check},
+      '#chains' : function(chains){var check = (isNumber(chains) && chains > -1 && chains%1==0);
+                              if(check==false){alert("Input value for the number of MCMC chains must be a positive integer")}; return check}
+    };
     
-    // set up initial points from prior
-    initialpoint += "  pos = np.array([";
-    for ( index = 0; index < theta.length; index++ ){
-      initialpoint += theta[index] + "ini";
-      if ( index < (theta.length-1) ){ initialpoint += ", "; }
+    var varsampler = $('#sampler_input_type').val(); // which bilby sampler to call
+    var setargs = ""; // inputting arguments to python file
+    var bilbyinput = ""; // same as above but formatted for sampler function input (bilby.run_sampler...)
+    var input = ""; // empty var to store each input value
+    var theta_length = sampler_args[varsampler].length; // ndim value
+    for (index = 0; index < theta_length; index++){
+        input = $(sampler_args[varsampler][index]).val();
+        if (args_expectation[sampler_args[varsampler][index]](input) == false){ // check for correct data type
+          return false;                                                               
+        }                                                                             
+        setargs += real_sampler_args[varsampler][index]  + " = " + input + "\n";
+        bilbyinput += real_sampler_args[varsampler][index] + " = " + input + ",";
     }
-    initialpoint += "]).T\n";
-    initialpoint += "except:\n";
-    initialpoint += "  errval = PRIOR_INIT_ERR\n";
-    
-    outputStrings['initialpoint'] = initialpoint;
-    
+
+    outputStrings['setargs'] = setargs + "ndim = " + theta_length;   
+    bilbyinput+=  "ndim = " + theta_length + ","; 
+
     // read in data
     var readdata = 'if errval == 0:\n';
     readdata += '  try:\n';
@@ -896,6 +851,8 @@ def mymodel({arguments}):\n\
     readabscissa += '      ' + abscissavar + ' = np.loadtxt("' + absfile + '", delimiter=",")\n';
     readabscissa += '    except:\n';
     readabscissa += '      errval = ABSCISSA_READ_ERR\n\n';
+    readabscissa += '  if len('+ abscissavar + ') != len(data):\n';
+    readabscissa += '    errval = DATA_LENGTH_ERR\n\n';
     
     outputStrings['readabscissa'] = readabscissa;
     
@@ -913,8 +870,6 @@ def mymodel({arguments}):\n\
           }
           else{
             sigmavar += sigmanum.toString();
-            readsigma += "sigma = ";
-            readsigma += sigmavar; 
           }
         }
         else{
@@ -926,7 +881,7 @@ def mymodel({arguments}):\n\
       }
       
       if ( $("#id_gauss_like_type").val() == "Known2" ){
-        readsigma += 'if errval == 0:\n'
+        readsigma += 'if errval == 0:\n';
         readsigma += '  try:\n';
         readsigma += '    sigma_data = np.loadtxt("' + sigmafile + '")\n';
         readsigma += '    sigma = sigma_data\n';
@@ -938,7 +893,7 @@ def mymodel({arguments}):\n\
         readsigma += '      if len(sigma_data) != len(data):\n';
         readsigma += '        errval = DATA_LENGTH_ERR\n';
         readsigma += '    except:\n';
-        readsigma += '      errval = SIGMA_READ_ERR\n\n';
+        readsigma += '      errval = SIGMA_READ_ERR\n';
         sigmavar += "sigma_data";
 
         sigmavar += ",";
@@ -946,55 +901,62 @@ def mymodel({arguments}):\n\
     }
     
     outputStrings['readsigma'] = readsigma;
-    
-    var runmcmc = "if errval == 0:\n";
-    // check length of data and abscissa are the same
-    runmcmc += "  if len(data) != len(" + abscissavar + "):\n";
-    runmcmc += "    errval = DATA_LENGTH_ERR\n\n";
-    
-    // set MCMC to run
-    var argslist = "  argslist = (" + abscissavar + ", " + sigmavar + " data)\n";
-    runmcmc += argslist;
-    
-    runmcmc += "\nif errval == 0:\n";
-    runmcmc += "  # set up sampler\n";
-    runmcmc += "  try:\n";
-    runmcmc += "    sampler = emcee.EnsembleSampler(Nens, ndim, lnprob, args=argslist)\n"
-    runmcmc += "  except:\n";
-    runmcmc += "    errval = MCMC_INIT_ERR\n\n";
-    
-    runmcmc += "  # run sampler\n";
-    runmcmc += "  try:\n";
-    runmcmc += "    sampler.run_mcmc(pos, Nmcmc+Nburnin)\n";
-    runmcmc += "    # remove burn-in and flatten\n";
-    runmcmc += "    samples = sampler.chain[:, Nburnin:, :].reshape((-1, ndim))\n";
-    runmcmc += "    lnp = np.reshape(sampler.lnprobability[:, Nburnin:].flatten(), (-1,1))\n";
-    runmcmc += "    samples = np.hstack((samples, lnp))\n";
-    
-    // exponentiate any log uniform values
-    count = 0
-    for ( var priorvar in fitarray ){
-      var priortype = fitarray[priorvar].priortype;
-      if ( priortype == "LogUniform" ){
-        runmcmc += "    samples[:," + count.toString() + "] = exp(samples[:," + count.toString() + "])\n";
+    // run likelihood 
+    if ( $("#likelihood_input_type").val() == "Gaussian" ){
+      // sigma check for bilby only required if 
+      var sigmacheck = "";
+      if (sigmavar == ""){
+        bilbysigmavar = ",sigma";
+        sigmacheck += "try: # no fixed values of sigma given so attempting to generate normal random list between allowed values\n";
+        sigmacheck += " sigma = abs(np.random.normal((priors['sigma_gauss'].maximum+priors['sigma_gauss'].minimum)/2,priors['sigma_gauss'].maximum-priors['sigma_gauss'].minimum, len(x)))\n";
+        sigmacheck += "except:\n";
+        sigmacheck += " sigma = 0.1\n";
+      } // this is a botched job at the moment to try and make sure variable sigma can run in bilby
+      else{
+        sigmacheck = "sigma = ";
+        sigmacheck += sigmavar.substring(0, sigmavar.length - 1);
+        bilbysigmavar = ",";
+        bilbysigmavar += sigmacheck;
+        sigmacheck += "\n";
       }
-      count++;
+      bilbylikefunction = "Gaussian";
     }
+    else if( $("#likelihood_input_type").val() == "Studentst" ){
+      bilbysigmavar = ", nu=data.size, sigma=1";
+      sigmacheck = "sigma = 1\n";
+      bilbylikefunction = "StudentT";
+    }
+    
+    outputStrings["sigmacheck"] = sigmacheck;
+    var runlikelihood = "if errval == 0:\n";
+    runlikelihood += "  try:\n";
+    runlikelihood += "    likelihood = bilby.likelihood."+bilbylikefunction+"Likelihood"+"("+ abscissavar +", data, mymodel "+bilbysigmavar+")\n";
+    runlikelihood += "  except:\n";
+    runlikelihood += "    errval = SAMPLER_RUN_ERR\n";
+    outputStrings["runlikelihood"] = runlikelihood;
 
-    runmcmc += "  except:\n";
-    runmcmc += "    errval = MCMC_RUN_ERR\n\n";
+    var runsampler = "if errval == 0:\n";
+    runsampler += " try:\n";
+    runsampler += "   result = bilby.run_sampler(likelihood = likelihood,\n";
+    runsampler += "   priors=priors, "+bilbyinput+" sampler='"+samplertype+"')\n";
+    runsampler += "   result.plot_corner()\n";
+    runsampler += "   result.plot_with_data(mymodel,x,data)\n";
+    runsampler += " except:\n";
+    runsampler += "   errval = SAMPLER_RUN_ERR\n";
+    outputStrings['runsampler'] = runsampler;
 
     // output chain and log probabilities to gzipped file
-    runmcmc += "  # output the posterior samples, likelihood and variables\n";
-    runmcmc += "  try:\n";
-    runmcmc += "    np.savetxt('posterior_samples.txt.gz', samples)\n";
-    runmcmc += "    fv = open('variables.txt', 'w')\n";
-    runmcmc += "    fv.write(\"" + theta.join() + "\")\n";
-    runmcmc += "    fv.close()\n";
-    runmcmc += "  except:\n";
-    runmcmc += "    errval = POST_OUTPUT_ERR\n\n";
+    var postout = "";
+    postout += " # output the posterior samples, likelihood and variables\n";
+    postout += " try:\n";
+    postout += "   np.savetxt('posterior_samples.txt.gz', result.posterior.values)\n";
+    postout += "   fv = open('variables.txt', 'w')\n";
+    postout += "   fv.write(\"" + theta.join() + "\")\n";
+    postout += "   fv.close()\n";
+    postout += " except:\n";
+    postout += "   errval = POST_OUTPUT_ERR\n\n";
     
-    outputStrings['runmcmc'] = runmcmc;
+    outputStrings['postout'] = postout;
     
     var emailaddress = $("#id_email").val();
     emailaddress = emailaddress.replace(/['"]+/g, ''); // remove any quotes (" or ') in the string (hopefully this helps against insertion)
@@ -1002,15 +964,15 @@ def mymodel({arguments}):\n\
       alert("Email address is not valid");
       return false;
     }
-    
+
     // run a pre-written script to parse the output, create plots and an output webpage and email user
     var hrefloc = window.location.href;
     var lIndex = hrefloc.lastIndexOf('/'); // strip the current page off the href
-    var postprocess = "  # run post-processing script\n";
-    postprocess += "  try:\n";
-    postprocess += "    postprocessing(samples, \"" + theta.join(',') + "\", " + abscissavar + ", \"" + abscissavar + "\", data, \"" + emailaddress + "\", \"" + hrefloc.substr(0, lIndex) + "/results/" + outdir + "\")\n";
-    postprocess += "  except:\n";
-    postprocess += "    errval = POST_PROCESS_ERR\n\n";
+    var postprocess = "# run post-processing script\n";
+    postprocess += "try:\n";
+    postprocess += "  postprocessing(result.posterior.values, \"" + theta.join(',') + "\", " + abscissavar + ", \"" + abscissavar + "\", data, \"" + emailaddress + "\", \"" + hrefloc.substr(0, lIndex) + "/results/" + outdir + "\")\n";
+    postprocess += "except:\n";
+    postprocess += "  errval = POST_PROCESS_ERR\n\n";
     
     postprocess += "success = True\n";
     postprocess += "if errval != 0:\n";
@@ -1019,13 +981,12 @@ def mymodel({arguments}):\n\
     postprocess += "  success = False\n\n";
     
     outputStrings['postprocess'] = postprocess;
-    
     var database = "# submit some information to a database\n";
     database = "database_add_row(\"" + outdir + "\", \"" + modelStrings['outputstring'] + "\", \"" + theta.join(',') + "\", " + (theta.length).toString() + ", success)\n\n";
 
     outputStrings['database'] = database;
     
-    outputdata['pyfile'] = pyfile.format(outputStrings); // the python file
+    outputdata['pyfile'] = pyfile.format(outputStrings); // the bilby python file
     outputdata['modelfile'] = modelfunction.format(modelStrings); // the python file containing the model function
 
     // submit abscissa data

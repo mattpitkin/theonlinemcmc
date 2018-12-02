@@ -464,14 +464,9 @@ errval = 0\n\
 # Caclulate likelihood\n\
 {runlikelihood}\
 \n\
-try:\n\
-  result = bilby.run_sampler(likelihood = likelihood,\n\
-          priors=priors, {bilbyinput} sampler='{samplertype}')\n\
-except:\n\
-  errval = SAMPLER_RUN_ERR\n\
+# Run sampler\n\
+{runsampler}\
 {postout}\
-result.plot_corner()\n\
-result.plot_with_data(mymodel,x,data)\n\
 {postprocess}\
 #{database}\
 ";
@@ -820,7 +815,7 @@ def mymodel({arguments}):\n\
     
     var varsampler = $('#sampler_input_type').val(); // which bilby sampler to call
     var setargs = ""; // inputting arguments to python file
-    var bilbyinput = ""; // same as above but formatted for function input
+    var bilbyinput = ""; // same as above but formatted for sampler function input (bilby.run_sampler...)
     var input = ""; // empty var to store each input value
     var theta_length = sampler_args[varsampler].length; // ndim value
     for (index = 0; index < theta_length; index++){
@@ -833,7 +828,7 @@ def mymodel({arguments}):\n\
     }
 
     outputStrings['setargs'] = setargs + "ndim = " + theta_length;   
-    outputStrings['bilbyinput'] = bilbyinput + "ndim = " + theta_length + ","; 
+    bilbyinput+=  "ndim = " + theta_length + ","; 
     
     /*
     // need to add inputs for MCMC - number of ensemble samples, burn-in and MCMC interations
@@ -899,6 +894,8 @@ def mymodel({arguments}):\n\
     readabscissa += '      ' + abscissavar + ' = np.loadtxt("' + absfile + '", delimiter=",")\n';
     readabscissa += '    except:\n';
     readabscissa += '      errval = ABSCISSA_READ_ERR\n\n';
+    readabscissa += '  if len('+ abscissavar + ') != len(data):\n';
+    readabscissa += '    errval = DATA_LENGTH_ERR\n\n';
     
     outputStrings['readabscissa'] = readabscissa;
     
@@ -927,7 +924,7 @@ def mymodel({arguments}):\n\
       }
       
       if ( $("#id_gauss_like_type").val() == "Known2" ){
-        readsigma += 'if errval == 0:\n'
+        readsigma += 'if errval == 0:\n';
         readsigma += '  try:\n';
         readsigma += '    sigma_data = np.loadtxt("' + sigmafile + '")\n';
         readsigma += '    sigma = sigma_data\n';
@@ -974,19 +971,33 @@ def mymodel({arguments}):\n\
     }
     
     outputStrings["sigmacheck"] = sigmacheck;
-    var runlikelihood = "likelihood = bilby.likelihood."+bilbylikefunction+"Likelihood"+"(x, data, mymodel "+bilbysigmavar+")\n";
+    var runlikelihood = "if errval == 0:\n";
+    runlikelihood += "  try:\n";
+    runlikelihood += "    likelihood = bilby.likelihood."+bilbylikefunction+"Likelihood"+"("+ abscissavar +", data, mymodel "+bilbysigmavar+")\n";
+    runlikelihood += "  except:\n";
+    runlikelihood += "    errval = SAMPLER_RUN_ERR\n";
     outputStrings["runlikelihood"] = runlikelihood;
+
+    var runsampler = "if errval == 0:\n";
+    runsampler += " try:\n";
+    runsampler += "   result = bilby.run_sampler(likelihood = likelihood,\n";
+    runsampler += "   priors=priors, "+bilbyinput+" sampler='"+samplertype+"')\n";
+    runsampler += "   result.plot_corner()\n";
+    runsampler += "   result.plot_with_data(mymodel,x,data)\n";
+    runsampler += " except:\n";
+    runsampler += "   errval = SAMPLER_RUN_ERR\n";
+    outputStrings['runsampler'] = runsampler;
 
     // output chain and log probabilities to gzipped file
     var postout = "";
-    postout += "  # output the posterior samples, likelihood and variables\n";
-    postout += "  try:\n";
-    postout += "    np.savetxt('posterior_samples.txt.gz', result.posterior.values)\n";
-    postout += "    fv = open('variables.txt', 'w')\n";
-    postout += "    fv.write(\"" + theta.join() + "\")\n";
-    postout += "    fv.close()\n";
-    postout += "  except:\n";
-    postout += "    errval = POST_OUTPUT_ERR\n\n";
+    postout += " # output the posterior samples, likelihood and variables\n";
+    postout += " try:\n";
+    postout += "   np.savetxt('posterior_samples.txt.gz', result.posterior.values)\n";
+    postout += "   fv = open('variables.txt', 'w')\n";
+    postout += "   fv.write(\"" + theta.join() + "\")\n";
+    postout += "   fv.close()\n";
+    postout += " except:\n";
+    postout += "   errval = POST_OUTPUT_ERR\n\n";
     
     outputStrings['postout'] = postout;
     
