@@ -970,7 +970,7 @@ def mymodel({arguments}):\n\
     var lIndex = hrefloc.lastIndexOf('/'); // strip the current page off the href
     var postprocess = "# run post-processing script\n";
     postprocess += "try:\n";
-    postprocess += "  postprocessing(result.posterior.values, \"" + theta.join(',') + "\", " + abscissavar + ", \"" + abscissavar + "\", data, \"" + emailaddress + "\", \"" + hrefloc.substr(0, lIndex) + "/results/" + outdir + "\")\n";
+    postprocess += "  postprocessing(result.posterior.values, \"" + theta.join(',') + "\", " + abscissavar + ", \"" + abscissavar + "\", data, \"" + emailaddress + "\", \"" + hrefloc.substr(0, lIndex) + "/results/" + outdir + "\",result.log_evidence)\n";
     postprocess += "except:\n";
     postprocess += "  errval = POST_PROCESS_ERR\n\n";
     

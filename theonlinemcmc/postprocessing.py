@@ -42,16 +42,16 @@ def credible_interval(dsamples, ci):
 
    return (np.min(bins[histIndices[:j]]), np.max(bins[histIndices[:j]]))
 
-def postprocessing(postsamples, variables, abscissa, abscissaname, data, email, outdir):
+def postprocessing(postsamples, variables, abscissa, abscissaname, data, email, outdir, evidence):
   # import the corner plot code
   import corner
 
   # import matplotlib
   from matplotlib import pyplot as pl
-
+  
   # the format text to include in the page
   fm = {}
-
+  
   # the string containing the webpage
   htmlpage = """
 <!DOCTYPE HTML>
@@ -134,6 +134,8 @@ def postprocessing(postsamples, variables, abscissa, abscissaname, data, email, 
   </div>
 </div>
 
+{evidencevalue}
+
 <div class="container-fluid bg-1 text-left">
   <h3 class="text-center" id="instructions">BEST FIT MODEL DISTRIBUTION</h3>
   <p>
@@ -185,15 +187,6 @@ include('../../social.inc');
       varnames[i] = '\\sigma_{\mathrm{gauss}}' # convert to LaTeX
 
   # create triangle plot
-  labels = ['$%s$' % var for var in varnames] # LaTeX labels
-  nvars = len(varnames)
-  levels = 1.-np.exp(-0.5*np.array([1., 2.])**2) # plot 1 and 2 sigma contours
-
-  fig = corner.corner(postsamples[:,:nvars], labels=labels, levels=levels, quantiles=[0.16, 0.5, 0.84], bins=30)
-
-  # output the figure
-  postfigfile = 'posterior_plots.png'
-  fig.savefig(postfigfile, transparent=True) # transparent background
 
   fm['posteriorfig'] = '<img class="center-block bg-3" src="outdir/label_corner.png" width="60%">'
 
@@ -284,26 +277,17 @@ include('../../social.inc');
 
   fm['corrcoeftable'] = corrcoeftable
   
-  # create plot of data along with distribution of best fit models
-  from mymodel import mymodel
-
-  # set some plot defaults
-  pl.rc('text', usetex=True)
-  pl.rc('font', family='serif')
-  pl.rc('font', size=14)
-
-  fig2 = pl.figure(figsize=(7,5), dpi=200)
-  pl.plot(abscissa, data, 'ko', ms=6, label='Data')
-  varidxs = range(nvars)
-  if 'sigma_gauss' in variables:
-    sigmaidx = (variables.split(',')).index('sigma_gauss')
-    varidxs.remove(sigmaidx)
-
-  varidxs = np.array(varidxs)
-  randidxs = np.random.permutation(postsamples.shape[0])[0:100]
+  if np.isnan(evidence) == True:
+    fm['evidencevalue'] = "" # Not using nestling sampler - no evidence value to display
+  else:
+    evidencevalue = "<div id=\"lnevd\" class=\"container-fluid bg-2 text-left\">"
+    evidencevalue += "<h3 class=\"text-center\" id=\"functions\">LOG EVIDENCE VALUE</h3>"
+    evidencevalue += "The nested sampler used gave a log evidence value of: <b>%.4f </b></div>" % evidence
+    fm['evidencevalue'] = evidencevalue
   
-  # overplot models for 100 random draws from the posterior
-  fm['bestfitfig'] = '<img class="center-block bg-3" src="outdir/label_plot_with_data" width="60%">'
+  # create plot of data along with distribution of best fit models
+
+  fm['bestfitfig'] = '<img class="center-block bg-3" src="outdir/label_plot_with_data.png" width="60%">'
     
   # output page
   ppfile = 'index.php'
