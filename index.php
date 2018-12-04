@@ -142,8 +142,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   // run the MCMC python script
   if(!empty($_POST['runcode'])){
     $errfile = 'err_code.txt';
-    $pycommand = './pyfile.py';
-    $pid = shell_exec(sprintf('cd %s; %s > %s 2>&1 & echo $!', $outdir, $pycommand, $errfile));
+    $pycommand = 'pyfile.py';
+    $pid = shell_exec(sprintf('cd %s; $PYTHON %s > %s 2>&1 & echo $!', $outdir, $pycommand, $errfile));
   }
 
   header('Location: http://'.$_SERVER['SERVER_NAME'].'/submitted.php');
