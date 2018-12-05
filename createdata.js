@@ -161,10 +161,10 @@ $(document).ready(function() {
   // Show only relevant argument inputs depending on sampler
   $('#sampler_input_type').change(function(){
     var vartype = $(this).val();
-    $("#id_dynesty_div").css("display", "none"); $("#id_nestle_div").css("display", "none"); $("#id_pymc3_div").css("display", "none"); $("#id_mcmc_div").css("display", "none");
+    $("#id_dynesty_div").css("display", "none"); $("#id_nestle_div").css("display", "none"); $("#id_pymc3_div").css("display", "none"); $("#id_emcee_div").css("display", "none");
     if (vartype == "emcee"){
       // un-hide the div element
-      $("#id_mcmc_div").css("display", "");
+      $("#id_emcee_div").css("display", "");
     }
     else if(vartype == "dynesty"){
       $("#id_dynesty_div").css("display", "");
@@ -421,6 +421,56 @@ $(document).ready(function() {
 
     });
   }
+
+
+
+
+
+
+
+  // random example generator
+  $("#id_randexample").click(function(){
+    // Generate random equation - id="modeleq"
+    document.getElementById("modeleq").value = "2.5*x+c"; // .value = randeq;
+    // This then must be 'submitted' via - id="id_model_button"
+    jQuery('#id_model_button').click();
+    // We then must fill out conditions for each parameter, id="id_variablename" 
+    // Const/Variable/Abscissa stored in id="id_vartype_variablename"
+
+    document.getElementById("id_vartype_x").value = "Abscissa";
+    
+      // Always keep 'x' as abssissa, use three other variables, one being constant?
+      // Input abscissa values - always of length 50?
+
+    // Input data - same length as abscissa
+
+      // Add noise to the data
+    // Select Gaussian likelihood with fixed standard deviation of 0.1
+    document.getElementById("likelihood_input_type").value = "Gaussian";
+    var liketablerow = document.getElementById("like_row");
+    var newcell = liketablerow.insertCell(-1);
+    newcell.innerHTML = "<select id=\"id_gauss_like_type\" class=\"form-control\">\
+  <option value=\"\">--Type--</option>\
+  <option value=\"Known1\">Input &sigma; value</option>\
+  <option value=\"Known2\">Input &sigma; values</option>\
+  <option value=\"Fit\">Fit &sigma; value</option>\
+</select>";
+    document.getElementById("id_gauss_like_type").value = "Known1";
+    var newcell2 = liketablerow.insertCell(-1);
+    newcell2.innerHTML = "<input type=\"text\" id=\"id_gauss_known\" class=\"form-control\" value=\"&sigma;\">";
+    document.getElementById("id_gauss_known").value = 0.1;
+    // Select random sampler
+    var samplers = ["emcee","dynesty"];
+    var sampler = samplers[Math.floor(Math.random() * 2)];
+    document.getElementById("sampler_input_type").value = sampler;
+    $("#id_"+sampler+"_div").css("display", "");
+  });
+
+
+
+
+
+
 
   // form submission
   $("#id_submit_variables").click(function(){
