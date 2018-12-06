@@ -9,13 +9,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.css">
 
+<!-- Include jQuery -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
 <!-- Include theme font -->
 <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
-
-<!-- Include jQuery -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
 <!-- Include MathJax -->
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
@@ -23,6 +23,10 @@
 
 <!-- Include script to create the input data table and output the python script -->
 <script type="text/javascript" src="createdata.js"></script>
+
+<!-- Include script to create tabs - https://www.w3schools.com/bootstrap/bootstrap_tabs_pills.asp -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
 <!-- custom CSS file -->
 <link rel="stylesheet" type="text/css" href="simple.css"/>
@@ -40,17 +44,17 @@
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
   $resdir = 'results';
 
-  if (!empty($_POST["bilbypyfile"])) {
+  if (!empty($_POST["pyfile"])) {
     $outdir = $resdir.'/'.filter_var($_POST["outdir"], FILTER_SANITIZE_STRING);
     $_SESSION["outdir"] = $outdir;
     if(!file_exists($outdir)){
       mkdir($outdir, 0777, true);
     }
 
-    $bilbypyfile = $_POST["bilbypyfile"];
+    $pyfile = $_POST["pyfile"];
     // output data to file
-    file_put_contents($outdir.'/bilbypyfile.py', $bilbypyfile);
-    chmod($outdir.'/bilbypyfile.py',0755); // make executable
+    file_put_contents($outdir.'/pyfile.py', $pyfile);
+    chmod($outdir.'/pyfile.py',0755); // make executable
   }
 
   if (!empty($_POST["modelfile"])) {
@@ -142,7 +146,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   // run the MCMC python script
   if(!empty($_POST['runcode'])){
     $errfile = 'err_code.txt';
-    $pycommand = './bilbypyfile.py';
+    $pycommand = './pyfile.py';
     $pid = shell_exec(sprintf('cd %s; %s > %s 2>&1 & echo $!', $outdir, $pycommand, $errfile));
   }
 
@@ -294,11 +298,11 @@ On this website you can input a model function defined by a set of parameters in
   </p>
 
   <p>
-  <div id="id_mcmc_div" style="display:none">
-    Input the <a style="color: #BD5D38" href="#id_mcmc_header">MCMC sampler parameters</a> : <span data-toggle="tooltip" title="Set the sampler parameters - use the defaults if you're unsure." class="glyphicon glyphicon-question-sign"></span>
+  <div id="id_emcee_div" style="display:none">
+    Input the <a style="color: #BD5D38" href="#id_emcee_header">MCMC sampler parameters</a> : <span data-toggle="tooltip" title="Set the sampler parameters - use the defaults if you're unsure." class="glyphicon glyphicon-question-sign"></span>
     <br> <i> <a style="color: #809793">Note - burn-in iterations are subtracted from the total number of iterations - therefore the value must be less than 
     the total number of MCMC iterations whilst still being a positive integer.</a></i>
-    <table id="mcmc_table">
+    <table id="emcee_table">
       <tr>
         <td>&bull; Number of ensemble points (default: 100)</td>
         <td><input type="text" class="form-control" id="mcmc_nensemble" value="100"></td>
@@ -387,6 +391,11 @@ On this website you can input a model function defined by a set of parameters in
 
 <div id="instructions" class="container-fluid bg-3 text-left">
   <h2 class="text-center">INSTRUCTIONS</h2>
+  
+  <h3 class="text-left" id="randexample">Generate Random Example</h3>
+  <p>
+  To demonstrate how the site works, click <a href="#input" class="btn btn-default" id="id_randexample">here</a> to generate a random example with data. Once selected, it is possible to alter values and equations before submitting.
+  </p>
 
   <h3 class="text-left" id="themodel">The model</h3>
   <p>
@@ -395,10 +404,10 @@ On this website you can input a model function defined by a set of parameters in
 
   <p>
   When entering the model be careful to use parentheses to group the required parts of the equation. Click <span id="showexample">here</span> to show an example input model.
-    <div id="example" class="example" style="display: none;">
+    <div id="example" class="example" style="display: none">
       <div id="close">
       </div>
-      To input the model \(2.2 \sin{(2\pi f t)} + a t^2 - \frac{e^{2.3}}{b}\) you would write:</br>
+      To input the model \(2.2 \sin{(2\pi f t)} + a t^2 - \frac{e^{2.3}}{b}\) you would write:
       <pre>
         2.2*sin(2.0*pi*f*t) + a*t^2 - (exp(2.3)/b)
       </pre>
@@ -437,12 +446,6 @@ On this website you can input a model function defined by a set of parameters in
   </p>
   <br>
 
-  <h3 class="text-left" id="id_sampler_header">Sampler input</h3>
-  <p>
-  This section needs updated.
-  </p>
-  <br>
-
   <h3 class="text-left" id="id_likelihood_header">Likelihood input</h3>
   <p>
     There are currently two allowed <a href="https://en.wikipedia.org/wiki/Likelihood_function">likelihood functions</a>:
@@ -458,16 +461,51 @@ On this website you can input a model function defined by a set of parameters in
   </p>
   <br>
 
-  <h3 class="text-left" id="id_mcmc_header">MCMC inputs</h2>
-  <p>
+  <h3 class="text-left" id="id_mcmc_header">Sampler Inputs</h2>
+  <div class="container" width="80px">
+    <ul class="nav nav-pills">
+    <li class="active"><a data-toggle="pill" href="#mcmc">MCMC</a></li>
+    <li><a data-toggle="pill" href="#dynesty">Dynesty</a></li>
+    <li><a data-toggle="pill" href="#nestle">Nestle</a></li>
+    <li><a data-toggle="pill" href="#pymc3">PYMC3</a></li>
+    </ul>
+
+    <div class="tab-content" style="max-width:80%">
+      <div id="mcmc" class="tab-pane fade in active" >
+        <p>
     The MCMC aims to draw samples (a chain of points) from the posterior probability distributions of the parameters. You need to tell it how many points to draw. There are three inputs required:
     <ul>
       <li><em>No. of ensemble points ("walkers")</em>: this is essentially the <a href="http://dan.iel.fm/emcee/current/user/faq/#what-are-walkers">number of independent chains</a> within the MCMC. This needs to be an even number and in general should be at least twice the number of fitting parameters that you have. Using a large value (e.g. 100) should be fine, but you could run into lack-of-memory issues if the number is too high (1000s);
       <li><em>No. of iterations</em>: this is the number of points per chain for each of the ensemble points. The product of this number and the number of ensemble points will be the total number of samples that you have for the posterior;
       <li><em>No. of <a href="http://support.sas.com/documentation/cdl/en/statug/63033/HTML/default/viewer.htm#statug_introbayes_sect007.htm">burn-in iterations</a></em>: this is the number of iterations (for each "walker") that are thrown away from the start of the chain (the iteration points above come after the burn-in points). This allows time for the MCMC to converge on the bulk of the posterior and for points sampled away from that to not be included in the final results.
     </ul>
-    If in doubt use the defaults and see how things <a href="#caveats">turn out</a>.
   </p>
+      </div>
+      <div id="dynesty" class="tab-pane fade">
+      For Dynesty, only one input is required:
+      <ul>
+        <li><em>No. of live points </em>: this is described in greater detail <a href="https://dynesty.readthedocs.io/en/latest/faq.html#live-point-questions">here</a>. This needs to be a positive integer and in general should be at least 1 greater than the number of fitting parameters that exist.
+    </ul>
+      </div>
+      <div id="nestle" class="tab-pane fade">
+        Nestle sampling is similar to the MCMC method, however the nature of the sampling allows one to calculate the integral of the probability distribution. For Nestle, two inputs are required:
+        <ul>
+          <li><em>No. of live points </em>: the number of active points, a positive interger at least one greater than the number of fitting parameters that exist. </li>
+          <li><em>Method</em> : How the sampler chooses new points within the target parameter space. Currently can choose from 'Classic', 'Single' or 'Multi'. Further information can be found <a href="http://kylebarbary.com/nestle/">here</a></li>
+        </ul>
+      </div>
+      <div id="pymc3" class="tab-pane fade">
+        For PYMC3, three inputs are required:
+        <ul>
+          <li><em>No. of draws </em>: The number of sample draws from the posterior per chain. </li>
+          <li><em>No. of chains </em>: The number of independent MCMC chains to run. </li>
+          <li><em>No. of <a href="http://support.sas.com/documentation/cdl/en/statug/63033/HTML/default/viewer.htm#statug_introbayes_sect007.htm">burn-in iterations</a></em>: this is the number of iterations (for each "walker") that are thrown away from the start of the chain (the iteration points above come after the burn-in points). This allows time for the MCMC to converge on the bulk of the posterior and for points sampled away from that to not be included in the final results.
+        </ul>
+      </div>
+    </div>
+  </div>
+  If in doubt use the defaults and see how things <a href="#caveats">turn out</a>.
+  
 </div>
 
 <div id="functions" class="container-fluid bg-1 text-left">
