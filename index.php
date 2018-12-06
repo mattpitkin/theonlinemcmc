@@ -391,11 +391,11 @@ On this website you can input a model function defined by a set of parameters in
 
 <div id="instructions" class="container-fluid bg-3 text-left">
   <h2 class="text-center">INSTRUCTIONS</h2>
-  
+  <!--
   <h3 class="text-left" id="randexample">Generate Random Example</h3>
   <p>
   To demonstrate how the site works, click <a href="#input" class="btn btn-default" id="id_randexample">here</a> to generate a random example with data. Once selected, it is possible to alter values and equations before submitting.
-  </p>
+  </p> -->
 
   <h3 class="text-left" id="themodel">The model</h3>
   <p>
