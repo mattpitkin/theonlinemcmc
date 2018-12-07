@@ -843,7 +843,7 @@ def mymodel({arguments}):\n\
       'emcee':['nwalkers','nburn','nsteps'],
       'nestle':['npoints','Method'],
       'dynesty':['nlive'],
-      'pymc3' :['draws','chains','nburn']
+      'pymc3' :['draws','chains','tune']
     };
     // values expected for input arguments to check against - doesn't have checks for parity etc
     args_expectation = {

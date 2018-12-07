@@ -22,7 +22,8 @@
 </script>
 
 <!-- Include script to create the input data table and output the python script -->
-<script type="text/javascript" src="createdata.js"></script>
+<!-- Take latest version of JS file to avoid cache errors - https://stackoverflow.com/questions/32414/how-can-i-force-clients-to-refresh-javascript-files -->
+<script type="text/javascript" src="createdata.js?ver<%=DateTime.Now.Ticks.ToString()%"></script>
 
 <!-- Include script to create tabs - https://www.w3schools.com/bootstrap/bootstrap_tabs_pills.asp -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>

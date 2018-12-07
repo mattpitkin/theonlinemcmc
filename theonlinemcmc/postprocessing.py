@@ -84,7 +84,6 @@ def postprocessing(postsamples, variables, abscissa, abscissaname, data, email, 
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
 <!-- Make sure text is readable with previous css formatting -->
-<style>body{color:#202020}</style>
 
 <title>The Online MCMC: Results page</title>
 </head>
