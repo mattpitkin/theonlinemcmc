@@ -22,7 +22,6 @@
 </script>
 
 <!-- Include script to create the input data table and output the python script -->
-<!-- Take latest version of JS file to avoid cache errors - https://stackoverflow.com/questions/32414/how-can-i-force-clients-to-refresh-javascript-files -->
 <script type="text/javascript" src="createdata.js?ver<%=DateTime.Now.Ticks.ToString()%"></script>
 
 <!-- Include script to create tabs - https://www.w3schools.com/bootstrap/bootstrap_tabs_pills.asp -->
@@ -287,10 +286,10 @@ On this website you can input a model function defined by a set of parameters in
       <tr id="sample_row"><td>
         <select id="sampler_input_type" class="form-control">
           <option value="">--Type--</option>
-          <option value="emcee">Emcee</option>
+          <option value="emcee">Emcee (Under development)</option>
           <option value="dynesty">Dynesty</option>
           <option value="nestle">Nestle</option>
-          <option value="pymc3">PYMC3</option>
+          <option value="pymc3">PYMC3 (Under development)</option>
         </select></td>
       </tr>
       
