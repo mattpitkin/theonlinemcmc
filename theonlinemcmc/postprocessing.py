@@ -235,7 +235,7 @@ include('../../social.inc');
       medianstr = '%.1f' % medianv
     resstrs.append(medianstr)
     
-    modev = postsamples[np.argmax(postsamples[:,-1]),i]
+    modev = postsamples[np.argmax(postsamples[:,-2]),i]
     if np.fabs(modev) > 1e3 or np.fabs(modev) < 1e-2:
       modestr = exp_str(modev)
     else:
