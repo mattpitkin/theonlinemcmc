@@ -990,7 +990,7 @@ def mymodel({arguments}):\n\
     runsampler += "   result = bilby.run_sampler(likelihood = likelihood,\n";
     runsampler += "   priors=priors, "+bilbyinput+" sampler='"+samplertype+"')\n";
     runsampler += "   result.plot_corner()\n";
-    runsampler += "   result.plot_with_data(mymodel,x,data)\n";
+    runsampler += "   result.plot_with_data(mymodel,"+ abscissavar +",data)\n";
     runsampler += " except:\n";
     runsampler += "   errval = SAMPLER_RUN_ERR\n";
     outputStrings['runsampler'] = runsampler;
@@ -998,6 +998,7 @@ def mymodel({arguments}):\n\
     // output chain and log probabilities to gzipped file
     var postout = "";
     postout += " # output the posterior samples, likelihood and variables\n";
+    postout += "if errval == 0:\n";
     postout += " try:\n";
     postout += "   np.savetxt('posterior_samples.txt.gz', result.posterior.values)\n";
     postout += "   fv = open('variables.txt', 'w')\n";
@@ -1019,10 +1020,11 @@ def mymodel({arguments}):\n\
     var hrefloc = window.location.href;
     var lIndex = hrefloc.lastIndexOf('/'); // strip the current page off the href
     var postprocess = "# run post-processing script\n";
-    postprocess += "try:\n";
-    postprocess += "  postprocessing(result.posterior.values, \"" + theta.join(',') + "\", " + abscissavar + ", \"" + abscissavar + "\", data, \"" + emailaddress + "\", \"" + hrefloc.substr(0, lIndex) + "/results/" + outdir + "\",result.log_evidence)\n";
-    postprocess += "except:\n";
-    postprocess += "  errval = POST_PROCESS_ERR\n\n";
+    postprocess += "if errval == 0:\n";
+    postprocess += " try:\n";
+    postprocess += "   postprocessing(result.posterior.values, \"" + theta.join(',') + "\", " + abscissavar + ", \"" + abscissavar + "\", data, \"" + emailaddress + "\", \"" + hrefloc.substr(0, lIndex) + "/results/" + outdir + "\",result.log_evidence)\n";
+    postprocess += " except:\n";
+    postprocess += "   errval = POST_PROCESS_ERR\n\n";
     
     postprocess += "success = True\n";
     postprocess += "if errval != 0:\n";
