@@ -123,7 +123,7 @@ def postprocessing(postsamples, variables, abscissa, abscissaname, data, email, 
     <li><a data-toggle="pill" href="#links">LINKS</a></li>
   </ul>
 
-   <div class="tab-content">
+   <div class="tab-content" style="color:#181818">
 
 
     <div id="margpos" class="tab-pane fade in active">
