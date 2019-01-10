@@ -881,8 +881,7 @@ def mymodel({arguments}):\n\
         bilbyinput += real_sampler_args[varsampler][index] + " = " + input + ",";
     }
 
-    outputStrings['setargs'] = setargs + "ndim = " + theta_length;   
-    bilbyinput+=  "ndim = " + theta_length + ","; 
+    outputStrings['setargs'] = setargs;   
 
     // read in data
     var readdata = 'if errval == 0:\n';
