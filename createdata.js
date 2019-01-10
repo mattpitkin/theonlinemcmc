@@ -527,7 +527,9 @@ errval = 0\n\
 
     // get all parameters requiring fitting and put them in an object
     var fitarray = {};
-    var priordict = "priors = dict()\n"; // dictionary used for storing priors with bilby
+    var priordict = "";
+    priordict += "priors = dict()\n"; // dictionary used for storing priors with bilby
+    priordict += "try:\n";
     for( index=0; index < variables.length; index++ ){
       var idvartype = "#id_vartype_" + variables[index];      
       var typeval = $(idvartype).val();
@@ -555,7 +557,7 @@ errval = 0\n\
         
           fitarray[variables[index]].minval = minmaxvals[0];
           fitarray[variables[index]].maxval = minmaxvals[1];
-          priordict += "priors['"+variables[index]+"'] = bilby.core.prior.Uniform("+minmaxvals[0]+", "+minmaxvals[1]+", '"+variables[index]+"')\n";
+          priordict += "  priors['"+variables[index]+"'] = bilby.core.prior.Uniform("+minmaxvals[0]+", "+minmaxvals[1]+", '"+variables[index]+"')\n";
         }
 
         if ( priortype == "Gaussian" ){
@@ -570,7 +572,7 @@ errval = 0\n\
 
           fitarray[variables[index]].meanval = meanstdvals[0];
           fitarray[variables[index]].sigmaval = meanstdvals[1];
-          priordict += "priors['"+variables[index]+"'] = bilby.core.prior.Gaussian("+meanstdvals[0]+", "+meanstdvals[1]+", '"+variables[index]+"')\n";
+          priordict += "  priors['"+variables[index]+"'] = bilby.core.prior.Gaussian("+meanstdvals[0]+", "+meanstdvals[1]+", '"+variables[index]+"')\n";
         }
         
         if ( priortype == "Exponential" ){
@@ -582,7 +584,7 @@ errval = 0\n\
           }
 
           fitarray[variables[index]].meanval = meanvals[0];
-          priordict += "priors['"+variables[index]+"'] = bilby.core.prior.Exponential("+meanvals[0]+",'"+variables[index]+"')\n";
+          priordict += "  priors['"+variables[index]+"'] = bilby.core.prior.Exponential("+meanvals[0]+",'"+variables[index]+"')\n";
         }
       }
     }
@@ -615,7 +617,7 @@ errval = 0\n\
 
         fitarray["sigma_gauss"].minval = minmaxvals[0];
         fitarray["sigma_gauss"].maxval = minmaxvals[1];
-        priordict += "priors['sigma'] = bilby.core.prior.Uniform("+minmaxvals[0]+", "+minmaxvals[1]+", 'sigma')\n";
+        priordict += "  priors['sigma'] = bilby.core.prior.Uniform("+minmaxvals[0]+", "+minmaxvals[1]+", 'sigma')\n";
       }
 
       if ( priortype == "Gaussian" ){
@@ -630,7 +632,7 @@ errval = 0\n\
 
         fitarray["sigma_gauss"].meanval = meanstdvals[0];
         fitarray["sigma_gauss"].sigmaval = meanstdvals[1];
-        priordict += "priors['sigma'] = bilby.core.prior.Gaussian("+meanstdvals[0]+", "+meanstdvals[1]+", 'sigma')\n";
+        priordict += "  priors['sigma'] = bilby.core.prior.Gaussian("+meanstdvals[0]+", "+meanstdvals[1]+", 'sigma')\n";
       }
 
       if ( priortype == "Exponential" ){
@@ -642,9 +644,11 @@ errval = 0\n\
         }
 
         fitarray["sigma_gauss"].meanval = meanvals[0];
-        priordict += "priors['sigma'] = bilby.core.prior.Exponential("+meanvals[0]+",'sigma')\n";
+        priordict += "  priors['sigma'] = bilby.core.prior.Exponential("+meanvals[0]+",'sigma')\n";
       } 
     }
+    priordict += "except:\n";
+    priordict += "  errval = PRIOR_INIT_ERR\n";
     outputStrings["priordict"] = priordict; // used in python file for bilby
     // write model function
     var modelfunction = "# import functions that can be used by the model\n\
