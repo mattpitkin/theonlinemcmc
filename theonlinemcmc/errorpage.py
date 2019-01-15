@@ -2,7 +2,7 @@
 
 from theonlinemcmc import errormessages, emailresponse
 
-def errorpage(errval, emailaddress, outdir):
+def errorpage(erroroutput, errval, emailaddress, outdir):
   # the string containing the webpage
   htmlpage = """
 <!DOCTYPE HTML>
@@ -54,9 +54,13 @@ def errorpage(errval, emailaddress, outdir):
 <div class="container-top bg-1 text-center">
   <h3 class="title">ERROR</h3>
   <p>
-    <br><br>{errormessage}<br><br>
+    <br><br>{errormessage}<br>
+    <br><code>{erroroutput}</code><br><br>
   </p>
   <br>
+  <br>
+  <li><a href="pyfile.py"><code>pyfile.py</code></a> - the python file used to run the MCMC</li>
+  <li><a href="mymodel.py"><code>mymodel.py</code></a> - the python model function</li>
 </div>
 
  <footer class="container-fluid bg-2 text-center">
@@ -75,7 +79,7 @@ include('../../social.inc');
   # the output php file
   errfile = 'index.php'
   fp = open(errfile, 'w')
-  fp.write(htmlpage.format(errormessage=errormessages[errval]))
+  fp.write(htmlpage.format(errormessage=errormessages[errval],erroroutput=erroroutput))
   fp.close()
   
   # email the page

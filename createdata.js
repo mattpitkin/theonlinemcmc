@@ -493,6 +493,7 @@ from theonlinemcmc import *\n\
 \n\
 # initialise error code value\n\
 errval = 0\n\
+errout = 0\n\
 \n\
 # set number of MCMC points\n\
 {setargs}\
@@ -647,8 +648,9 @@ errval = 0\n\
         priordict += "  priors['sigma'] = bilby.core.prior.Exponential("+meanvals[0]+",'sigma')\n";
       } 
     }
-    priordict += "except:\n";
+    priordict += "except Exception as e:\n";
     priordict += "  errval = PRIOR_INIT_ERR\n";
+    priordict += "  errout = e\n";
     outputStrings["priordict"] = priordict; // used in python file for bilby
     // write model function
     var modelfunction = "# import functions that can be used by the model\n\
@@ -890,8 +892,9 @@ def mymodel({arguments}):\n\
     readdata += '  except:\n';
     readdata += '    try:\n';
     readdata += '      data = np.loadtxt("' + datafile + '", delimiter=",")\n';
-    readdata += '    except:\n';
-    readdata += '      errval = DATA_READ_ERR\n\n';
+    readdata += '    except Exception as e:\n';
+    readdata += '      errval = DATA_READ_ERR\n';
+    readdata += '      errout = e\n\n';
     
     outputStrings['readdata'] = readdata;
     
@@ -902,10 +905,13 @@ def mymodel({arguments}):\n\
     readabscissa += '  except:\n';
     readabscissa += '    try:\n';
     readabscissa += '      ' + abscissavar + ' = np.loadtxt("' + absfile + '", delimiter=",")\n';
-    readabscissa += '    except:\n';
-    readabscissa += '      errval = ABSCISSA_READ_ERR\n\n';
+    readabscissa += '    except Exception as e:\n';
+    readabscissa += '      errval = ABSCISSA_READ_ERR\n';
+    readabscissa += '      errout = e\n';
+    readabscissa += 'if errval == 0:\n';
     readabscissa += '  if len('+ abscissavar + ') != len(data):\n';
-    readabscissa += '    errval = DATA_LENGTH_ERR\n\n';
+    readabscissa += '    errval = DATA_LENGTH_ERR\n';
+    readabscissa += '    errout = "The length of data is incorrect."\n\n';
     
     outputStrings['readabscissa'] = readabscissa;
     
@@ -940,13 +946,16 @@ def mymodel({arguments}):\n\
         readsigma += '    sigma = sigma_data\n';
         readsigma += '    if len(sigma_data) != len(data):\n';
         readsigma += '      errval = DATA_LENGTH_ERR\n';
+        readsigma += '      errout = "The length of data is incorrect."\n';
         readsigma += '  except:\n';
         readsigma += '    try:\n';
         readsigma += '      sigma_data = np.loadtxt("' + sigmafile + '", delimiter=",")\n';
         readsigma += '      if len(sigma_data) != len(data):\n';
         readsigma += '        errval = DATA_LENGTH_ERR\n';
-        readsigma += '    except:\n';
+        readsigma += '        errout = "The length of data is incorrect."\n';
+        readsigma += '    except Exception as e:\n';
         readsigma += '      errval = SIGMA_READ_ERR\n';
+        readsigma += '      errout = e\n';
         sigmavar += "sigma_data";
 
         sigmavar += ",";
@@ -984,8 +993,9 @@ def mymodel({arguments}):\n\
     var runlikelihood = "if errval == 0:\n";
     runlikelihood += "  try:\n";
     runlikelihood += "    likelihood = bilby.likelihood."+bilbylikefunction+"Likelihood"+"("+ abscissavar +", data, mymodel "+bilbysigmavar+")\n";
-    runlikelihood += "  except:\n";
+    runlikelihood += "  except Exception as e:\n";
     runlikelihood += "    errval = SAMPLER_RUN_ERR\n";
+    runlikelihood += "    errout = e\n";
     outputStrings["runlikelihood"] = runlikelihood;
 
     var runsampler = "if errval == 0:\n";
@@ -994,8 +1004,9 @@ def mymodel({arguments}):\n\
     runsampler += "   priors=priors, "+bilbyinput+" sampler='"+samplertype+"')\n";
     runsampler += "   result.plot_corner()\n";
     runsampler += "   result.plot_with_data(mymodel,"+ abscissavar +",data)\n";
-    runsampler += " except:\n";
+    runsampler += " except Exception as e:\n";
     runsampler += "   errval = SAMPLER_RUN_ERR\n";
+    runsampler += "   errout = e\n";
     outputStrings['runsampler'] = runsampler;
 
     // output chain and log probabilities to gzipped file
@@ -1007,8 +1018,9 @@ def mymodel({arguments}):\n\
     postout += "   fv = open('variables.txt', 'w')\n";
     postout += "   fv.write(\"" + theta.join() + "\")\n";
     postout += "   fv.close()\n";
-    postout += " except:\n";
-    postout += "   errval = POST_OUTPUT_ERR\n\n";
+    postout += " except Exception as e:\n";
+    postout += "   errval = POST_OUTPUT_ERR\n";
+    postout += "   errout = e\n\n";
     
     outputStrings['postout'] = postout;
     
@@ -1026,13 +1038,14 @@ def mymodel({arguments}):\n\
     postprocess += "if errval == 0:\n";
     postprocess += " try:\n";
     postprocess += "   postprocessing(result.posterior.values, \"" + theta.join(',') + "\", " + abscissavar + ", \"" + abscissavar + "\", data, \"" + emailaddress + "\", \"" + hrefloc.substr(0, lIndex) + "/results/" + outdir + "\",result.log_evidence)\n";
-    postprocess += " except:\n";
-    postprocess += "   errval = POST_PROCESS_ERR\n\n";
+    postprocess += " except Exception as e:\n";
+    postprocess += "   errval = POST_PROCESS_ERR\n";
+    postprocess += "   errout = e\n\n";
     
     postprocess += "success = True\n";
     postprocess += "if errval != 0:\n";
     postprocess += "  # run different script in case error codes are encountered\n";
-    postprocess += "  errorpage(errval, \"" + emailaddress + "\", \"" + hrefloc.substr(0, lIndex) + "/results/" + outdir + "\")\n";
+    postprocess += "  errorpage(errout, errval, \"" + emailaddress + "\", \"" + hrefloc.substr(0, lIndex) + "/results/" + outdir + "\")\n";
     postprocess += "  success = False\n\n";
     
     outputStrings['postprocess'] = postprocess;
