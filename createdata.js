@@ -1014,7 +1014,7 @@ def mymodel({arguments}):\n\
     postout += " # output the posterior samples, likelihood and variables\n";
     postout += "if errval == 0:\n";
     postout += " try:\n";
-    postout += "   np.savetxt('posterior_samples.txt.gz', result.posterior.values)\n";
+    postout += "   np.savetxt('posterior_samples.txt.gz', result.posterior.values, fmt='%s')\n"; // fmt='%s' from https://stackoverflow.com/questions/48230230/typeerror-mismatch-between-array-dtype-object-and-format-specifier-18e
     postout += "   fv = open('variables.txt', 'w')\n";
     postout += "   fv.write(\"" + theta.join() + "\")\n";
     postout += "   fv.close()\n";
