@@ -181,7 +181,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <div id="about" class="container-top bg-1 text-center">
   <h2 class="title">THE ONLINE MCMC</h2>
     <h3>Do you have some data and a model that you want to fit to it? Well here's the website for you (see <a href="#caveats">caveats</a>).
-On this website you can input a model function defined by a set of parameters including those that you want fit, and your data, and it will run a <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo">Markov chain Monte Carlo</a> (MCMC) algorithm to estimate the posterior probability distributions of those parameters. This site makes use of the python MCMC package <a href="http://dan.iel.fm/emcee/current/">emcee</a> written by <a href="http://dan.iel.fm/">Dan Foreman-Mackey</a>.</h3>
+On this website you can input a model function defined by a set of parameters including those that you want fit, and your data, and it will run a statisical sampling algorithm to estimate the posterior probability distributions of those parameters.<br><br>
+This site makes use of the Bayesian inference python package <a href="https://lscsoft.docs.ligo.org/bilby/index.html">Bilby</a> to access statisical samplers.
+Beyond <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo">Markov chain Monte Carlo</a> (MCMC), users are able to select from a variety of statistical <a href="#id_sampler_input">samplers</a> and it is encouraged to trial a variety to achieve the best fit for your model.</h3>
 </div>
 
 <div id="examples" class="container-fluid bg-3 text-center">
@@ -281,7 +283,7 @@ On this website you can input a model function defined by a set of parameters in
   </p>
 
     <div id="id_sampler_div">
-    Input the <a style="color: #BD5D38" href="#id_sampler_header">sampler</a>: <span data-toggle="tooltip" title="Define the sampler using the options below." class="glyphicon glyphicon-question-sign"></span>
+    Input the <a style="color: #BD5D38" href="#id_sampler_input">sampler</a>: <span data-toggle="tooltip" title="Define the sampler using the options below." class="glyphicon glyphicon-question-sign"></span>
     <table id="sample_table">
       <tr id="sample_row"><td>
         <select id="sampler_input_type" class="form-control">
@@ -391,11 +393,11 @@ On this website you can input a model function defined by a set of parameters in
 
 <div id="instructions" class="container-fluid bg-3 text-left">
   <h2 class="text-center">INSTRUCTIONS</h2>
-  <!--
+  
   <h3 class="text-left" id="randexample">Generate Random Example</h3>
   <p>
   To demonstrate how the site works, click <a href="#input" class="btn btn-default" id="id_randexample">here</a> to generate a random example with data. Once selected, it is possible to alter values and equations before submitting.
-  </p> -->
+  </p> 
 
   <h3 class="text-left" id="themodel">The model</h3>
   <p>
@@ -461,7 +463,11 @@ On this website you can input a model function defined by a set of parameters in
   </p>
   <br>
 
-  <h3 class="text-left" id="id_mcmc_header">Sampler Inputs</h2>
+  <h3 class="text-left" id="id_sampler_input">Sampler Inputs</h2>
+  Through <a href="https://lscsoft.docs.ligo.org/bilby/index.html">Bilby</a> one can select from a variety of statistical samplers, each utilising a slightly different algorithm to model the parameters. The samplers available are broken down into 
+  two separate cases, <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo">Markov chain Monte Carlo</a> methods (see MCMC and PYMC3) and <a href="https://en.wikipedia.org/wiki/Nested_sampling_algorithm">Nested Sampling algorithms</a> (see Dynesty and Nestle).
+  <br>
+  <br>
   <div class="container" width="80px">
     <ul class="nav nav-pills">
     <li class="active"><a data-toggle="pill" href="#mcmc">MCMC</a></li>
@@ -504,7 +510,7 @@ On this website you can input a model function defined by a set of parameters in
       </div>
     </div>
   </div>
-  If in doubt use the defaults and see how things <a href="#caveats">turn out</a>.
+  <b>If in doubt use the defaults and see how things <a href="#caveats">turn out</a></b>.
   
 </div>
 
@@ -576,7 +582,7 @@ On this website you can input a model function defined by a set of parameters in
   <h2>CAVEATS</h2>
 
   <p>
-    The MCMC algorithm is not guaranteed to produce sensible results every time, and your output may contain errors or look odd. Some information and trouble shooting can be found <a href="http://dan.iel.fm/emcee/current/user/faq/">here</a>.
+    The sampling algorithms provided are not guaranteed to produce sensible results every time, and your output may contain errors or look odd. Some information and trouble shooting for the samplers can be found <a href="https://lscsoft.docs.ligo.org/bilby/samplers.html">here</a>.
   </p>
 
   <p>
