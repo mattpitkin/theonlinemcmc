@@ -123,7 +123,7 @@ def postprocessing(corrcoef, postsamples, variables, abscissa, abscissaname, dat
     <li><a data-toggle="pill" href="#links">LINKS</a></li>
   </ul>
 
-   <div class="tab-content" style="color:#181818">
+   <div class="tab-content">
 
 
     <div id="margpos" class="tab-pane fade in active">
@@ -137,7 +137,7 @@ def postprocessing(corrcoef, postsamples, variables, abscissa, abscissaname, dat
     <div id="bestfit" class="tab-pane fade">
       <h3 class="text-center" id="functions">BEST FIT VALUES</h3>
       
-      The <a href="https://en.wikipedia.org/wiki/Mean">mean</a>, <a href="https://en.wikipedia.org/wiki/Median">median</a> and <a href="https://en.wikipedia.org/wiki/Mode_(statistics)">mode</a> of the probability distributions for each parameter. Also give are the <a href="https://en.wikipedia.org/wiki/Standard_deviation">standard deviation</a> of the distributions and minimal 68% and 95% <a href="https://en.wikipedia.org/wiki/Credible_interval">credible intervals</a> (CI).
+      The <a href="https://en.wikipedia.org/wiki/Mean">mean</a> and <a href="https://en.wikipedia.org/wiki/Median">median</a> of the probability distributions for each parameter are displayed in the table below. Also given are the <a href="https://en.wikipedia.org/wiki/Standard_deviation">standard deviation</a> of the distributions and minimal 68% and 95% <a href="https://en.wikipedia.org/wiki/Credible_interval">credible intervals</a> (CI).
       <div>
         {resultstable}
       </div>
@@ -164,7 +164,7 @@ def postprocessing(corrcoef, postsamples, variables, abscissa, abscissaname, dat
     <div id="links" class="tab-pane fade">
       <h2 class="text-center">LINKS</h2>
       <h3>Code links</h3>
-      The <a href="https://www.python.org/">python</a> files for running the MCMC are provided below. These use the <a href="http://dan.iel.fm/emcee/current/">emcee</a> python module.
+      The <a href="https://www.python.org/">python</a> files for running the MCMC are provided below. These use the <a href="https://pypi.org/project/bilby/">bilby</a> python module.
       <ul>
         <li><a href="pyfile.py"><code>pyfile.py</code></a> - the python file used to run the MCMC</li>
         <li><a href="mymodel.py"><code>mymodel.py</code></a> - the python model function</li>
@@ -180,7 +180,7 @@ def postprocessing(corrcoef, postsamples, variables, abscissa, abscissaname, dat
 </div>
 
  <footer class="container-fluid bg-2 text-center">
-  <p class="footer"> &copy; Matthew Pitkin (2015), Catriona Marr (2018). The code for this site is licensed under the <a style="color: #BD5D38" href="http://opensource.org/licenses/MIT">MIT license</a>. It is available on <a style="color: #BD5D38" href="https://github.com/mattpitkin/theonlinemcmc">github</a> and <a style="color: #BD5D38" href="https://bitbucket.org/mattpitkin/theonlinemcmc">bitbucket</a>.<br>This site is kindly hosted by the <a style="color: #BD5D38" href="http://www.gla.ac.uk/schools/physics/">School of Physics & Astronomy</a> at the <a style="color: #BD5D38" href="http://www.gla.ac.uk/">University of Glasgow</a>. They bear no reponsibility for the content of this site or the results that are produced.
+  <p class="footer"> &copy; Matthew Pitkin (2015), Catriona Marr (2018), Francis Webb (2019). The code for this site is licensed under the <a style="color: #BD5D38" href="http://opensource.org/licenses/MIT">MIT license</a>. It is available on <a style="color: #BD5D38" href="https://github.com/mattpitkin/theonlinemcmc">github</a> and <a style="color: #BD5D38" href="https://bitbucket.org/mattpitkin/theonlinemcmc">bitbucket</a>.<br>This site is kindly hosted by the <a style="color: #BD5D38" href="http://www.gla.ac.uk/schools/physics/">School of Physics & Astronomy</a> at the <a style="color: #BD5D38" href="http://www.gla.ac.uk/">University of Glasgow</a>. They bear no reponsibility for the content of this site or the results that are produced.
   </p>
 
 <!-- include social media sharing -->
@@ -217,7 +217,7 @@ include('../../social.inc');
     inter95.append(credible_interval(postsamples[:,i], 0.95))
  
   # output the results table
-  resultstable = "<table class=\"table table-striped table-hover\">\n<tr><th>Variable</th><th>Mean</th><th>Median</th><th>Mode</th><th>&sigma;</th><th>68% CI</th><th>95% CI</th></tr>\n"
+  resultstable = "<table class=\"table table-striped table-hover\">\n<tr><th>Variable</th><th>Mean</th><th>Median</th><th>&sigma;</th><th>68% CI</th><th>95% CI</th></tr>\n"
   for i in range(nvars):
     resstrs = ['\('+varnames[i]+'\)'] # the \( \) are the MathJax equation delimiters 
     
@@ -235,12 +235,12 @@ include('../../social.inc');
       medianstr = '%.1f' % medianv
     resstrs.append(medianstr)
     
-    modev = postsamples[np.argmax(postsamples[:,-2]),i]
-    if np.fabs(modev) > 1e3 or np.fabs(modev) < 1e-2:
-      modestr = exp_str(modev)
-    else:
-      modestr = '%.1f' % modev
-    resstrs.append(modestr)
+    #modev = postsamples[np.argmax(postsamples[:,-1]),i]
+    #if np.fabs(modev) > 1e3 or np.fabs(modev) < 1e-2:
+      #modestr = exp_str(modev)
+    #else:
+      #modestr = '%.1f' % modev
+    #resstrs.append(modestr)
 
     sigmav = np.std(postsamples[:,i])
     if np.fabs(sigmav) > 1e3 or np.fabs(sigmav) < 1e-2:
@@ -271,11 +271,13 @@ include('../../social.inc');
       cis2 = '%.1f' % inter95[i][1]
     resstrs.append(ci95str.format(cis1, cis2))
 
-    resultstable += "<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td><td>{5}</td><td>{6}</td></tr>".format(*resstrs)
+    resultstable += "<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td><td>{5}</td></tr>".format(*resstrs)
   resultstable += "</table>\n"
 
   fm['resultstable'] = resultstable
   
+  # get the correlation coefficient matrix
+  # corrcoef = np.corrcoef(postsamples[:,:nvars].T)
 
   corrcoeftable = "<table class=\"table table-striped table-hover\"><th></th>"
   for i in range(nvars):

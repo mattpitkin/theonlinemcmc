@@ -427,20 +427,76 @@ $(document).ready(function() {
 
 
 
-
-  // random example generator
+  
+  // random example generator - not currently in use
   $("#id_randexample").click(function(){
     // Generate random equation - id="modeleq"
-    document.getElementById("modeleq").value = "2.5*x+c"; // .value = randeq;
-    // This then must be 'submitted' via - id="id_model_button"
-    jQuery('#id_model_button').click();
-    // We then must fill out conditions for each parameter, id="id_variablename" 
-    // Const/Variable/Abscissa stored in id="id_vartype_variablename"
-
+    document.getElementById("modeleq").value = "m*x+c"; // .value = randeq;
+    // un-hide the div element
+    $("#id_variables_div").css("display", ""); 
+    // un-hide conditions field
+    $("#id_conditions").prop("type", "text");
+    var variables = ['m','c','x'];
+    var tableel = document.getElementById("table_id");
+    var row = tableel.insertRow(0);
+    row.setAttribute("id","id_vartype_x",0); // Update abscissa 'x'
+    var cell = row.insertCell(0);
+    cell.innerHTML = "x";
+    var cell1 = row.insertCell(-1);
+    var idvartype = "id_vartype_x";
+    cell1.innerHTML = "<select id=\""+idvartype+"\" class=\"form-control\">\
+  <option value=\"\">--Type--</option>\
+  <option value=\"Constant\">Constant</option>\
+  <option value=\"Variable\">Variable</option>\
+  <option value=\"Abscissa\">Independent variable/abscissa</option>\
+</select>";
     document.getElementById("id_vartype_x").value = "Abscissa";
+    var newcell = row.insertCell(-1);
+    var idabscissatype = "id_abscissa_x";
+    newcell.innerHTML = "<select id=\""+idabscissatype+"\" class=\"form-control\">\
+    <option value=\"\">--Input type--</option>\
+    <option value=\"Input\">Input</option>\
+    <option value=\"Upload\">Upload</option>\
+</select>";
+    document.getElementById("id_abscissa_x").value = "Input";
+    var cell = row.insertCell(-1);
+    cell.innerHTML = "<textarea rows=\"1\" cols=\"20\" id=\"id_abscissaval\" class=\"form-control\">1,2,3,4</textarea>";
+    for (index = 0; index < 2; index++){ // loop through 'm' and 'c' variables
+      var row = tableel.insertRow(0);
+      row.setAttribute("id", "id_"+variables[index], 0);
+      var cell = row.insertCell(0);
+      cell.innerHTML = variables[index];
+      var cell = row.insertCell(-1);
+      var idvartype = "id_vartype_"+variables[index];
+      cell.innerHTML = "<select id=\""+idvartype+"\" class=\"form-control\">\
+    <option value=\"\">--Type--</option>\
+    <option value=\"Constant\">Constant</option>\
+    <option value=\"Variable\">Variable</option>\
+    <option value=\"Abscissa\">Independent variable/abscissa</option>\
+  </select>";
+      var newcell = row.insertCell(-1);
+      var idpriortype = "id_priortype_"+variables[index];
+      newcell.innerHTML = "<select id=\""+idpriortype+"\" class=\"form-control\">\
+      <option value=\"\">--Prior--</option>\
+      <option value=\"Uniform\">Uniform</option>\
+      <option value=\"LogUniform\">Log(Uniform)</option>\
+      <option value=\"Gaussian\">Gaussian</option>\
+      <option value=\"Exponential\">Exponential</option>\
+  </select>";
+      document.getElementById("id_priortype_"+variables[index]).value = "Uniform";
+      var cell = row.insertCell(-1);
+      cell.innerHTML = "<input type=\"text\" id=\"minval_"+variables[index]+"\" value=\"-10\" class=\"form-control\">";
+      cell = row.insertCell(-1);
+      cell.innerHTML = "<input type=\"text\" id=\"maxval_"+variables[index]+"\" value=\"10\" class=\"form-control\">";
+    }
     
-      // Always keep 'x' as abssissa, use three other variables, one being constant?
-      // Input abscissa values - always of length 50?
+    
+    document.getElementById("id_vartype_m").value = "Variable";
+    document.getElementById("id_vartype_c").value = "Variable";
+    document.getElementById("data_input_type").value = "Input";
+    var input = document.getElementById("id_data_div");
+    //var cell = input.insertCell(-1);
+    //cell.innerHTML = "<textarea rows=\"1\" cols=\"20\" id=\"id_abscissaval\" class=\"form-control\">1,2,3,4</textarea>";
 
     // Input data - same length as abscissa
 

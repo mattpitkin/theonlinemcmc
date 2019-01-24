@@ -180,8 +180,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <div id="about" class="container-top bg-1 text-center">
   <h2 class="title">THE ONLINE MCMC</h2>
-    <h3>Do you have some data and a model that you want to fit to it? Well here's the website for you (see <a href="#caveats">caveats</a>).
-On this website you can input a model function defined by a set of parameters including those that you want fit, and your data, and it will run a statisical sampling algorithm to estimate the posterior probability distributions of those parameters.<br><br>
+    <h3>Do you have some data and a model that you want to fit? Well here's the website for you (see <a href="#caveats">caveats</a>)!
+On this website you can input a model function defined by a set of parameters, including those that you want fit, as well as your data, and it will run a statisical sampling algorithm to estimate the posterior probability distributions of those parameters.<br><br>
 This site makes use of the Bayesian inference python package <a href="https://lscsoft.docs.ligo.org/bilby/index.html">Bilby</a> to access statisical samplers.
 Beyond <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo">Markov chain Monte Carlo</a> (MCMC), users are able to select from a variety of statistical <a href="#id_sampler_input">samplers</a> and it is encouraged to trial a variety to achieve the best fit for your model.</h3>
 </div>
@@ -288,10 +288,10 @@ Beyond <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo">Markov c
       <tr id="sample_row"><td>
         <select id="sampler_input_type" class="form-control">
           <option value="">--Type--</option>
-          <option value="emcee">Emcee (Under development)</option>
+          <option value="emcee">Emcee</option>
           <option value="dynesty">Dynesty</option>
           <option value="nestle">Nestle</option>
-          <option value="pymc3">PYMC3 (Under development)</option>
+          <option value="pymc3">PYMC3</option>
         </select></td>
       </tr>
       
@@ -393,11 +393,12 @@ Beyond <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo">Markov c
 
 <div id="instructions" class="container-fluid bg-3 text-left">
   <h2 class="text-center">INSTRUCTIONS</h2>
-  
+  <!-- Not currently working
   <h3 class="text-left" id="randexample">Generate Random Example</h3>
   <p>
   To demonstrate how the site works, click <a href="#input" class="btn btn-default" id="id_randexample">here</a> to generate a random example with data. Once selected, it is possible to alter values and equations before submitting.
   </p> 
+  -->
 
   <h3 class="text-left" id="themodel">The model</h3>
   <p>
@@ -488,20 +489,20 @@ Beyond <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo">Markov c
   </p>
       </div>
       <div id="dynesty" class="tab-pane fade">
-      For Dynesty, only one input is required:
+      Dynesty is a Nested Sampler. Nested sampling is similar to the MCMC method, however the nature of the sampling allows one to calculate the integral of the probability distribution, dynamically assinging new live points as the algorithm iterates. For Dynesty, only one input is required:
       <ul>
         <li><em>No. of live points </em>: this is described in greater detail <a href="https://dynesty.readthedocs.io/en/latest/faq.html#live-point-questions">here</a>. This needs to be a positive integer and in general should be at least 1 greater than the number of fitting parameters that exist.
     </ul>
       </div>
       <div id="nestle" class="tab-pane fade">
-        Nestle sampling is similar to the MCMC method, however the nature of the sampling allows one to calculate the integral of the probability distribution. For Nestle, two inputs are required:
+        Nested sampling is similar to the MCMC method, however the nature of the sampling allows one to calculate the integral of the probability distribution, dynamically assinging new live points as the algorithm iterates. For Nestle, two inputs are required:
         <ul>
           <li><em>No. of live points </em>: the number of active points, a positive interger at least one greater than the number of fitting parameters that exist. </li>
           <li><em>Method</em> : How the sampler chooses new points within the target parameter space. Currently can choose from 'Classic', 'Single' or 'Multi'. Further information can be found <a href="http://kylebarbary.com/nestle/">here</a></li>
         </ul>
       </div>
       <div id="pymc3" class="tab-pane fade">
-        For PYMC3, three inputs are required:
+        PYMC3 is an alternative MCMC sampler. For PYMC3, three inputs are required:
         <ul>
           <li><em>No. of draws </em>: The number of sample draws from the posterior per chain. </li>
           <li><em>No. of chains </em>: The number of independent MCMC chains to run. </li>
@@ -591,7 +592,7 @@ Beyond <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo">Markov c
 </div>
 
  <footer class="container-fluid bg-2 text-center">
-  <p class="footer"> &copy; Matthew Pitkin (2015), Catriona Marr (2018). The code for this site is licensed under the <a style="color: #BD5D38" href="http://opensource.org/licenses/MIT">MIT license</a>. It is available on <a style="color: #BD5D38" href="https://github.com/mattpitkin/theonlinemcmc">github</a> and <a style="color: #BD5D38" href="https://bitbucket.org/mattpitkin/theonlinemcmc">bitbucket</a>.<br>This site is kindly hosted by the <a style="color: #BD5D38" href="http://www.gla.ac.uk/schools/physics/">School of Physics & Astronomy</a> at the <a style="color: #BD5D38" href="http://www.gla.ac.uk/">University of Glasgow</a>. They bear no reponsibility for the content of this site or the results that are produced.
+  <p class="footer"> &copy; Matthew Pitkin (2015), Catriona Marr (2018), Francis Webb (2019). The code for this site is licensed under the <a style="color: #BD5D38" href="http://opensource.org/licenses/MIT">MIT license</a>. It is available on <a style="color: #BD5D38" href="https://github.com/mattpitkin/theonlinemcmc">github</a> and <a style="color: #BD5D38" href="https://bitbucket.org/mattpitkin/theonlinemcmc">bitbucket</a>.<br>This site is kindly hosted by the <a style="color: #BD5D38" href="http://www.gla.ac.uk/schools/physics/">School of Physics & Astronomy</a> at the <a style="color: #BD5D38" href="http://www.gla.ac.uk/">University of Glasgow</a>. They bear no reponsibility for the content of this site or the results that are produced.
   </p>
 
 <!-- include Social Media sharing file -->
