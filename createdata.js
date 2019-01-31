@@ -557,6 +557,7 @@ errout = 0\n\
 # read in the data\n\
 {readdata}\
 \n\
+{intcheck}\
 # read in the abscissa values\n\
 {readabscissa}\
 \n\
@@ -1037,14 +1038,28 @@ def mymodel({arguments}):\n\
         bilbysigmavar += sigmacheck;
         sigmacheck += "\n";
       }
+      intcheck = "";
       bilbylikefunction = "Gaussian";
     }
     else if( $("#likelihood_input_type").val() == "Studentst" ){
       bilbysigmavar = ", nu=data.size, sigma=1";
       sigmacheck = "sigma = 1\n";
       bilbylikefunction = "StudentT";
+      intcheck = "";
+    }
+    else if($("#likelihood_input_type").val() == "Poisson" ){
+      bilbylikefunction = "Poisson";
+      sigmacheck = "";
+      bilbysigmavar = "";
+      intcheck = "# Checking data values are all integers\n";
+      intcheck += "if np.all(np.mod(data, 1) == 0) == True:\n";
+      intcheck += "  data = data.astype(int)\n";
+      intcheck += "else:\n";
+      intcheck += "  errval = POIS_INT_ERR\n";
+      intcheck += "  errout = 'Data must be non-negative integers'\n\n";
     }
     
+    outputStrings["intcheck"] = intcheck;
     outputStrings["sigmacheck"] = sigmacheck;
     var runlikelihood = "if errval == 0:\n";
     runlikelihood += "  try:\n";

@@ -276,6 +276,7 @@ Beyond <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo">Markov c
           <option value="">--Type--</option>
           <option value="Gaussian">Gaussian</option>
           <option value="Studentst">Student's t</option>
+          <option value="Poisson">Poisson</option>
         </select></td>
       </tr>
     </table>
@@ -451,7 +452,7 @@ Beyond <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo">Markov c
 
   <h3 class="text-left" id="id_likelihood_header">Likelihood input</h3>
   <p>
-    There are currently two allowed <a href="https://en.wikipedia.org/wiki/Likelihood_function">likelihood functions</a>:
+    There are currently three given <a href="https://en.wikipedia.org/wiki/Likelihood_function">likelihood functions</a>:
     <ul>
       <li><strong>Gaussian</strong>: a <a href="https://en.wikipedia.org/wiki/Normal_distribution">Gaussian (or Normal) probability distribution</a> (this is one of the most common, and is often the <a href="https://en.wikipedia.org/wiki/Prior_probability#Uninformative_priors">least informative</a>, likelihood functions). If using this likelihood function there are three additional options:
       <ul>
@@ -460,6 +461,7 @@ Beyond <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo">Markov c
         <li>choose to include the noise standard deviation as another parameter to be fit (i.e. if it is unknown). If you choose this option then a prior (as <a href="#prior">above</a>) is required.
       </ul>
       <li><strong>Student's <em>t</em></strong>: the <a href="https://en.wikipedia.org/wiki/Student%27s_t-distribution">Student's <em>t</em> likelihood</a> is similar to the Gaussian likelihood, but it does not require a noise standard deviation to be given (the noise is assumed to be <a href="https://en.wikipedia.org/wiki/Stationary_process">stationary</a> over the dataset and has been analytically <a href="https://en.wikipedia.org/wiki/Marginal_distribution">marginalised</a> over).
+      <li><strong>Poisson</strong>: the <a href="https://en.wikipedia.org/wiki/Poisson_distribution">Poisson distribution is similar to the Gaussian, however it deals with discrete random variables, such as counting a radioactive decay source. The data input therefore is required to be integer counts and only positive values.
     </ul>
   </p>
   <br>
