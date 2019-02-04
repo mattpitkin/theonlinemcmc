@@ -84,6 +84,7 @@ def postprocessing(corrcoef, postsamples, variables, abscissa, abscissaname, dat
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
 <!-- Make sure text is readable with previous css formatting -->
+<style>body{{color:dimgrey}}</style> 
 
 <title>The Online MCMC: Results page</title>
 </head>
@@ -316,3 +317,4 @@ include('../../social.inc');
   
   # email the page
   emailresponse(email, outdir)
+  

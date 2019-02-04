@@ -183,7 +183,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <h3>Do you have some data and a model that you want to fit? Well here's the website for you (see <a href="#caveats">caveats</a>)!
 On this website you can input a model function defined by a set of parameters, including those that you want fit, as well as your data, and it will run a statisical sampling algorithm to estimate the posterior probability distributions of those parameters.<br><br>
 This site makes use of the Bayesian inference python package <a href="https://lscsoft.docs.ligo.org/bilby/index.html">Bilby</a> to access statisical samplers.
-Beyond <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo">Markov chain Monte Carlo</a> (MCMC), users are able to select from a variety of statistical <a href="#id_sampler_input">samplers</a> and it is encouraged to trial a variety to achieve the best fit for your model.</h3>
+Beyond <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo">Markov chain Monte Carlo</a> (MCMC), users are able to select from a variety of statistical <a href="#id_sampler_input">samplers</a> and it is encouraged to trial a variety to achieve the best performance for your model.</h3>
 </div>
 
 <div id="examples" class="container-fluid bg-3 text-center">
@@ -467,7 +467,7 @@ Beyond <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo">Markov c
   <br>
 
   <h3 class="text-left" id="id_sampler_input">Sampler Inputs</h2>
-  Through <a href="https://lscsoft.docs.ligo.org/bilby/index.html">Bilby</a> one can select from a variety of statistical samplers, each utilising a slightly different algorithm to model the parameters. The samplers available are broken down into 
+  Through <a href="https://lscsoft.docs.ligo.org/bilby/index.html">Bilby</a> one can select from a variety of statistical samplers, each utilising a slightly different algorithm to model the parameters. The samplers available are broken down into
   two separate cases, <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo">Markov chain Monte Carlo</a> methods (see MCMC and PYMC3) and <a href="https://en.wikipedia.org/wiki/Nested_sampling_algorithm">Nested Sampling algorithms</a> (see Dynesty and Nestle).
   <br>
   <br>
