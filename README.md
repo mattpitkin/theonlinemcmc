@@ -8,4 +8,4 @@ The website (currently under testing) can be found at http://www.theonlinemcmc.c
 
 The code on this site is licensed under the [MIT License](http://opensource.org/licenses/MIT).
 
-&copy; Matthew Pitkin, 2015, Catriona Marr, 2018
+&copy; Matthew Pitkin, 2015, Catriona Marr, 2018, Francis Webb, 2019

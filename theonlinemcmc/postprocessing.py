@@ -42,7 +42,7 @@ def credible_interval(dsamples, ci):
 
    return (np.min(bins[histIndices[:j]]), np.max(bins[histIndices[:j]]))
 
-def postprocessing(postsamples, variables, abscissa, abscissaname, data, email, outdir, evidence):
+def postprocessing(corrcoef, postsamples, variables, abscissa, abscissaname, data, email, outdir, evidence):
   # import the corner plot code
   import corner
 
@@ -79,6 +79,13 @@ def postprocessing(postsamples, variables, abscissa, abscissaname, data, email, 
 <!-- include MathJax -->
 <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
+<!-- Include script to create tabs - https://www.w3schools.com/bootstrap/bootstrap_tabs_pills.asp -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+<!-- Make sure text is readable with previous css formatting -->
+<style>body{{color:dimgrey}}</style> 
+
 <title>The Online MCMC: Results page</title>
 </head>
 
@@ -110,58 +117,71 @@ def postprocessing(postsamples, variables, abscissa, abscissaname, data, email, 
   <h3>Your results have been generated and are displayed below.</h3>
 </div>
 
-<div id="margpos" class="container-fluid bg-2 text-left">
-  <h3 class="text-center" id="instructions">MARGINALISED POSTERIORS</h3>
-  <p>
-    The diagonal plots show the <a style="color: #BD5D38" href="https://en.wikipedia.org/wiki/Marginal_distribution">marginal</a> <a style="color: #BD5D38" href="https://en.wikipedia.org/wiki/Posterior_probability">posterior probability</a> distributions for each of your fitted parameters. The off-diagonal plots show 1 and 2&sigma; probability contours for the <a style="color: #BD5D38" href="https://en.wikipedia.org/wiki/Joint_probability_distribution">joint</a> marginal posterior probability distributions of pairs of parameters. This has been produced with <a style="color: #BD5D38" href="https://github.com/dfm/corner.py">corner.py</a>.
-  </p>
-  {posteriorfig}
-</div>
-
-<div id="bestfit" class="container-fluid bg-3 text-left">
-  <h3 class="text-center" id="functions">BEST FIT VALUES</h3>
-  
-  The <a href="https://en.wikipedia.org/wiki/Mean">mean</a>, <a href="https://en.wikipedia.org/wiki/Median">median</a> and <a href="https://en.wikipedia.org/wiki/Mode_(statistics)">mode</a> of the probability distributions for each parameter. Also give are the <a href="https://en.wikipedia.org/wiki/Standard_deviation">standard deviation</a> of the distributions and minimal 68% and 95% <a href="https://en.wikipedia.org/wiki/Credible_interval">credible intervals</a> (CI).
-  <div>
-    {resultstable}
-  </div>
-
-  <h3>Correlation coefficient matrix</h3>
-
-  The <a href="https://en.wikipedia.org/wiki/Covariance_matrix#Correlation_matrix">correlation coefficients</a> between each of the fitted parameters.
-  <div>
-    {corrcoeftable}
-  </div>
-</div>
-
-{evidencevalue}
-
-<div class="container-fluid bg-1 text-left">
-  <h3 class="text-center" id="instructions">BEST FIT MODEL DISTRIBUTION</h3>
-  <p>
-    This plot shows the distribution of 100 models drawn randomly from the posterior distribution. The best fitting models will be clustered over each other.
-  </p>
-  {bestfitfig}
-</div>
-
-<div id="links" class="container-fluid bg-3 text-left">
-  <h2 class="text-center">LINKS</h2>
-  <h3>Code links</h3>
-  The <a href="https://www.python.org/">python</a> files for running the MCMC are provided below. These use the <a href="http://dan.iel.fm/emcee/current/">emcee</a> python module.
-  <ul>
-    <li><a href="pyfile.py"><code>pyfile.py</code></a> - the python file used to run the MCMC</li>
-    <li><a href="mymodel.py"><code>mymodel.py</code></a> - the python model function</li>
+<div class="container">
+  <ul class="nav nav-pills">
+    <li class="active"><a data-toggle="pill" href="#margpos">MARGINALISED POSTERIORS</a></li>
+    <li><a data-toggle="pill" href="#bestfit">BEST FIT VALUES & DISTRIBUTION</a></li>
+    <li><a data-toggle="pill" href="#links">LINKS</a></li>
   </ul>
 
-  <h3>Data links</h3>
-  <ul>
-    <li><a href="posterior_samples.txt.gz"><code>posterior_samples.txt.gz</code></a> - a gzipped tarball containing the posterior samples</li>
-    <li><a href="variables.txt"><code>variables.txt</code></a> - the variables in the order of the posterior file</li>
-  </ul>
+   <div class="tab-content">
+
+
+    <div id="margpos" class="tab-pane fade in active">
+      <h3 class="text-center" id="instructions">MARGINALISED POSTERIORS</h3>
+      <p>
+        The diagonal plots show the <a style="color: #BD5D38" href="https://en.wikipedia.org/wiki/Marginal_distribution">marginal</a> <a style="color: #BD5D38" href="https://en.wikipedia.org/wiki/Posterior_probability">posterior probability</a> distributions for each of your fitted parameters. The off-diagonal plots show 1 and 2&sigma; probability contours for the <a style="color: #BD5D38" href="https://en.wikipedia.org/wiki/Joint_probability_distribution">joint</a> marginal posterior probability distributions of pairs of parameters. This has been produced with <a style="color: #BD5D38" href="https://github.com/dfm/corner.py">corner.py</a>.
+      </p>
+      {posteriorfig}
+    </div>
+
+    <div id="bestfit" class="tab-pane fade">
+      <h3 class="text-center" id="functions">BEST FIT VALUES</h3>
+      
+      The <a href="https://en.wikipedia.org/wiki/Mean">mean</a> and <a href="https://en.wikipedia.org/wiki/Median">median</a> of the probability distributions for each parameter are displayed in the table below. Also given are the <a href="https://en.wikipedia.org/wiki/Standard_deviation">standard deviation</a> of the distributions and minimal 68% and 95% <a href="https://en.wikipedia.org/wiki/Credible_interval">credible intervals</a> (CI).
+      <div>
+        {resultstable}
+      </div>
+
+      <h3>Correlation coefficient matrix</h3>
+
+      The <a href="https://en.wikipedia.org/wiki/Covariance_matrix#Correlation_matrix">correlation coefficients</a> between each of the fitted parameters.
+      <div>
+        {corrcoeftable}
+      </div>
+    
+
+    {evidencevalue}
+
+    <div class="container-fluid bg-1 text-left">
+      <h3 class="text-center" id="instructions">BEST FIT MODEL DISTRIBUTION</h3>
+      <p>
+        This plot shows the distribution of 100 models drawn randomly from the posterior distribution. The best fitting models will be clustered over each other.
+      </p>
+      {bestfitfig}
+    </div>
+    </div>
+
+    <div id="links" class="tab-pane fade">
+      <h2 class="text-center">LINKS</h2>
+      <h3>Code links</h3>
+      The <a href="https://www.python.org/">python</a> files for running the MCMC are provided below. These use the <a href="https://pypi.org/project/bilby/">bilby</a> python module.
+      <ul>
+        <li><a href="pyfile.py"><code>pyfile.py</code></a> - the python file used to run the MCMC</li>
+        <li><a href="mymodel.py"><code>mymodel.py</code></a> - the python model function</li>
+      </ul>
+
+      <h3>Data links</h3>
+      <ul>
+        <li><a href="posterior_samples.txt.gz"><code>posterior_samples.txt.gz</code></a> - a gzipped tarball containing the posterior samples</li>
+        <li><a href="variables.txt"><code>variables.txt</code></a> - the variables in the order of the posterior file</li>
+      </ul>
+    </div>
+  </div>
 </div>
 
  <footer class="container-fluid bg-2 text-center">
-  <p class="footer"> &copy; Matthew Pitkin (2015), Catriona Marr (2018). The code for this site is licensed under the <a style="color: #BD5D38" href="http://opensource.org/licenses/MIT">MIT license</a>. It is available on <a style="color: #BD5D38" href="https://github.com/mattpitkin/theonlinemcmc">github</a> and <a style="color: #BD5D38" href="https://bitbucket.org/mattpitkin/theonlinemcmc">bitbucket</a>.<br>This site is kindly hosted by the <a style="color: #BD5D38" href="http://www.gla.ac.uk/schools/physics/">School of Physics & Astronomy</a> at the <a style="color: #BD5D38" href="http://www.gla.ac.uk/">University of Glasgow</a>. They bear no reponsibility for the content of this site or the results that are produced.
+  <p class="footer"> &copy; Matthew Pitkin (2015), Catriona Marr (2018), Francis Webb (2019). The code for this site is licensed under the <a style="color: #BD5D38" href="http://opensource.org/licenses/MIT">MIT license</a>. It is available on <a style="color: #BD5D38" href="https://github.com/mattpitkin/theonlinemcmc">github</a> and <a style="color: #BD5D38" href="https://bitbucket.org/mattpitkin/theonlinemcmc">bitbucket</a>.<br>This site is kindly hosted by the <a style="color: #BD5D38" href="http://www.gla.ac.uk/schools/physics/">School of Physics & Astronomy</a> at the <a style="color: #BD5D38" href="http://www.gla.ac.uk/">University of Glasgow</a>. They bear no reponsibility for the content of this site or the results that are produced.
   </p>
 
 <!-- include social media sharing -->
@@ -176,7 +196,7 @@ include('../../social.inc');
   fm['outdir'] = outdir
 
   varnames = variables.split(',')
-
+  nvars = len(varnames)
   # convert any Greek alphabet variable names into LaTeX tags (prefix with \)
   for i, var in enumerate(varnames):
     if var in greekletters:
@@ -198,7 +218,7 @@ include('../../social.inc');
     inter95.append(credible_interval(postsamples[:,i], 0.95))
  
   # output the results table
-  resultstable = "<table class=\"table table-striped table-hover\">\n<tr><th>Variable</th><th>Mean</th><th>Median</th><th>Mode</th><th>&sigma;</th><th>68% CI</th><th>95% CI</th></tr>\n"
+  resultstable = "<table class=\"table table-striped table-hover\">\n<tr><th>Variable</th><th>Mean</th><th>Median</th><th>&sigma;</th><th>68% CI</th><th>95% CI</th></tr>\n"
   for i in range(nvars):
     resstrs = ['\('+varnames[i]+'\)'] # the \( \) are the MathJax equation delimiters 
     
@@ -216,12 +236,12 @@ include('../../social.inc');
       medianstr = '%.1f' % medianv
     resstrs.append(medianstr)
     
-    modev = postsamples[np.argmax(postsamples[:,-1]),i]
-    if np.fabs(modev) > 1e3 or np.fabs(modev) < 1e-2:
-      modestr = exp_str(modev)
-    else:
-      modestr = '%.1f' % modev
-    resstrs.append(modestr)
+    #modev = postsamples[np.argmax(postsamples[:,-1]),i]
+    #if np.fabs(modev) > 1e3 or np.fabs(modev) < 1e-2:
+      #modestr = exp_str(modev)
+    #else:
+      #modestr = '%.1f' % modev
+    #resstrs.append(modestr)
 
     sigmav = np.std(postsamples[:,i])
     if np.fabs(sigmav) > 1e3 or np.fabs(sigmav) < 1e-2:
@@ -252,13 +272,13 @@ include('../../social.inc');
       cis2 = '%.1f' % inter95[i][1]
     resstrs.append(ci95str.format(cis1, cis2))
 
-    resultstable += "<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td><td>{5}</td><td>{6}</td></tr>".format(*resstrs)
+    resultstable += "<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td><td>{5}</td></tr>".format(*resstrs)
   resultstable += "</table>\n"
 
   fm['resultstable'] = resultstable
   
   # get the correlation coefficient matrix
-  corrcoef = np.corrcoef(postsamples[:,:nvars].T)
+  # corrcoef = np.corrcoef(postsamples[:,:nvars].T)
 
   corrcoeftable = "<table class=\"table table-striped table-hover\"><th></th>"
   for i in range(nvars):
@@ -297,3 +317,4 @@ include('../../social.inc');
   
   # email the page
   emailresponse(email, outdir)
+  

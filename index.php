@@ -9,20 +9,20 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.css">
 
+<!-- Include jQuery -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
 <!-- Include theme font -->
 <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
-
-<!-- Include jQuery -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
 <!-- Include MathJax -->
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
 
 <!-- Include script to create the input data table and output the python script -->
-<script type="text/javascript" src="createdata.js"></script>
+<script type="text/javascript" src="createdata.js?ver<%=DateTime.Now.Ticks.ToString()%"></script>
 
 <!-- Include script to create tabs - https://www.w3schools.com/bootstrap/bootstrap_tabs_pills.asp -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -180,8 +180,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <div id="about" class="container-top bg-1 text-center">
   <h2 class="title">THE ONLINE MCMC</h2>
-    <h3>Do you have some data and a model that you want to fit to it? Well here's the website for you (see <a href="#caveats">caveats</a>).
-On this website you can input a model function defined by a set of parameters including those that you want fit, and your data, and it will run a <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo">Markov chain Monte Carlo</a> (MCMC) algorithm to estimate the posterior probability distributions of those parameters. This site makes use of the python MCMC package <a href="http://dan.iel.fm/emcee/current/">emcee</a> written by <a href="http://dan.iel.fm/">Dan Foreman-Mackey</a>.</h3>
+    <h3>Do you have some data and a model that you want to fit? Well here's the website for you (see <a href="#caveats">caveats</a>)!
+On this website you can input a model function defined by a set of parameters, including those that you want fit, as well as your data, and it will run a statisical sampling algorithm to estimate the posterior probability distributions of those parameters.<br><br>
+This site makes use of the Bayesian inference python package <a href="https://lscsoft.docs.ligo.org/bilby/index.html">Bilby</a> to access statisical samplers.
+Beyond <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo">Markov chain Monte Carlo</a> (MCMC), users are able to select from a variety of statistical <a href="#id_sampler_input">samplers</a> and it is encouraged to trial a variety to achieve the best performance for your model.</h3>
 </div>
 
 <div id="examples" class="container-fluid bg-3 text-center">
@@ -274,6 +276,7 @@ On this website you can input a model function defined by a set of parameters in
           <option value="">--Type--</option>
           <option value="Gaussian">Gaussian</option>
           <option value="Studentst">Student's t</option>
+          <option value="Poisson">Poisson</option>
         </select></td>
       </tr>
     </table>
@@ -281,7 +284,7 @@ On this website you can input a model function defined by a set of parameters in
   </p>
 
     <div id="id_sampler_div">
-    Input the <a style="color: #BD5D38" href="#id_sampler_header">sampler</a>: <span data-toggle="tooltip" title="Define the sampler using the options below." class="glyphicon glyphicon-question-sign"></span>
+    Input the <a style="color: #BD5D38" href="#id_sampler_input">sampler</a>: <span data-toggle="tooltip" title="Define the sampler using the options below." class="glyphicon glyphicon-question-sign"></span>
     <table id="sample_table">
       <tr id="sample_row"><td>
         <select id="sampler_input_type" class="form-control">
@@ -391,11 +394,12 @@ On this website you can input a model function defined by a set of parameters in
 
 <div id="instructions" class="container-fluid bg-3 text-left">
   <h2 class="text-center">INSTRUCTIONS</h2>
-  
+  <!-- Not currently working
   <h3 class="text-left" id="randexample">Generate Random Example</h3>
   <p>
   To demonstrate how the site works, click <a href="#input" class="btn btn-default" id="id_randexample">here</a> to generate a random example with data. Once selected, it is possible to alter values and equations before submitting.
-  </p>
+  </p> 
+  -->
 
   <h3 class="text-left" id="themodel">The model</h3>
   <p>
@@ -448,7 +452,7 @@ On this website you can input a model function defined by a set of parameters in
 
   <h3 class="text-left" id="id_likelihood_header">Likelihood input</h3>
   <p>
-    There are currently two allowed <a href="https://en.wikipedia.org/wiki/Likelihood_function">likelihood functions</a>:
+    There are currently three given <a href="https://en.wikipedia.org/wiki/Likelihood_function">likelihood functions</a>:
     <ul>
       <li><strong>Gaussian</strong>: a <a href="https://en.wikipedia.org/wiki/Normal_distribution">Gaussian (or Normal) probability distribution</a> (this is one of the most common, and is often the <a href="https://en.wikipedia.org/wiki/Prior_probability#Uninformative_priors">least informative</a>, likelihood functions). If using this likelihood function there are three additional options:
       <ul>
@@ -457,11 +461,16 @@ On this website you can input a model function defined by a set of parameters in
         <li>choose to include the noise standard deviation as another parameter to be fit (i.e. if it is unknown). If you choose this option then a prior (as <a href="#prior">above</a>) is required.
       </ul>
       <li><strong>Student's <em>t</em></strong>: the <a href="https://en.wikipedia.org/wiki/Student%27s_t-distribution">Student's <em>t</em> likelihood</a> is similar to the Gaussian likelihood, but it does not require a noise standard deviation to be given (the noise is assumed to be <a href="https://en.wikipedia.org/wiki/Stationary_process">stationary</a> over the dataset and has been analytically <a href="https://en.wikipedia.org/wiki/Marginal_distribution">marginalised</a> over).
+      <li><strong>Poisson</strong>: the <a href="https://en.wikipedia.org/wiki/Poisson_distribution">Poisson distribution is similar to the Gaussian, however it deals with discrete random variables, such as counting a radioactive decay source. The data input therefore is required to be integer counts and only positive values.
     </ul>
   </p>
   <br>
 
-  <h3 class="text-left" id="id_mcmc_header">Sampler Inputs</h2>
+  <h3 class="text-left" id="id_sampler_input">Sampler Inputs</h2>
+  Through <a href="https://lscsoft.docs.ligo.org/bilby/index.html">Bilby</a> one can select from a variety of statistical samplers, each utilising a slightly different algorithm to model the parameters. The samplers available are broken down into
+  two separate cases, <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo">Markov chain Monte Carlo</a> methods (see MCMC and PYMC3) and <a href="https://en.wikipedia.org/wiki/Nested_sampling_algorithm">Nested Sampling algorithms</a> (see Dynesty and Nestle).
+  <br>
+  <br>
   <div class="container" width="80px">
     <ul class="nav nav-pills">
     <li class="active"><a data-toggle="pill" href="#mcmc">MCMC</a></li>
@@ -482,20 +491,20 @@ On this website you can input a model function defined by a set of parameters in
   </p>
       </div>
       <div id="dynesty" class="tab-pane fade">
-      For Dynesty, only one input is required:
+      Dynesty is a Nested Sampler. Nested sampling is similar to the MCMC method, however the nature of the sampling allows one to calculate the integral of the probability distribution, dynamically assinging new live points as the algorithm iterates. For Dynesty, only one input is required:
       <ul>
         <li><em>No. of live points </em>: this is described in greater detail <a href="https://dynesty.readthedocs.io/en/latest/faq.html#live-point-questions">here</a>. This needs to be a positive integer and in general should be at least 1 greater than the number of fitting parameters that exist.
     </ul>
       </div>
       <div id="nestle" class="tab-pane fade">
-        Nestle sampling is similar to the MCMC method, however the nature of the sampling allows one to calculate the integral of the probability distribution. For Nestle, two inputs are required:
+        Nested sampling is similar to the MCMC method, however the nature of the sampling allows one to calculate the integral of the probability distribution, dynamically assinging new live points as the algorithm iterates. For Nestle, two inputs are required:
         <ul>
           <li><em>No. of live points </em>: the number of active points, a positive interger at least one greater than the number of fitting parameters that exist. </li>
           <li><em>Method</em> : How the sampler chooses new points within the target parameter space. Currently can choose from 'Classic', 'Single' or 'Multi'. Further information can be found <a href="http://kylebarbary.com/nestle/">here</a></li>
         </ul>
       </div>
       <div id="pymc3" class="tab-pane fade">
-        For PYMC3, three inputs are required:
+        PYMC3 is an alternative MCMC sampler. For PYMC3, three inputs are required:
         <ul>
           <li><em>No. of draws </em>: The number of sample draws from the posterior per chain. </li>
           <li><em>No. of chains </em>: The number of independent MCMC chains to run. </li>
@@ -504,7 +513,7 @@ On this website you can input a model function defined by a set of parameters in
       </div>
     </div>
   </div>
-  If in doubt use the defaults and see how things <a href="#caveats">turn out</a>.
+  <b>If in doubt use the defaults and see how things <a href="#caveats">turn out</a></b>.
   
 </div>
 
@@ -576,7 +585,7 @@ On this website you can input a model function defined by a set of parameters in
   <h2>CAVEATS</h2>
 
   <p>
-    The MCMC algorithm is not guaranteed to produce sensible results every time, and your output may contain errors or look odd. Some information and trouble shooting can be found <a href="http://dan.iel.fm/emcee/current/user/faq/">here</a>.
+    The sampling algorithms provided are not guaranteed to produce sensible results every time, and your output may contain errors or look odd. Some information and trouble shooting for the samplers can be found <a href="https://lscsoft.docs.ligo.org/bilby/samplers.html">here</a>.
   </p>
 
   <p>
@@ -585,7 +594,7 @@ On this website you can input a model function defined by a set of parameters in
 </div>
 
  <footer class="container-fluid bg-2 text-center">
-  <p class="footer"> &copy; Matthew Pitkin (2015), Catriona Marr (2018). The code for this site is licensed under the <a style="color: #BD5D38" href="http://opensource.org/licenses/MIT">MIT license</a>. It is available on <a style="color: #BD5D38" href="https://github.com/mattpitkin/theonlinemcmc">github</a> and <a style="color: #BD5D38" href="https://bitbucket.org/mattpitkin/theonlinemcmc">bitbucket</a>.<br>This site is kindly hosted by the <a style="color: #BD5D38" href="http://www.gla.ac.uk/schools/physics/">School of Physics & Astronomy</a> at the <a style="color: #BD5D38" href="http://www.gla.ac.uk/">University of Glasgow</a>. They bear no reponsibility for the content of this site or the results that are produced.
+  <p class="footer"> &copy; Matthew Pitkin (2015), Catriona Marr (2018), Francis Webb (2019). The code for this site is licensed under the <a style="color: #BD5D38" href="http://opensource.org/licenses/MIT">MIT license</a>. It is available on <a style="color: #BD5D38" href="https://github.com/mattpitkin/theonlinemcmc">github</a> and <a style="color: #BD5D38" href="https://bitbucket.org/mattpitkin/theonlinemcmc">bitbucket</a>.<br>This site is kindly hosted by the <a style="color: #BD5D38" href="http://www.gla.ac.uk/schools/physics/">School of Physics & Astronomy</a> at the <a style="color: #BD5D38" href="http://www.gla.ac.uk/">University of Glasgow</a>. They bear no reponsibility for the content of this site or the results that are produced.
   </p>
 
 <!-- include Social Media sharing file -->
