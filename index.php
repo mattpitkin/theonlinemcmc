@@ -556,17 +556,19 @@ Beyond <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo">Markov c
 
       <li><span class="describe"><a href="https://en.wikipedia.org/wiki/Exponential_function">Exponential function</a> <em>e</em></span>: <a href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.exp.html">exp</a></li>
 
-      <li><span class="describe"><a href="https://en.wikipedia.org/wiki/Natural_logarithm">natural logarithm</a> (base <em>e</em>)</span>: <a href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.log.html">log</a></li>
+      <li><span class="describe"><a href="https://en.wikipedia.org/wiki/Natural_logarithm">Natural logarithm</a> (base <em>e</em>)</span>: <a href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.log.html">log</a></li>
 
-      <li><span class="describe"><a href="https://en.wikipedia.org/wiki/Common_logarithm">commom logarithm</a> (base 10)</span>: <a href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.log10.html">log10</a></li>
+      <li><span class="describe"><a href="https://en.wikipedia.org/wiki/Common_logarithm">Commom logarithm</a> (base 10)</span>: <a href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.log10.html">log10</a></li>
 
-      <li><span class="describe"><a href="https://en.wikipedia.org/wiki/Binary_logarithm">binary logarithm</a> (base 2)</span>: <a href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.log2.html">log2</a></li>
+      <li><span class="describe"><a href="https://en.wikipedia.org/wiki/Binary_logarithm">Binary logarithm</a> (base 2)</span>: <a href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.log2.html">log2</a></li>
 
       <li><span class="describe"><a href="https://en.wikipedia.org/wiki/Gamma_function">Gamma function</a></span>: <a href="http://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.special.gamma.html">gamma</a></li>
 
       <li><span class="describe"><a href="https://en.wikipedia.org/wiki/Error_function">Error function</a></span>: <a href="http://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.special.erf.html">erf</a></li>
 
       <li><span class="describe"><a href="https://en.wikipedia.org/wiki/Factorial">Factorial "!"</a></span>: <a href="http://docs.scipy.org/doc/scipy-0.16.0/reference/generated/scipy.misc.factorial.html">factorial</a></li>
+
+      <li><span class="describe"><a href="https://en.wikipedia.org/wiki/Heaviside_step_function">Heavside function </a></span>: <a href="https://docs.scipy.org/doc/numpy-1.15.1/reference/generated/numpy.heaviside.html">heaviside</a></li>
 
     </ul>
 

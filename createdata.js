@@ -209,13 +209,14 @@ $(document).ready(function() {
     modeleqtmp = modeleqtmp.replace(/[\d]+/g, " ");
 
     // list of math functions that need to be removed to count variables (maybe include more functions from http://docs.scipy.org/doc/scipy-0.14.0/reference/special.html in the future)
-    var mfuncs = ["sin", "cos", "tan", "erf", "gamma", "acosh", "asinh", "atanh", "arccos", "arcsin", "arctan", "atan2", "arctan2", "arccosh", "arcsinh", "arctanh", "pi", "exp", "log2", "log10", "log", "sinh", "cosh", "tanh", "acos", "asin", "atan"];
+    var mfuncs = ["sin", "cos", "tan", "erf", "gamma", "acosh", "asinh", "atanh", "arccos", "arcsin", "arctan", "atan2", "arctan2", "arccosh", "arcsinh", "arctanh", "pi", "exp", "log2", "log10", "log", "sinh", "cosh", "tanh", "acos", "asin", "atan", "heaviside"];
     var index;
 
     // replace math functions with whitespace 
     for (index = 0; index < mfuncs.length; index++) {
       // the \b bounding the word will mean that only whole words are replaced
-      modeleqtmp = modeleqtmp.replace(new RegExp("\\b"+mfuncs[index]+"\\b"), " ");
+
+      modeleqtmp = modeleqtmp.replace(new RegExp("\\b"+mfuncs[index]+"\\b", "g"), " "); // global flag "g" added in to remove all occurences - https://stackoverflow.com/questions/1144783/how-to-replace-all-occurrences-of-a-string-in-javascript
     }
 
     modeleqtmp = modeleqtmp.trim(); // strip leading and trailing whitespace
@@ -711,7 +712,7 @@ errout = 0\n\
     outputStrings["priordict"] = priordict; // used in python file for bilby
     // write model function
     var modelfunction = "# import functions that can be used by the model\n\
-from numpy import pi, sin, cos, tan, exp, log, log10, log2, arccos, arcsin, arctan, arctan2, sinh, cosh, tanh, arccosh, arcsinh, arctanh\n\
+from numpy import pi, sin, cos, tan, exp, log, log10, log2, arccos, arcsin, arctan, arctan2, sinh, cosh, tanh, arccosh, arcsinh, arctanh, heaviside\n\
 from scipy.special import erf, gamma\n\
 from scipy.misc import factorial\n\n\
 # define the model to fit to the data\n\
