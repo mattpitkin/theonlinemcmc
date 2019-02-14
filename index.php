@@ -177,13 +177,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </div>
   </div>
 </nav>
-<div class="container">
-  <ul class="nav nav-pills">
-    <li class="active"><a data-toggle="pill" href="#margpos">ABOUT & EXAMPLES</a></li>
-    <li><a data-toggle="pill" href="#bestfit">INPUT</a></li>
-    <li><a data-toggle="pill" href="#links">INSTRUCTIONS & LEARNING</a></li>
-    <li><a data-toggle="pill" href="#links">CAVEATS </a></li>
-  </ul>
+
 <div id="about" class="container-top bg-1 text-center">
   <h2 class="title">THE ONLINE MCMC</h2>
     <h2>Do you have some data and a model that you want to fit? Well here's the website for you (see <a href="#caveats">caveats</a>)!</h2><h3><br>
