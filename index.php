@@ -177,10 +177,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </div>
   </div>
 </nav>
-
+<div class="container">
+  <ul class="nav nav-pills">
+    <li class="active"><a data-toggle="pill" href="#margpos">ABOUT & EXAMPLES</a></li>
+    <li><a data-toggle="pill" href="#bestfit">INPUT</a></li>
+    <li><a data-toggle="pill" href="#links">INSTRUCTIONS & LEARNING</a></li>
+    <li><a data-toggle="pill" href="#links">CAVEATS </a></li>
+  </ul>
 <div id="about" class="container-top bg-1 text-center">
   <h2 class="title">THE ONLINE MCMC</h2>
-    <h3>Do you have some data and a model that you want to fit? Well here's the website for you (see <a href="#caveats">caveats</a>)!
+    <h2>Do you have some data and a model that you want to fit? Well here's the website for you (see <a href="#caveats">caveats</a>)!</h2><h3><br>
 On this website you can input a model function defined by a set of parameters, including those that you want fit, as well as your data, and it will run a statisical sampling algorithm to estimate the posterior probability distributions of those parameters.<br><br>
 This site makes use of the Bayesian inference python package <a href="https://lscsoft.docs.ligo.org/bilby/index.html">Bilby</a> to access statisical samplers.
 Beyond <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo">Markov chain Monte Carlo</a> (MCMC), users are able to select from a variety of statistical <a href="#id_sampler_input">samplers</a> and it is encouraged to trial a variety to achieve the best performance for your model.</h3>
@@ -226,8 +232,17 @@ Beyond <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo">Markov c
   </script> <!-- script for tooltips -->
 
   <div>
+    Would you like to insert a <a style="color: #BD5D38" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.piecewise.html">piecewise</a> function? <input type="checkbox" id="id_piece_check" value="false"><br>
+    <div id="id_piece_guide" style="display:none"><br>
+    <small>
+    <b>NOTE</b> - Functions within piecewise must be written as <i><a style="color: #BD5D38" href="https://www.w3schools.com/python/python_lambda.asp">lambda</a></i> functions.<br>
+    For example, if all values of x greater than five are multiplied by 'a', and all less than or equal multuplied by 3, it would appear as<br>
+    &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp <i>piecewise(x,[x<=5,x>5],[lambda x:x^3, lambda x:x^a])</i><br>
+    More information on how to use and input a piecewise equation can be found <a style="color: #BD5D38" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.piecewise.html">here</a>. </small>
+    </div><br>
     Input <a style="color: #BD5D38" href="#themodel">model</a> equation: <span data-toggle="tooltip" data-placement="right" title="Input the model that you want to fit to your data, eg. m*x." class="glyphicon glyphicon-question-sign"></span>
     <br>
+    
       <div class="col-lg-4">
         <input type="text" name="modeleq" id="modeleq" class="form-control" value="">
       </div>
@@ -404,8 +419,9 @@ Beyond <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo">Markov c
   <h3 class="text-left" id="themodel">The model</h3>
   <p>
   Firstly, you must input the model that you want to fit to your data. When inputting this model you can use the standard operators "+", "-", "*" (multiplication), "/" (division). Allowable functions (such as trigonometric functions) and constants are listed <a href="#functions">below</a>. To raise a value to a given power use either "^" or "**".
+  It is advised to <a href="https://plot.ly/create/#/">plot</a> just your data points initially to give an indication of what model you could use.
   </p>
-
+  
   <p>
   When entering the model be careful to use parentheses to group the required parts of the equation. Click <span id="showexample">here</span> to show an example input model.
     <div id="example" class="example" style="display: none">
@@ -570,6 +586,8 @@ Beyond <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo">Markov c
 
       <li><span class="describe"><a href="https://en.wikipedia.org/wiki/Heaviside_step_function">Heavside function </a></span>: <a href="https://docs.scipy.org/doc/numpy-1.15.1/reference/generated/numpy.heaviside.html">heaviside</a></li>
 
+      <li><span class="describe"><a href="https://en.wikipedia.org/wiki/Piecewise">Piecewise function </a></span>: <a href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.piecewise.html">piecewise</a></li>
+
     </ul>
 
   <h3 class="text-left">Constants</h3>
@@ -589,7 +607,9 @@ Beyond <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo">Markov c
   <p>
     The sampling algorithms provided are not guaranteed to produce sensible results every time, and your output may contain errors or look odd. Some information and trouble shooting for the samplers can be found <a href="https://lscsoft.docs.ligo.org/bilby/samplers.html">here</a>.
   </p>
-
+  <p>
+    For very high <a href="https://en.wikipedia.org/wiki/Signal-to-noise_ratio">SNR</a> models, it is possible for MCMC solutions to converge very slowly as exploring the parameter space becomes difficult. For such cases, solutions will take longer to be produced.
+  </p>
   <p>
     If users really want to understand what is being done by this code I would advise learning about <a href="https://en.wikipedia.org/wiki/Bayesian_statistics">Bayesian analyses</a> and <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo">Markov chain Monte Carlo</a> methods. I would also advise learning <a href="https://www.python.org/">python</a>, or another programming language, and coding the analysis up themselves, particularly if you have a more complex problem. However, this site aims to be useful starting point.
   </p>

@@ -157,6 +157,7 @@ $(document).ready(function() {
       });
     }
   });
+  
 
   // Show only relevant argument inputs depending on sampler
   $('#sampler_input_type').change(function(){
@@ -181,6 +182,17 @@ $(document).ready(function() {
     }
   });
 
+  // Give basic format for piecewise function and guide - both probably aren't necessary!
+  $("#id_piece_check").click(function(){
+    if(document.getElementById("id_piece_check").checked){
+      // un-hide the piecewise formatting guide
+      $("#id_piece_guide").css("display", "");
+    }
+    else{
+      $("#id_piece_guide").css("display", "none");
+    }
+  }); 
+
   $("#id_model_button").click(function(){
     // un-hide the div element
     $("#id_variables_div").css("display", "");
@@ -204,12 +216,15 @@ $(document).ready(function() {
     modeleqtmp = modeleqtmp.replace(/[&\/+(),.*]/g, " ");
     modeleqtmp = modeleqtmp.replace(/\^/g, " "); // replace carat
     modeleqtmp = modeleqtmp.replace(/-/g, " "); // replace dash
+    if(document.getElementById("id_piece_check").checked == true){
+      modeleqtmp = modeleqtmp.replace(/[\[\]><==:]/g, " "); // evaluation values for piecewise 
+    }
 
     // replace all numbers with a space (using regular expression \d to represent all numbers and g to represent global replace) 
     modeleqtmp = modeleqtmp.replace(/[\d]+/g, " ");
 
     // list of math functions that need to be removed to count variables (maybe include more functions from http://docs.scipy.org/doc/scipy-0.14.0/reference/special.html in the future)
-    var mfuncs = ["sin", "cos", "tan", "erf", "gamma", "acosh", "asinh", "atanh", "arccos", "arcsin", "arctan", "atan2", "arctan2", "arccosh", "arcsinh", "arctanh", "pi", "exp", "log2", "log10", "log", "sinh", "cosh", "tanh", "acos", "asin", "atan", "heaviside"];
+    var mfuncs = ["sin", "cos", "tan", "erf", "gamma", "acosh", "asinh", "atanh", "arccos", "arcsin", "arctan", "atan2", "arctan2", "arccosh", "arcsinh", "arctanh", "pi", "exp", "log2", "log10", "log", "sinh", "cosh", "tanh", "acos", "asin", "atan", "heaviside", "piecewise", "lambda"];
     var index;
 
     // replace math functions with whitespace 
@@ -230,11 +245,11 @@ $(document).ready(function() {
     })
 
     // replace any different function names (e.g. acos -> arccos, and so on)
-    var repfuncs = ["acos", "asin", "atan2", "atan", "acosh", "asinh", "atanh", "^"];
-    var repfuncsnew = ["arccos", "arcsin", "arctan2", "arctan", "arccosh", "arcsinh", "arctanh", "**"];
+    var repfuncs = ["acos", "asin", "atan2", "atan", "acosh", "asinh", "atanh", "^", "&", "lambda"];
+    var repfuncsnew = ["arccos", "arcsin", "arctan2", "arctan", "arccosh", "arcsinh", "arctanh", "**", " and ", " lambda "];
     for (index=0; index < repfuncs.length; index++){
       // remove ALL function names not just first occurrence - https://stackoverflow.com/questions/1144783/how-to-replace-all-occurrences-of-a-string-in-javascript
-      modeleq = modeleq.replace(new RegExp(repfuncs[index].replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'g'), repfuncsnew[index]);
+      modeleq = modeleq.replace(new RegExp(repfuncs[index].replace(/[-\/\\^$*+?.()|\[\]{}\[\]><==]/g, '\\$&'), 'g'), repfuncsnew[index]);
     }
 
     makeTable();
@@ -658,11 +673,11 @@ errout = 0\n\
       var idpriortype = "#sigma_gauss_prior";
       var priortype = $(idpriortype).val();
 
-      variables.push("sigma_gauss"); // add sigma_gauss (parameter for fitting sigma) to variables array
-      theta.push("sigma_gauss");
+      variables.push("sigma"); // add sigma_gauss (parameter for fitting sigma) to variables array
+      theta.push("sigma");
 
-      fitarray["sigma_gauss"] = {priortype: "", minval: "", maxval: "", meanval: "", sigmaval: ""}; // object is an object that will contain prior info
-      fitarray["sigma_gauss"].priortype = priortype;
+      fitarray["sigma"] = {priortype: "", minval: "", maxval: "", meanval: "", sigmaval: ""}; // object is an object that will contain prior info
+      fitarray["sigma"].priortype = priortype;
 
       if ( priortype == "Uniform" || priortype == "LogUniform" ){
         // get min/max values
@@ -674,8 +689,8 @@ errout = 0\n\
           return false; // there has been a problem
         }
 
-        fitarray["sigma_gauss"].minval = minmaxvals[0];
-        fitarray["sigma_gauss"].maxval = minmaxvals[1];
+        fitarray["sigma"].minval = minmaxvals[0];
+        fitarray["sigma"].maxval = minmaxvals[1];
         priordict += "  priors['sigma'] = bilby.core.prior.Uniform("+minmaxvals[0]+", "+minmaxvals[1]+", 'sigma')\n";
       }
 
@@ -689,8 +704,8 @@ errout = 0\n\
           return false; // there has been a problem
         }
 
-        fitarray["sigma_gauss"].meanval = meanstdvals[0];
-        fitarray["sigma_gauss"].sigmaval = meanstdvals[1];
+        fitarray["sigma"].meanval = meanstdvals[0];
+        fitarray["sigma"].sigmaval = meanstdvals[1];
         priordict += "  priors['sigma'] = bilby.core.prior.Gaussian("+meanstdvals[0]+", "+meanstdvals[1]+", 'sigma')\n";
       }
 
@@ -702,7 +717,7 @@ errout = 0\n\
           return false; // there has been a problem
         }
 
-        fitarray["sigma_gauss"].meanval = meanvals[0];
+        fitarray["sigma"].meanval = meanvals[0];
         priordict += "  priors['sigma'] = bilby.core.prior.Exponential("+meanvals[0]+",'sigma')\n";
       } 
     }
@@ -712,9 +727,10 @@ errout = 0\n\
     outputStrings["priordict"] = priordict; // used in python file for bilby
     // write model function
     var modelfunction = "# import functions that can be used by the model\n\
-from numpy import pi, sin, cos, tan, exp, log, log10, log2, arccos, arcsin, arctan, arctan2, sinh, cosh, tanh, arccosh, arcsinh, arctanh, heaviside\n\
+from numpy import pi, sin, cos, tan, exp, log, log10, log2, arccos, arcsin, arctan, arctan2, sinh, cosh, tanh, arccosh, arcsinh, arctanh, heaviside, piecewise\n\
 from scipy.special import erf, gamma\n\
-from scipy.misc import factorial\n\n\
+from scipy.misc import factorial\n\
+import numpy as np\n\n\
 # define the model to fit to the data\n\
 def mymodel({arguments}):\n\
   {conststring}\n\
@@ -775,18 +791,19 @@ def mymodel({arguments}):\n\
 
     var thetanosigma = theta.slice();
     // remove sigma_gauss variable name if present, as this doesn't need passed to the model
-    var tindex = thetanosigma.indexOf("sigma_gauss");
+    var tindex = thetanosigma.indexOf("sigma");
     if ( tindex > -1 ){
       thetanosigma.splice(tindex, 1);
     }
     modelStrings['arguments'] = abscissastring + ", " + thetanosigma.join();
     modelStrings['conststring'] = conststring; // include constant values
+
     modelStrings['outputstring'] = modeleq.replace(/[ \t\n\r]+/, ""); // add model equation
 
     var gauss_like_sigma = "";
     if ( $("#likelihood_input_type").val() == "Gaussian" ){
       if ( $("#id_gauss_like_type").val().search("Known") != -1 ){
-        gauss_like_sigma += ", sigma_gauss";
+        gauss_like_sigma += ", sigma";
       }
     }
     // create log posterior function
@@ -1028,9 +1045,11 @@ def mymodel({arguments}):\n\
       if (sigmavar == ""){
         bilbysigmavar = ",sigma";
         sigmacheck += "try: # no fixed values of sigma given so attempting to generate normal random list between allowed values\n";
-        sigmacheck += " sigma = abs(np.random.normal((priors['sigma_gauss'].maximum+priors['sigma_gauss'].minimum)/2,priors['sigma_gauss'].maximum-priors['sigma_gauss'].minimum, len(x)))\n";
-        sigmacheck += "except:\n";
-        sigmacheck += " sigma = 0.1\n";
+        sigmacheck += " sigma = abs(np.random.normal((priors['sigma'].maximum+priors['sigma'].minimum)/2,priors['sigma'].maximum-priors['sigma'].minimum, len(x)))\n";
+        sigmacheck += "except Exception as e:\n";
+        sigmacheck += "  errval = SAMPLER_RUN_ERR\n";
+        sigmacheck += "  errout = e\n";
+        
       } // this is a botched job at the moment to try and make sure variable sigma can run in bilby
       else{
         sigmacheck = "sigma = ";
