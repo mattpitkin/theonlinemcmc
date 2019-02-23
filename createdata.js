@@ -754,7 +754,7 @@ def mymodel({arguments}):\n\
           
           // check value is actually a number
           if ( isNumber( constval ) ){
-            conststring += variables[index] + " = " + constval;
+            conststring += variables[index] + " = " + constval + "\n";
           }
           else{
             alert("Constant value is not a number!");

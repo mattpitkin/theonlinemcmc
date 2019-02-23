@@ -103,7 +103,7 @@ def postprocessing(corrcoef, postsamples, variables, abscissa, abscissaname, dat
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>                        
       </button>
-      <a class="navbar-brand">THE ONLINE MCMC</a>
+      <a class="navbar-brand" href="#">THE ONLINE MCMC</a>
     </div>
     <div class="collapse navbar-collapse" id="myNavbar">
       <ul class="nav navbar-nav navbar-right">

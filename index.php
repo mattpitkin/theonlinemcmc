@@ -409,6 +409,17 @@ Beyond <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo">Markov c
   To demonstrate how the site works, click <a href="#input" class="btn btn-default" id="id_randexample">here</a> to generate a random example with data. Once selected, it is possible to alter values and equations before submitting.
   </p> 
   -->
+  <div class="container-fixed">
+    <ul class="nav nav-pills fixed-top-2">
+      <li class="active"><a href="#themodel">The Model</a></li>
+      <li><a href="#thetypes">Parameter Types</a></li>
+      <li><a href="#prior">Priors</a></li>
+      <li><a href="#id_data_input">Data Input</a></li>
+      <li><a href="#id_likelihood_header">Likelihood Input</a></li>
+      <li><a href="#sampler_inputs_div">Sampler Input</a></li>
+      <li><a href="#functions">Functions</a></li>
+    </ul>   
+  </div>
 
   <h3 class="text-left" id="themodel">The model</h3>
   <p>
