@@ -416,7 +416,7 @@ Beyond <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo">Markov c
       <li><a href="#prior">Priors</a></li>
       <li><a href="#id_data_input">Data Input</a></li>
       <li><a href="#id_likelihood_header">Likelihood Input</a></li>
-      <li><a href="#sampler_inputs_div">Sampler Input</a></li>
+      <li><a href="#id_sampler_input">Sampler Input</a></li>
       <li><a href="#functions">Functions</a></li>
     </ul>   
   </div>
@@ -512,13 +512,14 @@ Beyond <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo">Markov c
   </p>
       </div>
       <div id="dynesty" class="tab-pane fade">
-      Dynesty is a Nested Sampler. Nested sampling is similar to the MCMC method, however the nature of the sampling allows one to calculate the integral of the probability distribution, dynamically assinging new live points as the algorithm iterates. For Dynesty, only one input is required:
+      <a href="https://dynesty.readthedocs.io/en/latest/dynamic.html">Dynesty</a> is a Nested Sampler. Nested sampling is similar to the MCMC method, however it draws up many live points throughout the prior volume. As the program iterates, the lowest likelihood points are discarded and replaced by ones with a higher likelihood.<br>
+      Additionally, Dynesty dynamically assigns new live points as the algorithm iterates, dramatically improving efficiency compared to standard nested sampling. For Dynesty, only one input is required:
       <ul>
         <li><em>No. of live points </em>: this is described in greater detail <a href="https://dynesty.readthedocs.io/en/latest/faq.html#live-point-questions">here</a>. This needs to be a positive integer and in general should be at least 1 greater than the number of fitting parameters that exist.
     </ul>
       </div>
       <div id="nestle" class="tab-pane fade">
-        Nested sampling is similar to the MCMC method, however the nature of the sampling allows one to calculate the integral of the probability distribution, dynamically assinging new live points as the algorithm iterates. For Nestle, two inputs are required:
+        <a href="http://kylebarbary.com/nestle/">Nestle</a> is a static nested sampling algorithm that offers greater choice to how new live points are selected. "Classic" implements a traditional algorithm with MCMC walks for new points, where "Single" and "Multi" draw new points from within ellipsoids encompassing high likelihood areas. It is recommended to read the documentation to learn more <a href="http://kylebarbary.com/nestle/">here</a>. For Nestle, two inputs are required:
         <ul>
           <li><em>No. of live points </em>: the number of active points, a positive interger at least one greater than the number of fitting parameters that exist. </li>
           <li><em>Method</em> : How the sampler chooses new points within the target parameter space. Currently can choose from 'Classic', 'Single' or 'Multi'. Further information can be found <a href="http://kylebarbary.com/nestle/">here</a></li>
