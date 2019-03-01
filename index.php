@@ -345,7 +345,8 @@ Beyond <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo">Markov c
 
   <p>
   <div id="id_nestle_div" style="display:none">
-  Input the <a style="color: #BD5D38" href="#id_nestle_header">Nestle sampler parameters</a>: <span data-toggle="tooltip" title="Set the sampler parameters - use the defaults if you're unsure." class="glyphicon glyphicon-question-sign"></span>
+  Input the <a style="color: #BD5D38" href="#id_nestle_header">Nestle sampler parameters</a>:<br>
+  (<i>Note: Method = "Multi" is recommended for <a style="color: #BD5D38" href="https://en.wikipedia.org/wiki/Multimodal_distribution">multimodal</a> problems) </i><span data-toggle="tooltip" title="Set the sampler parameters - use the defaults if you're unsure." class="glyphicon glyphicon-question-sign"></span>
     <table id="nestle_table">
       <tr>
         <td>&bull; Number of live points (default: 1000)</td> 
@@ -359,6 +360,7 @@ Beyond <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo">Markov c
           <option value="'single'">Single</option>
           <option value="'multi'">Multi</option>
         </select></td>
+        
       </tr>
     </table>
     
