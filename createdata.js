@@ -754,7 +754,7 @@ def mymodel({arguments}):\n\
           
           // check value is actually a number
           if ( isNumber( constval ) ){
-            conststring += variables[index] + " = " + constval + "\n";
+            conststring += variables[index] + " = " + constval + "\n  "; // space required for more than one constant?
           }
           else{
             alert("Constant value is not a number!");
