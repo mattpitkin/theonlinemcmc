@@ -271,8 +271,8 @@ Beyond <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo">Markov c
     </div>
   </div>
   <div class="col-lg-4">
-    <input type="hidden" id="id_submit_data_upload">
-    <textarea style="display:none" class="form-control" id="id_submit_data_form"></textarea>
+    <input type="hidden" id="id_submit_data_upload"  value="\" class="form-control"> 
+    <textarea style="display:none" class="form-control" id="id_submit_data_form" ></textarea>
   </div>
   </p>
 
