@@ -311,9 +311,9 @@ Beyond <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo">Markov c
 
   <p>
   <div id="id_emcee_div" style="display:none">
-    Input the <a style="color: #BD5D38" href="#id_emcee_header">MCMC sampler parameters</a> : <span data-toggle="tooltip" title="Set the sampler parameters - use the defaults if you're unsure." class="glyphicon glyphicon-question-sign"></span>
-    <br> <i> <a style="color: #809793">Note - burn-in iterations are subtracted from the total number of iterations - therefore the value must be less than 
-    the total number of MCMC iterations whilst still being a positive integer.</a></i>
+    Input the <a style="color: #BD5D38" href="#mcmc">MCMC sampler parameters</a> : <span data-toggle="tooltip" title="Set the sampler parameters - use the defaults if you're unsure." class="glyphicon glyphicon-question-sign"></span>
+    <br> <i> <font color = "#809793">Note - burn-in iterations are subtracted from the total number of iterations - therefore the value must be less than 
+    the total number of iterations.</font></i><br>
     <table id="emcee_table">
       <tr>
         <td>&bull; Number of ensemble points (default: 100)</td>
@@ -511,6 +511,9 @@ Beyond <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo">Markov c
       <li><em>No. of iterations</em>: this is the number of points per chain for each of the ensemble points. The product of this number and the number of ensemble points will be the total number of samples that you have for the posterior;
       <li><em>No. of <a href="http://support.sas.com/documentation/cdl/en/statug/63033/HTML/default/viewer.htm#statug_introbayes_sect007.htm">burn-in iterations</a></em>: this is the number of iterations (for each "walker") that are thrown away from the start of the chain (the iteration points above come after the burn-in points). This allows time for the MCMC to converge on the bulk of the posterior and for points sampled away from that to not be included in the final results.
     </ul>
+    <b>Tips</b><br>
+    Fitting a multimodal distribution? Try increasing the number of walkers!<br>
+    Does your data have little noise(<a href="https://en.wikipedia.org/wiki/Signal-to-noise_ratio">SNR</a>)? Try increasing the number of burn in iterations!<br>
   </p>
       </div>
       <div id="dynesty" class="tab-pane fade">
