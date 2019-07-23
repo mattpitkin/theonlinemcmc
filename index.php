@@ -292,7 +292,7 @@ Beyond <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo">Markov c
           <option value="emcee">Emcee</option>
           <option value="dynesty">Dynesty</option>
           <option value="nestle">Nestle</option>
-          <option value="pymc3">PYMC3</option>
+          <option value="pymc3">PyMC3</option>
         </select></td>
       </tr>
       
@@ -358,7 +358,7 @@ Beyond <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo">Markov c
 
   <p>
   <div id="id_pymc3_div" style="display:none">
-  Input the <a style="color: #BD5D38" href="#id_pymc3_header">PYMC3 sampler parameters</a>: <span data-toggle="tooltip" title="Set the sampler parameters - use the defaults if you're unsure." class="glyphicon glyphicon-question-sign"></span>
+  Input the <a style="color: #BD5D38" href="#id_pymc3_header">PyMC3 sampler parameters</a>: <span data-toggle="tooltip" title="Set the sampler parameters - use the defaults if you're unsure." class="glyphicon glyphicon-question-sign"></span>
     <table id="pymc3_table">
       <tr>
         <td>&bull; Number of number of sample draws from the posterior chain (default: 1000)</td> 
@@ -467,8 +467,8 @@ Beyond <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo">Markov c
   <br>
 
   <h3 class="text-left" id="id_sampler_input">Sampler Inputs</h2>
-  Through <a href="https://lscsoft.docs.ligo.org/bilby/index.html">Bilby</a> one can select from a variety of statistical samplers, each utilising a slightly different algorithm to model the parameters. The samplers available are broken down into
-  two separate cases, <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo">Markov chain Monte Carlo</a> methods (see MCMC and PYMC3) and <a href="https://en.wikipedia.org/wiki/Nested_sampling_algorithm">Nested Sampling algorithms</a> (see Dynesty and Nestle).
+  Through <a href="https://lscsoft.docs.ligo.org/bilby/index.html">Bilby</a> one can select from a variety of statistical samplers, each utilising a slightly different algorithm to sample from the posterior distribution of the parameter space. The samplers available are broken down into
+  two separate classes, <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo">Markov chain Monte Carlo</a> methods (see MCMC and PyMC3) and <a href="https://en.wikipedia.org/wiki/Nested_sampling_algorithm">Nested Sampling algorithms</a> (see Dynesty and Nestle).
   <br>
   <br>
   <div class="container" width="80px">
@@ -476,7 +476,7 @@ Beyond <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo">Markov c
     <li class="active"><a data-toggle="pill" href="#mcmc">MCMC</a></li>
     <li><a data-toggle="pill" href="#dynesty">Dynesty</a></li>
     <li><a data-toggle="pill" href="#nestle">Nestle</a></li>
-    <li><a data-toggle="pill" href="#pymc3">PYMC3</a></li>
+    <li><a data-toggle="pill" href="#pymc3">PyMC3</a></li>
     </ul>
 
     <div class="tab-content" style="max-width:80%">
@@ -504,7 +504,7 @@ Beyond <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo">Markov c
         </ul>
       </div>
       <div id="pymc3" class="tab-pane fade">
-        PYMC3 is an alternative MCMC sampler. For PYMC3, three inputs are required:
+        PyMC3 is an alternative MCMC sampler. For PyMC3, three inputs are required:
         <ul>
           <li><em>No. of draws </em>: The number of sample draws from the posterior per chain. </li>
           <li><em>No. of chains </em>: The number of independent MCMC chains to run. </li>
