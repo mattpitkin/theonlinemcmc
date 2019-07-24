@@ -14,6 +14,7 @@ greekletters = ['alpha', 'beta', 'gamma', 'Gamma', \
 import matplotlib as mpl
 mpl.use("Agg")
 
+
 # convert a floating point number into a string in X.X x 10^Z format
 def exp_str(f, p=1):
   if p > 16:
@@ -24,23 +25,13 @@ def exp_str(f, p=1):
   ssplit = s.split('e')
   return '%.*f&times;10<sup>%d</sup>' % (p, float(ssplit[0]), int(ssplit[1]))
 
-# a function to get the credible intervals using a greedy binning method
+
+# a function to get the credible intervals using numpy quantile
 def credible_interval(dsamples, ci):
-   n, binedges = np.histogram(dsamples, bins=250)
-   dbins = binedges[1]-binedges[0] # width of a histogram bin
-   bins = binedges[0:-1]+dbins/2. # centres of bins
+   intervals = [0.5 - ci / 2., 0.5 + ci / 2.]    
 
-   histIndices=np.argsort(n)[::-1]  # indices of the points of the histogram in decreasing order
+   return np.quantile(dsamples, intervals)
 
-   frac = 0.0
-   j = 0
-   for i in histIndices:
-     frac += float(n[i])/float(len(dsamples))
-     j = j+1
-     if frac >= ci:
-       break
-
-   return (np.min(bins[histIndices[:j]]), np.max(bins[histIndices[:j]]))
 
 def postprocessing(corrcoef, postsamples, variables, abscissa, abscissaname, data, email, outdir, evidence):
   # import the corner plot code
@@ -60,7 +51,7 @@ def postprocessing(corrcoef, postsamples, variables, abscissa, abscissaname, dat
   <!-- Theme Made By www.w3schools.com - No Copyright -->
 <meta name="author" content="Matthew Pitkin">
 <meta name="description" content="The Online MCMC">
-<meta name="keywords" content="MCMC, Markov chain Monte Carlo, Bayesian, emcee, python, data analysis, probability">
+<meta name="keywords" content="MCMC, Markov chain Monte Carlo, Bayesian, emcee, Python, data analysis, nested sampling, dynesty, nestle, probability">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.css">
@@ -100,7 +91,7 @@ def postprocessing(corrcoef, postsamples, variables, abscissa, abscissaname, dat
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>                        
       </button>
-      <a class="navbar-brand">THE ONLINE MCMC</a>
+      <a class="navbar-brand" href="http://www.theonlinemcmc.com">THE ONLINE MCMC</a>
     </div>
     <div class="collapse navbar-collapse" id="myNavbar">
       <ul class="nav navbar-nav navbar-right">
@@ -165,10 +156,10 @@ def postprocessing(corrcoef, postsamples, variables, abscissa, abscissaname, dat
     <div id="links" class="tab-pane fade">
       <h2 class="text-center">LINKS</h2>
       <h3>Code links</h3>
-      The <a href="https://www.python.org/">python</a> files for running the MCMC are provided below. These use the <a href="https://pypi.org/project/bilby/">bilby</a> python module.
+      The <a href="https://www.python.org/">Python</a> files for running the analysis are provided below. These use the <a href="https://pypi.org/project/bilby/">bilby</a> Python module.
       <ul>
-        <li><a href="pyfile.py"><code>pyfile.py</code></a> - the python file used to run the MCMC</li>
-        <li><a href="mymodel.py"><code>mymodel.py</code></a> - the python model function</li>
+        <li><a href="pyfile.py"><code>pyfile.py</code></a> - the Python file used to run the analysis</li>
+        <li><a href="mymodel.py"><code>mymodel.py</code></a> - the Python model function</li>
       </ul>
 
       <h3>Data links</h3>
@@ -180,9 +171,11 @@ def postprocessing(corrcoef, postsamples, variables, abscissa, abscissaname, dat
   </div>
 </div>
 
- <footer class="container-fluid bg-2 text-center">
-  <p class="footer"> &copy; Matthew Pitkin (2015), Catriona Marr (2018), Francis Webb (2019). The code for this site is licensed under the <a style="color: #BD5D38" href="http://opensource.org/licenses/MIT">MIT license</a>. It is available on <a style="color: #BD5D38" href="https://github.com/mattpitkin/theonlinemcmc">github</a> and <a style="color: #BD5D38" href="https://bitbucket.org/mattpitkin/theonlinemcmc">bitbucket</a>.<br>This site is kindly hosted by the <a style="color: #BD5D38" href="http://www.gla.ac.uk/schools/physics/">School of Physics & Astronomy</a> at the <a style="color: #BD5D38" href="http://www.gla.ac.uk/">University of Glasgow</a>. They bear no reponsibility for the content of this site or the results that are produced.
-  </p>
+<!-- include footer -->
+<?php
+$shareurl = "http://www.theonlinemcmc.com";
+include('../../footer.inc');
+?>
 
 <!-- include social media sharing -->
 <?php
