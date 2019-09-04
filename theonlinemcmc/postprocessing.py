@@ -1,4 +1,7 @@
 # define a function that performs the post-processing of the posterior values and creates a results page
+from __future__ import print_function
+import sys
+
 import numpy  as np
 
 from theonlinemcmc import emailresponse
@@ -18,7 +21,7 @@ mpl.use("Agg")
 # convert a floating point number into a string in X.X x 10^Z format
 def exp_str(f, p=1):
   if p > 16:
-    print >> sys.stderr, "Precision must be less than 16 d.p."
+    print("Precision must be less than 16 d.p.", file=sys.stderr)
     p = 16
 
   s = '%.16e' % f
@@ -28,9 +31,9 @@ def exp_str(f, p=1):
 
 # a function to get the credible intervals using numpy quantile
 def credible_interval(dsamples, ci):
-   intervals = [0.5 - ci / 2., 0.5 + ci / 2.]    
+  intervals = [0.5 - ci / 2., 0.5 + ci / 2.]    
 
-   return np.quantile(dsamples, intervals)
+  return np.quantile(dsamples, intervals)
 
 
 def postprocessing(corrcoef, postsamples, variables, abscissa, abscissaname, data, email, outdir, evidence):
@@ -70,6 +73,9 @@ def postprocessing(corrcoef, postsamples, variables, abscissa, abscissaname, dat
 <!-- include MathJax -->
 <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
+<!-- Formatting for text on website -->
+<style>body{{color:dimgrey}}</style>
+
 <!-- Include script to create tabs - https://www.w3schools.com/bootstrap/bootstrap_tabs_pills.asp -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -91,7 +97,7 @@ def postprocessing(corrcoef, postsamples, variables, abscissa, abscissaname, dat
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>                        
       </button>
-      <a class="navbar-brand" href="http://www.theonlinemcmc.com">THE ONLINE MCMC</a>
+      <a class="navbar-brand" href="#">THE ONLINE MCMC</a>
     </div>
     <div class="collapse navbar-collapse" id="myNavbar">
       <ul class="nav navbar-nav navbar-right">
