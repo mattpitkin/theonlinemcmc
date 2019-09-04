@@ -180,7 +180,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <div id="about" class="container-top bg-1 text-center">
   <h2 class="title">THE ONLINE MCMC</h2>
-    <h3>Do you have some data and a model that you want to fit? Well here's the website for you (see <a href="#caveats">caveats</a>)!
+    <h2>Do you have some data and a model that you want to fit? Well here's the website for you (see <a href="#caveats">caveats</a>)!</h2><h3><br>
 On this website you can input a model function defined by a set of parameters, including those that you want fit, as well as your data, and it will run a statisical sampling algorithm to estimate the posterior probability distributions of those parameters.<br><br>
 This site makes use of the Bayesian inference Python package <a href="https://lscsoft.docs.ligo.org/bilby/index.html">Bilby</a> to access a selection of statistical samplers.
 Beyond <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo">Markov chain Monte Carlo</a> (MCMC), users are able to select from a variety of statistical <a href="#id_sampler_input">samplers</a> and it is encouraged to trial a variety to achieve the best performance for your model.</h3>
@@ -226,8 +226,17 @@ Beyond <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo">Markov c
   </script> <!-- script for tooltips -->
 
   <div>
+    Would you like to insert a <a style="color: #BD5D38" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.piecewise.html">piecewise</a> function? <input type="checkbox" id="id_piece_check" value="false"><br>
+    <div id="id_piece_guide" style="display:none"><br>
+    <small>
+    <b>NOTE</b> - Functions within piecewise must be written as <i><a style="color: #BD5D38" href="https://www.w3schools.com/python/python_lambda.asp">lambda</a></i> functions.<br>
+    For example, if all values of x greater than five are multiplied by 'a', and all less than or equal multuplied by 3, it would appear as<br>
+    &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp <i>piecewise(x,[x<=5,x>5],[lambda x:x^3, lambda x:x^a])</i><br>
+    More information on how to use and input a piecewise equation can be found <a style="color: #BD5D38" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.piecewise.html">here</a>. </small>
+    </div><br>
     Input <a style="color: #BD5D38" href="#themodel">model</a> equation: <span data-toggle="tooltip" data-placement="right" title="Input the model that you want to fit to your data, eg. m*x." class="glyphicon glyphicon-question-sign"></span>
     <br>
+    
       <div class="col-lg-4">
         <input type="text" name="modeleq" id="modeleq" class="form-control" value="">
       </div>
@@ -262,8 +271,8 @@ Beyond <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo">Markov c
     </div>
   </div>
   <div class="col-lg-4">
-    <input type="hidden" id="id_submit_data_upload">
-    <textarea style="display:none" class="form-control" id="id_submit_data_form"></textarea>
+    <input type="hidden" id="id_submit_data_upload"  value="\" class="form-control"> 
+    <textarea style="display:none" class="form-control" id="id_submit_data_form" ></textarea>
   </div>
   </p>
 
@@ -302,9 +311,9 @@ Beyond <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo">Markov c
 
   <p>
   <div id="id_emcee_div" style="display:none">
-    Input the <a style="color: #BD5D38" href="#id_emcee_header">MCMC (emcee) sampler parameters</a> : <span data-toggle="tooltip" title="Set the sampler parameters - use the defaults if you're unsure." class="glyphicon glyphicon-question-sign"></span>
-    <br> <i> <a style="color: #809793">Note - burn-in iterations are subtracted from the total number of iterations - therefore the value must be less than 
-    the total number of MCMC iterations whilst still being a positive integer.</a></i>
+    Input the <a style="color: #BD5D38" href="#mcmc">MCMC sampler parameters</a> : <span data-toggle="tooltip" title="Set the sampler parameters - use the defaults if you're unsure." class="glyphicon glyphicon-question-sign"></span>
+    <br> <i> <font color = "#809793">Note - burn-in iterations are subtracted from the total number of iterations - therefore the value must be less than 
+    the total number of iterations.</font></i><br>
     <table id="emcee_table">
       <tr>
         <td>&bull; Number of ensemble points (default: 100)</td>
@@ -324,7 +333,7 @@ Beyond <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo">Markov c
 
   <p>
   <div id="id_dynesty_div" style="display:none">
-    Input the <a style="color: #BD5D38" href="#id_mcmc_header">Dynesty sampler parameters</a>: <span data-toggle="tooltip" title="Set the sampler parameters - use the defaults if you're unsure." class="glyphicon glyphicon-question-sign"></span>
+    Input the <a style="color: #BD5D38" href="#dynesty">Dynesty sampler parameters</a>: <span data-toggle="tooltip" title="Set the sampler parameters - use the defaults if you're unsure." class="glyphicon glyphicon-question-sign"></span>
     <table id="dynesty_table">
       <tr>
         <td>&bull; Number of live points (default: 1000)</td>
@@ -336,7 +345,8 @@ Beyond <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo">Markov c
 
   <p>
   <div id="id_nestle_div" style="display:none">
-  Input the <a style="color: #BD5D38" href="#id_nestle_header">Nestle sampler parameters</a>: <span data-toggle="tooltip" title="Set the sampler parameters - use the defaults if you're unsure." class="glyphicon glyphicon-question-sign"></span>
+  Input the <a style="color: #BD5D38" href="#nestle">Nestle sampler parameters</a>:<br>
+  (<i>Note: Method = "Multi" is recommended for <a style="color: #BD5D38" href="https://en.wikipedia.org/wiki/Multimodal_distribution">multimodal</a> problems) </i><span data-toggle="tooltip" title="Set the sampler parameters - use the defaults if you're unsure." class="glyphicon glyphicon-question-sign"></span>
     <table id="nestle_table">
       <tr>
         <td>&bull; Number of live points (default: 1000)</td> 
@@ -350,6 +360,7 @@ Beyond <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo">Markov c
           <option value="'single'">Single</option>
           <option value="'multi'">Multi</option>
         </select></td>
+        
       </tr>
     </table>
     
@@ -358,7 +369,7 @@ Beyond <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo">Markov c
 
   <p>
   <div id="id_pymc3_div" style="display:none">
-  Input the <a style="color: #BD5D38" href="#id_pymc3_header">PyMC3 sampler parameters</a>: <span data-toggle="tooltip" title="Set the sampler parameters - use the defaults if you're unsure." class="glyphicon glyphicon-question-sign"></span>
+  Input the <a style="color: #BD5D38" href="#pymc3">PyMC3 sampler parameters</a>: <span data-toggle="tooltip" title="Set the sampler parameters - use the defaults if you're unsure." class="glyphicon glyphicon-question-sign"></span>
     <table id="pymc3_table">
       <tr>
         <td>&bull; Number of number of sample draws from the posterior chain (default: 1000)</td> 
@@ -400,12 +411,24 @@ Beyond <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo">Markov c
   To demonstrate how the site works, click <a href="#input" class="btn btn-default" id="id_randexample">here</a> to generate a random example with data. Once selected, it is possible to alter values and equations before submitting.
   </p> 
   -->
+  <div class="container-fixed">
+    <ul class="nav nav-pills fixed-top-2">
+      <li class="active"><a href="#themodel">The Model</a></li>
+      <li><a href="#thetypes">Parameter Types</a></li>
+      <li><a href="#prior">Priors</a></li>
+      <li><a href="#id_data_input">Data Input</a></li>
+      <li><a href="#id_likelihood_header">Likelihood Input</a></li>
+      <li><a href="#id_sampler_input">Sampler Input</a></li>
+      <li><a href="#functions">Functions</a></li>
+    </ul>   
+  </div>
 
   <h3 class="text-left" id="themodel">The model</h3>
   <p>
   Firstly, you must input the model that you want to fit to your data. When inputting this model you can use the standard operators "+", "-", "*" (multiplication), "/" (division). Allowable functions (such as trigonometric functions) and constants are listed <a href="#functions">below</a>. To raise a value to a given power use either "^" or "**".
+  It is advised to <a href="https://plot.ly/create/#/">plot</a> just your data points initially to give an indication of what model you could use.
   </p>
-
+  
   <p>
   When entering the model be careful to use parentheses to group the required parts of the equation. Click <span id="showexample">here</span> to show an example input model.
     <div id="example" class="example" style="display: none">
@@ -488,6 +511,9 @@ Beyond <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo">Markov c
       <li><em>No. of iterations</em>: this is the number of points per chain for each of the ensemble points. The product of this number and the number of ensemble points will be the total number of samples that you have for the posterior;
       <li><em>No. of <a href="http://support.sas.com/documentation/cdl/en/statug/63033/HTML/default/viewer.htm#statug_introbayes_sect007.htm">burn-in iterations</a></em>: this is the number of iterations (for each "walker") that are thrown away from the start of the chain (the iteration points above come after the burn-in points). This allows time for the MCMC to converge on the bulk of the posterior and for points sampled away from that to not be included in the final results.
     </ul>
+    <b>Tips</b><br>
+    Fitting a multimodal distribution? Try increasing the number of walkers!<br>
+    Does your data have little noise(<a href="https://en.wikipedia.org/wiki/Signal-to-noise_ratio">SNR</a>)? Try increasing the number of burn in iterations!<br>
   </p>
       </div>
       <div id="dynesty" class="tab-pane fade">
@@ -556,17 +582,21 @@ Beyond <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo">Markov c
 
       <li><span class="describe"><a href="https://en.wikipedia.org/wiki/Exponential_function">Exponential function</a> <em>e</em></span>: <a href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.exp.html">exp</a></li>
 
-      <li><span class="describe"><a href="https://en.wikipedia.org/wiki/Natural_logarithm">natural logarithm</a> (base <em>e</em>)</span>: <a href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.log.html">log</a></li>
+      <li><span class="describe"><a href="https://en.wikipedia.org/wiki/Natural_logarithm">Natural logarithm</a> (base <em>e</em>)</span>: <a href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.log.html">log</a></li>
 
-      <li><span class="describe"><a href="https://en.wikipedia.org/wiki/Common_logarithm">commom logarithm</a> (base 10)</span>: <a href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.log10.html">log10</a></li>
+      <li><span class="describe"><a href="https://en.wikipedia.org/wiki/Common_logarithm">Commom logarithm</a> (base 10)</span>: <a href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.log10.html">log10</a></li>
 
-      <li><span class="describe"><a href="https://en.wikipedia.org/wiki/Binary_logarithm">binary logarithm</a> (base 2)</span>: <a href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.log2.html">log2</a></li>
+      <li><span class="describe"><a href="https://en.wikipedia.org/wiki/Binary_logarithm">Binary logarithm</a> (base 2)</span>: <a href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.log2.html">log2</a></li>
 
       <li><span class="describe"><a href="https://en.wikipedia.org/wiki/Gamma_function">Gamma function</a></span>: <a href="http://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.special.gamma.html">gamma</a></li>
 
       <li><span class="describe"><a href="https://en.wikipedia.org/wiki/Error_function">Error function</a></span>: <a href="http://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.special.erf.html">erf</a></li>
 
       <li><span class="describe"><a href="https://en.wikipedia.org/wiki/Factorial">Factorial "!"</a></span>: <a href="http://docs.scipy.org/doc/scipy-0.16.0/reference/generated/scipy.misc.factorial.html">factorial</a></li>
+
+      <li><span class="describe"><a href="https://en.wikipedia.org/wiki/Heaviside_step_function">Heavside function </a></span>: <a href="https://docs.scipy.org/doc/numpy-1.15.1/reference/generated/numpy.heaviside.html">heaviside</a></li>
+
+      <li><span class="describe"><a href="https://en.wikipedia.org/wiki/Piecewise">Piecewise function </a></span>: <a href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.piecewise.html">piecewise</a></li>
 
     </ul>
 
@@ -587,7 +617,9 @@ Beyond <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo">Markov c
   <p>
     The sampling algorithms provided are not guaranteed to produce sensible results every time, and your output may contain errors or look odd. Some information and trouble shooting for the samplers can be found <a href="https://lscsoft.docs.ligo.org/bilby/samplers.html">here</a>.
   </p>
-
+  <p>
+    For very high <a href="https://en.wikipedia.org/wiki/Signal-to-noise_ratio">SNR</a> models, it is possible for MCMC solutions to converge very slowly as exploring the parameter space becomes difficult. For such cases, solutions will take longer to be produced.
+  </p>
   <p>
     If users really want to understand what is being done by this code I would advise learning about <a href="https://en.wikipedia.org/wiki/Bayesian_statistics">Bayesian analyses</a> and <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo">Markov chain Monte Carlo</a> methods. I would also advise learning <a href="https://www.python.org/">Python</a>, or another programming language, and coding the analysis up themselves, particularly if you have a more complex problem. However, this site aims to be useful starting point.
   </p>

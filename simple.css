@@ -44,6 +44,12 @@ h3
       padding-left: 12.5%;
       padding-right: 12.5%;
   }
+  .container-fluid-2 {
+    padding-top: 90px;
+    padding-bottom: 70px;
+    padding-left: 12.5%;
+    padding-right: 12.5%;
+}
   .container-input { /* shifts input box right */
       padding-bottom: 70px;
       padding-left: 22%;
