@@ -1128,7 +1128,7 @@ def mymodel({arguments}):\n\
     var postprocess = "# run post-processing script\n";
     postprocess += "if errval == 0:\n";
     postprocess += " try:\n";
-    postprocess += "   postprocessing(result.covariance_matrix, result.posterior, " + abscissavar + ", \"" + abscissavar + "\", data, \"" + emailaddress + "\", \"" + hrefloc.substr(0, lIndex) + "/results/" + outdir + "\",result.log_evidence)\n";
+    postprocess += "   postprocessing(result.posterior, " + abscissavar + ", \"" + abscissavar + "\", data, \"" + emailaddress + "\", \"" + hrefloc.substr(0, lIndex) + "/results/" + outdir + "\",result.log_evidence)\n";
     postprocess += " except Exception as e:\n";
     postprocess += "   errval = POST_PROCESS_ERR\n";
     postprocess += "   errout = e\n\n";

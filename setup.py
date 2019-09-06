@@ -4,7 +4,7 @@ from setuptools import setup
 
 setup(
   name = 'TheOnlineMCMC',
-  version = '0.1.0',
+  version = '0.1.1',
   description = 'Python functions required for The Online MCMC.',
   author = 'Matthew Pitkin',
   author_email = 'pitkin@gmail.com',

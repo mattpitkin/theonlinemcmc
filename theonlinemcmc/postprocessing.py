@@ -36,7 +36,7 @@ def credible_interval(dsamples, ci):
   return np.quantile(dsamples, intervals)
 
 
-def postprocessing(corrcoef, postsamples, abscissa, abscissaname, data, email, outdir, evidence):
+def postprocessing(postsamples, abscissa, abscissaname, data, email, outdir, evidence):
   # import the corner plot code
   import corner
 
@@ -278,7 +278,7 @@ include('../../social.inc');
   fm['resultstable'] = resultstable
   
   # get the correlation coefficient matrix
-  # corrcoef = np.corrcoef(psamples[:,:nvars].T)
+  corrcoef = np.corrcoef(psamples[:,:nvars].T)
 
   corrcoeftable = "<table class=\"table table-striped table-hover\"><th></th>"
   for i in range(nvars):
