@@ -4,7 +4,7 @@ A website to provide an online submission interface for running a stochastic sam
 
 The user will enter a model and parameters that they want to fit, the data they want the model fitted to and the likelihood function. It will then return posterior plots and statistics for the fitted parameters.
 
-The website can be found at http://www.theonlinemcmc.com.
+The website can be found at http://www.theonlinemcmc.com. Currently the site does not work properly if using the [Safari](https://www.apple.com/uk/safari/) browser.
 
 The code on this site is licensed under the [MIT License](http://opensource.org/licenses/MIT).
 
