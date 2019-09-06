@@ -36,7 +36,7 @@ def credible_interval(dsamples, ci):
   return np.quantile(dsamples, intervals)
 
 
-def postprocessing(corrcoef, postsamples, variables, abscissa, abscissaname, data, email, outdir, evidence):
+def postprocessing(corrcoef, postsamples, abscissa, abscissaname, data, email, outdir, evidence):
   # import the corner plot code
   import corner
 
@@ -194,7 +194,8 @@ include('../../social.inc');
 
   fm['outdir'] = outdir
 
-  varnames = variables.split(',')
+  varnames = list(postsamples.columns)
+  psamples = postsamples.values
   nvars = len(varnames)
   # convert any Greek alphabet variable names into LaTeX tags (prefix with \)
   for i, var in enumerate(varnames):
@@ -213,22 +214,22 @@ include('../../social.inc');
   inter68 = []
   inter95 = []
   for i in range(nvars):
-    inter68.append(credible_interval(postsamples[:,i], 0.68))
-    inter95.append(credible_interval(postsamples[:,i], 0.95))
+    inter68.append(credible_interval(psamples[:,i], 0.68))
+    inter95.append(credible_interval(psamples[:,i], 0.95))
  
   # output the results table
   resultstable = "<table class=\"table table-striped table-hover\">\n<tr><th>Variable</th><th>Mean</th><th>Median</th><th>&sigma;</th><th>68% CI</th><th>95% CI</th></tr>\n"
   for i in range(nvars):
     resstrs = ['\('+varnames[i]+'\)'] # the \( \) are the MathJax equation delimiters 
     
-    meanv = np.mean(postsamples[:,i])
+    meanv = np.mean(psamples[:,i])
     if np.fabs(meanv) > 1e3 or np.fabs(meanv) < 1e-2:
       meanstr = exp_str(meanv)
     else:
       meanstr = '%.1f' % meanv
     resstrs.append(meanstr)
     
-    medianv = np.median(postsamples[:,i])
+    medianv = np.median(psamples[:,i])
     if np.fabs(medianv) > 1e3 or np.fabs(medianv) < 1e-2:
       medianstr = exp_str(medianv)
     else:
@@ -242,7 +243,7 @@ include('../../social.inc');
       #modestr = '%.1f' % modev
     #resstrs.append(modestr)
 
-    sigmav = np.std(postsamples[:,i])
+    sigmav = np.std(psamples[:,i])
     if np.fabs(sigmav) > 1e3 or np.fabs(sigmav) < 1e-2:
       sigmastr = exp_str(sigmav)
     else:
@@ -277,7 +278,7 @@ include('../../social.inc');
   fm['resultstable'] = resultstable
   
   # get the correlation coefficient matrix
-  # corrcoef = np.corrcoef(postsamples[:,:nvars].T)
+  # corrcoef = np.corrcoef(psamples[:,:nvars].T)
 
   corrcoeftable = "<table class=\"table table-striped table-hover\"><th></th>"
   for i in range(nvars):
@@ -295,7 +296,7 @@ include('../../social.inc');
   corrcoeftable += "</table>\n"
 
   fm['corrcoeftable'] = corrcoeftable
-  
+
   if np.isnan(evidence) == True:
     fm['evidencevalue'] = "" # Not using nestling sampler - no evidence value to display
   else:
@@ -303,17 +304,17 @@ include('../../social.inc');
     evidencevalue += "<h3 class=\"text-center\" id=\"functions\">LOG EVIDENCE VALUE</h3>"
     evidencevalue += "The nested sampler used gave a log evidence value of: <b>%.4f </b></div>" % evidence
     fm['evidencevalue'] = evidencevalue
-  
+
   # create plot of data along with distribution of best fit models
 
   fm['bestfitfig'] = '<img class="center-block bg-3" src="outdir/label_plot_with_data.png" width="60%">'
-    
+
   # output page
   ppfile = 'index.php'
   fp = open(ppfile, 'w')
   fp.write(htmlpage.format(**fm))
   fp.close()
-  
+
   # email the page
   emailresponse(email, outdir)
-  
+
