@@ -142,7 +142,7 @@ def postprocessing(postsamples, abscissa, abscissaname, data, email, outdir, evi
 
       <h3>Correlation coefficient matrix</h3>
 
-      The <a href="https://en.wikipedia.org/wiki/Covariance_matrix#Correlation_matrix">correlation coefficients</a> between each of the fitted parameters.
+      The <a href="https://en.wikipedia.org/wiki/Pearson_correlation_coefficient">correlation coefficients</a> between each of the fitted parameters.
       <div>
         {corrcoeftable}
       </div>
@@ -194,7 +194,7 @@ include('../../social.inc');
 
   fm['outdir'] = outdir
 
-  varnames = list(postsamples.columns)
+  varnames = list(postsamples.columns)[:-2]
   psamples = postsamples.values
   nvars = len(varnames)
   # convert any Greek alphabet variable names into LaTeX tags (prefix with \)
