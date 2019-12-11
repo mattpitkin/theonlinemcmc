@@ -631,7 +631,13 @@ errout = 0\n\
         
           fitarray[variables[index]].minval = minmaxvals[0];
           fitarray[variables[index]].maxval = minmaxvals[1];
-          priordict += "  priors['"+variables[index]+"'] = bilby.core.prior.Uniform("+minmaxvals[0]+", "+minmaxvals[1]+", '"+variables[index]+"')\n";
+            
+          if ( priortype == "Uniform" ){
+            priordict += "  priors['"+variables[index]+"'] = bilby.core.prior.Uniform("+minmaxvals[0]+", "+minmaxvals[1]+", '"+variables[index]+"')\n";
+          }
+          else{
+            priordict += "  priors['"+variables[index]+"'] = bilby.core.prior.LogUniform("+minmaxvals[0]+", "+minmaxvals[1]+", '"+variables[index]+"')\n";   
+          }
         }
 
         if ( priortype == "Gaussian" ){
