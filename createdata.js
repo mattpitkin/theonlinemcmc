@@ -1051,7 +1051,7 @@ def mymodel({arguments}):\n\
       if (sigmavar == ""){
         bilbysigmavar = ",sigma";
         sigmacheck += "try: # no fixed values of sigma given so attempting to generate normal random list between allowed values\n";
-        sigmacheck += " sigma = abs(np.random.normal((priors['sigma'].maximum+priors['sigma'].minimum)/2,priors['sigma'].maximum-priors['sigma'].minimum, len(x)))\n";
+        sigmacheck += " sigma = abs(np.random.normal((priors['sigma'].maximum+priors['sigma'].minimum)/2,priors['sigma'].maximum-priors['sigma'].minimum, len(" + abscissavar + ")))\n";
         sigmacheck += "except Exception as e:\n";
         sigmacheck += "  errval = SAMPLER_RUN_ERR\n";
         sigmacheck += "  errout = e\n";
