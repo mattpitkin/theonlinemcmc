@@ -34,3 +34,12 @@ dependencies = [
 ]
 
 version = "0.2.0"
+
+[tool.setuptools]
+license-files = [ "LICENSE" ]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+include = [
+    "theonlinemcmc*",
+]
