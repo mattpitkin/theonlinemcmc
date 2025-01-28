@@ -550,7 +550,6 @@ $(document).ready(function() {
 
     // create bilby python file for submission (use format function defined at the start of the code)
     pyfile = "\
-#!/usr/bin/env python\n\n\
 # import required packages \n\
 import bilby\n\
 import numpy as np\n\

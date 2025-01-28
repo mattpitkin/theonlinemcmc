@@ -54,7 +54,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $pyfile = $_POST["pyfile"];
     // output data to file
     file_put_contents($outdir.'/pyfile.py', $pyfile);
-    chmod($outdir.'/pyfile.py',0755); // make executable
   }
 
   if (!empty($_POST["modelfile"])) {
@@ -147,10 +146,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   if(!empty($_POST['runcode'])){
     $errfile = 'err_code.txt';
     $pycommand = 'pyfile.py';
-    $pid = shell_exec(sprintf('cd %s; $PYTHON %s > %s 2>&1 & echo $!', $outdir, $pycommand, $errfile));
+    $pid = shell_exec(sprintf('cd %s; $THEONLINEMCMCPYTHON -m %s > %s 2>&1 & echo $!', $outdir, $pycommand, $errfile));
   }
 
-  header('Location: http://'.$_SERVER['SERVER_NAME'].'/submitted.php');
+  header('Location: https://'.$_SERVER['SERVER_NAME'].'/submitted.php');
   die();
 }
 ?>

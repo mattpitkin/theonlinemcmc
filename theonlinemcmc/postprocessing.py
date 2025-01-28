@@ -1,53 +1,83 @@
 # define a function that performs the post-processing of the posterior values and creates a results page
-from __future__ import print_function
 import sys
 
-import numpy  as np
+import numpy as np
 
-from theonlinemcmc import emailresponse
+from .emailresponse import emailresponse
 
 # Greek letters that need conversion for LaTeX (add a prefix '\') if given as a variable name
-greekletters = ['alpha', 'beta', 'gamma', 'Gamma', \
-    'delta', 'Delta', 'epsilon', 'zeta', 'eta', \
-    'theta', 'Theta', 'iota', 'kappa', 'lambda', 'Lambda' \
-    'mu', 'nu', 'xi', 'Xi', 'pi', 'Pi' \
-    'rho', 'sigma', 'Sigma', 'tau', 'upsilon', 'Upsilon' \
-    'phi', 'Phi', 'chi', 'psi', 'Psi', 'omega', 'Omega']
+greekletters = [
+    "alpha",
+    "beta",
+    "gamma",
+    "Gamma",
+    "delta",
+    "Delta",
+    "epsilon",
+    "zeta",
+    "eta",
+    "theta",
+    "Theta",
+    "iota",
+    "kappa",
+    "lambda",
+    "Lambda",
+    "mu",
+    "nu",
+    "xi",
+    "Xi",
+    "pi",
+    "Pi",
+    "rho",
+    "sigma",
+    "Sigma",
+    "tau",
+    "upsilon",
+    "Upsilon",
+    "phi",
+    "Phi",
+    "chi",
+    "psi",
+    "Psi",
+    "omega",
+    "Omega",
+]
 
 import matplotlib as mpl
+
 mpl.use("Agg")
 
 
 # convert a floating point number into a string in X.X x 10^Z format
 def exp_str(f, p=1):
-  if p > 16:
-    print("Precision must be less than 16 d.p.", file=sys.stderr)
-    p = 16
+    if p > 16:
+        print("Precision must be less than 16 d.p.", file=sys.stderr)
+        p = 16
 
-  s = '%.16e' % f
-  ssplit = s.split('e')
-  return '%.*f&times;10<sup>%d</sup>' % (p, float(ssplit[0]), int(ssplit[1]))
+    s = "%.16e" % f
+    ssplit = s.split("e")
+    return "%.*f&times;10<sup>%d</sup>" % (p, float(ssplit[0]), int(ssplit[1]))
 
 
 # a function to get the credible intervals using numpy quantile
 def credible_interval(dsamples, ci):
-  intervals = [0.5 - ci / 2., 0.5 + ci / 2.]    
+    intervals = [0.5 - ci / 2.0, 0.5 + ci / 2.0]
 
-  return np.quantile(dsamples, intervals)
+    return np.quantile(dsamples, intervals)
 
 
 def postprocessing(postsamples, abscissa, abscissaname, data, email, outdir, evidence):
-  # import the corner plot code
-  import corner
+    # import the corner plot code
+    import corner
 
-  # import matplotlib
-  from matplotlib import pyplot as pl
-  
-  # the format text to include in the page
-  fm = {}
-  
-  # the string containing the webpage
-  htmlpage = """
+    # import matplotlib
+    from matplotlib import pyplot as pl
+
+    # the format text to include in the page
+    fm = {}
+
+    # the string containing the webpage
+    htmlpage = """
 <!DOCTYPE HTML>
 <html>
 <head>
@@ -179,7 +209,7 @@ def postprocessing(postsamples, abscissa, abscissaname, data, email, outdir, evi
 
 <!-- include footer -->
 <?php
-$shareurl = "http://www.theonlinemcmc.com";
+$shareurl = "https://www.theonlinemcmc.com";
 include('../../footer.inc');
 ?>
 
@@ -192,129 +222,143 @@ include('../../social.inc');
 </body>
 """
 
-  fm['outdir'] = outdir
+    fm["outdir"] = outdir
 
-  varnames = list(postsamples.columns)[:-2]
-  psamples = postsamples.values
-  nvars = len(varnames)
-  # convert any Greek alphabet variable names into LaTeX tags (prefix with \)
-  for i, var in enumerate(varnames):
-    if var in greekletters:
-      varnames[i] = '\\'+varnames[i]
+    varnames = list(postsamples.columns)[:-2]
+    psamples = postsamples.values
+    nvars = len(varnames)
+    # convert any Greek alphabet variable names into LaTeX tags (prefix with \)
+    for i, var in enumerate(varnames):
+        if var in greekletters:
+            varnames[i] = "\\" + varnames[i]
 
-    # if sigma has been fit for the Gaussian likelihood change the variable name
-    if "sigma_gauss" in var:
-      varnames[i] = '\\sigma_{\mathrm{gauss}}' # convert to LaTeX
+        # if sigma has been fit for the Gaussian likelihood change the variable name
+        if "sigma_gauss" in var:
+            varnames[i] = "\\sigma_{\mathrm{gauss}}"  # convert to LaTeX
 
-  # create triangle plot
+    # create triangle plot
 
-  fm['posteriorfig'] = '<img class="center-block bg-3" src="outdir/label_corner.png" width="60%">'
+    fm["posteriorfig"] = (
+        '<img class="center-block bg-3" src="outdir/label_corner.png" width="60%">'
+    )
 
-  # get the 68% and 95% credible intervals
-  inter68 = []
-  inter95 = []
-  for i in range(nvars):
-    inter68.append(credible_interval(psamples[:,i], 0.68))
-    inter95.append(credible_interval(psamples[:,i], 0.95))
- 
-  # output the results table
-  resultstable = "<table class=\"table table-striped table-hover\">\n<tr><th>Variable</th><th>Mean</th><th>Median</th><th>&sigma;</th><th>68% CI</th><th>95% CI</th></tr>\n"
-  for i in range(nvars):
-    resstrs = ['\('+varnames[i]+'\)'] # the \( \) are the MathJax equation delimiters 
-    
-    meanv = np.mean(psamples[:,i])
-    if np.fabs(meanv) > 1e3 or np.fabs(meanv) < 1e-2:
-      meanstr = exp_str(meanv)
-    else:
-      meanstr = '%.1f' % meanv
-    resstrs.append(meanstr)
-    
-    medianv = np.median(psamples[:,i])
-    if np.fabs(medianv) > 1e3 or np.fabs(medianv) < 1e-2:
-      medianstr = exp_str(medianv)
-    else:
-      medianstr = '%.1f' % medianv
-    resstrs.append(medianstr)
-    
-    #modev = postsamples[np.argmax(postsamples[:,-1]),i]
-    #if np.fabs(modev) > 1e3 or np.fabs(modev) < 1e-2:
-      #modestr = exp_str(modev)
-    #else:
-      #modestr = '%.1f' % modev
-    #resstrs.append(modestr)
+    # get the 68% and 95% credible intervals
+    inter68 = []
+    inter95 = []
+    for i in range(nvars):
+        inter68.append(credible_interval(psamples[:, i], 0.68))
+        inter95.append(credible_interval(psamples[:, i], 0.95))
 
-    sigmav = np.std(psamples[:,i])
-    if np.fabs(sigmav) > 1e3 or np.fabs(sigmav) < 1e-2:
-      sigmastr = exp_str(sigmav)
-    else:
-      sigmastr = '%.1f' % sigmav
-    resstrs.append(sigmastr)
-    
-    ci68str = "[{0}, {1}]"
-    if np.fabs(inter68[i][0]) > 1e3 or np.fabs(inter68[i][0]) < 1e-2:
-      cis1 = exp_str(inter68[i][0])
-    else:
-      cis1 = '%.1f' % inter68[i][0]
-    if np.fabs(inter68[i][1]) > 1e3 or np.fabs(inter68[i][1]) < 1e-2:
-      cis2 = exp_str(inter68[i][1])
-    else:
-      cis2 = '%.1f' % inter68[i][1]
-    resstrs.append(ci68str.format(cis1, cis2))
-    
-    ci95str = "[{0}, {1}]"
-    if np.fabs(inter95[i][0]) > 1e3 or np.fabs(inter95[i][0]) < 1e-2:
-      cis1 = exp_str(inter95[i][0])
-    else:
-      cis1 = '%.1f' % inter95[i][0]
-    if np.fabs(inter95[i][1]) > 1e3 or np.fabs(inter95[i][1]) < 1e-2:
-      cis2 = exp_str(inter95[i][1])
-    else:
-      cis2 = '%.1f' % inter95[i][1]
-    resstrs.append(ci95str.format(cis1, cis2))
+    # output the results table
+    resultstable = '<table class="table table-striped table-hover">\n<tr><th>Variable</th><th>Mean</th><th>Median</th><th>&sigma;</th><th>68% CI</th><th>95% CI</th></tr>\n'
+    for i in range(nvars):
+        resstrs = [
+            "\(" + varnames[i] + "\)"
+        ]  # the \( \) are the MathJax equation delimiters
 
-    resultstable += "<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td><td>{5}</td></tr>".format(*resstrs)
-  resultstable += "</table>\n"
+        meanv = np.mean(psamples[:, i])
+        if np.fabs(meanv) > 1e3 or np.fabs(meanv) < 1e-2:
+            meanstr = exp_str(meanv)
+        else:
+            meanstr = "%.1f" % meanv
+        resstrs.append(meanstr)
 
-  fm['resultstable'] = resultstable
-  
-  # get the correlation coefficient matrix
-  corrcoef = np.corrcoef(psamples[:,:nvars].T)
+        medianv = np.median(psamples[:, i])
+        if np.fabs(medianv) > 1e3 or np.fabs(medianv) < 1e-2:
+            medianstr = exp_str(medianv)
+        else:
+            medianstr = "%.1f" % medianv
+        resstrs.append(medianstr)
 
-  corrcoeftable = "<table class=\"table table-striped table-hover\"><th></th>"
-  for i in range(nvars):
-    corrcoeftable += "<td>%s</td>" % ('\('+varnames[i]+'\)')
-  corrcoeftable += "</tr>\n"
-  for i in range(nvars):
-    corrcoeftable += "<tr><td>%s</td>" % ('\('+varnames[i]+'\)')
-    for j in range(nvars):
-      # check if only 1d corrcoef array
-      if nvars == 1:
-        corrcoeftable += "<td>%.2f</td>" % corrcoef
-      else:
-        corrcoeftable += "<td>%.2f</td>" % corrcoef[i,j]
+        # modev = postsamples[np.argmax(postsamples[:,-1]),i]
+        # if np.fabs(modev) > 1e3 or np.fabs(modev) < 1e-2:
+        # modestr = exp_str(modev)
+        # else:
+        # modestr = '%.1f' % modev
+        # resstrs.append(modestr)
+
+        sigmav = np.std(psamples[:, i])
+        if np.fabs(sigmav) > 1e3 or np.fabs(sigmav) < 1e-2:
+            sigmastr = exp_str(sigmav)
+        else:
+            sigmastr = "%.1f" % sigmav
+        resstrs.append(sigmastr)
+
+        ci68str = "[{0}, {1}]"
+        if np.fabs(inter68[i][0]) > 1e3 or np.fabs(inter68[i][0]) < 1e-2:
+            cis1 = exp_str(inter68[i][0])
+        else:
+            cis1 = "%.1f" % inter68[i][0]
+        if np.fabs(inter68[i][1]) > 1e3 or np.fabs(inter68[i][1]) < 1e-2:
+            cis2 = exp_str(inter68[i][1])
+        else:
+            cis2 = "%.1f" % inter68[i][1]
+        resstrs.append(ci68str.format(cis1, cis2))
+
+        ci95str = "[{0}, {1}]"
+        if np.fabs(inter95[i][0]) > 1e3 or np.fabs(inter95[i][0]) < 1e-2:
+            cis1 = exp_str(inter95[i][0])
+        else:
+            cis1 = "%.1f" % inter95[i][0]
+        if np.fabs(inter95[i][1]) > 1e3 or np.fabs(inter95[i][1]) < 1e-2:
+            cis2 = exp_str(inter95[i][1])
+        else:
+            cis2 = "%.1f" % inter95[i][1]
+        resstrs.append(ci95str.format(cis1, cis2))
+
+        resultstable += "<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td><td>{5}</td></tr>".format(
+            *resstrs
+        )
+    resultstable += "</table>\n"
+
+    fm["resultstable"] = resultstable
+
+    # get the correlation coefficient matrix
+    corrcoef = np.corrcoef(psamples[:, :nvars].T)
+
+    corrcoeftable = '<table class="table table-striped table-hover"><th></th>'
+    for i in range(nvars):
+        corrcoeftable += "<td>%s</td>" % ("\(" + varnames[i] + "\)")
     corrcoeftable += "</tr>\n"
-  corrcoeftable += "</table>\n"
+    for i in range(nvars):
+        corrcoeftable += "<tr><td>%s</td>" % ("\(" + varnames[i] + "\)")
+        for j in range(nvars):
+            # check if only 1d corrcoef array
+            if nvars == 1:
+                corrcoeftable += "<td>%.2f</td>" % corrcoef
+            else:
+                corrcoeftable += "<td>%.2f</td>" % corrcoef[i, j]
+        corrcoeftable += "</tr>\n"
+    corrcoeftable += "</table>\n"
 
-  fm['corrcoeftable'] = corrcoeftable
+    fm["corrcoeftable"] = corrcoeftable
 
-  if np.isnan(evidence) == True:
-    fm['evidencevalue'] = "" # Not using nestling sampler - no evidence value to display
-  else:
-    evidencevalue = "<div id=\"lnevd\" class=\"container-fluid bg-2 text-left\">"
-    evidencevalue += "<h3 class=\"text-center\" id=\"functions\">LOG EVIDENCE VALUE</h3>"
-    evidencevalue += "The nested sampler used gave a log evidence value of: <b>%.4f </b></div>" % evidence
-    fm['evidencevalue'] = evidencevalue
+    if np.isnan(evidence) == True:
+        fm["evidencevalue"] = (
+            ""  # Not using nestling sampler - no evidence value to display
+        )
+    else:
+        evidencevalue = '<div id="lnevd" class="container-fluid bg-2 text-left">'
+        evidencevalue += (
+            '<h3 class="text-center" id="functions">LOG EVIDENCE VALUE</h3>'
+        )
+        evidencevalue += (
+            "The nested sampler used gave a log evidence value of: <b>%.4f </b></div>"
+            % evidence
+        )
+        fm["evidencevalue"] = evidencevalue
 
-  # create plot of data along with distribution of best fit models
+    # create plot of data along with distribution of best fit models
 
-  fm['bestfitfig'] = '<img class="center-block bg-3" src="outdir/label_plot_with_data.png" width="60%">'
+    fm["bestfitfig"] = (
+        '<img class="center-block bg-3" src="outdir/label_plot_with_data.png" width="60%">'
+    )
 
-  # output page
-  ppfile = 'index.php'
-  fp = open(ppfile, 'w')
-  fp.write(htmlpage.format(**fm))
-  fp.close()
+    # output page
+    ppfile = "index.php"
+    fp = open(ppfile, "w")
+    fp.write(htmlpage.format(**fm))
+    fp.close()
 
-  # email the page
-  emailresponse(email, outdir)
-
+    # email the page
+    emailresponse(email, outdir)

@@ -1,0 +1,36 @@
+[build-system]
+requires = [
+    "setuptools>=61",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "theonlinemcmc"
+description = "Python functions required for The Online MCMC."
+authors = [
+    { name = "Matthew Pitkin", email = "matthew.pitkin@ligo.org" },
+]
+license = { text = "MIT" }
+readme = "README.md"
+
+classifiers = [
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Natural Language :: English",
+    "Programming Language :: Python",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+]
+
+requires-python = ">=3.8, <4"
+dependencies = [
+    "bilby",
+    "dynesty",
+    "matplotlib",
+    "mysqlclient",
+    "numpy",
+    "pymc3",
+    "scipy",
+]
+
+version = "0.2.0"

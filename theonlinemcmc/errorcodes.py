@@ -10,11 +10,19 @@ DATA_LENGTH_ERR = 1009
 
 errormessages = {}
 errormessages[DATA_READ_ERR] = "There was a problem reading in the data."
-errormessages[ABSCISSA_READ_ERR] = "There was a problem reading in the abscissa variable file."
-errormessages[SIGMA_READ_ERR] = "There was a problem reading in the data standard deviation file."
+errormessages[ABSCISSA_READ_ERR] = (
+    "There was a problem reading in the abscissa variable file."
+)
+errormessages[SIGMA_READ_ERR] = (
+    "There was a problem reading in the data standard deviation file."
+)
 errormessages[SAMPLER_RUN_ERR] = "There was a problem running the sampler."
-errormessages[PRIOR_INIT_ERR] = "There was a problem initialising the prior values." 
-errormessages[LIKE_INIT_ERR] = "There was a problem initialising the sampler." 
-errormessages[POST_OUTPUT_ERR] = "There was a problem outputing the posterior file."
-errormessages[POST_PROCESS_ERR] = "There was a problem running the post-processing page."
-errormessages[DATA_LENGTH_ERR] = "There are inconsistent lengths between data, abscissa, and/or sigma lengths."
+errormessages[PRIOR_INIT_ERR] = "There was a problem initialising the prior values."
+errormessages[LIKE_INIT_ERR] = "There was a problem initialising the sampler."
+errormessages[POST_OUTPUT_ERR] = "There was a problem outputting the posterior file."
+errormessages[POST_PROCESS_ERR] = (
+    "There was a problem running the post-processing page."
+)
+errormessages[DATA_LENGTH_ERR] = (
+    "There are inconsistent lengths between data, abscissa, and/or sigma lengths."
+)

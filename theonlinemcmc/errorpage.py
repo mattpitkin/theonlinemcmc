@@ -2,9 +2,10 @@
 
 from theonlinemcmc import errormessages, emailresponse
 
+
 def errorpage(erroroutput, errval, emailaddress, outdir):
-  # the string containing the webpage
-  htmlpage = """
+    # the string containing the webpage
+    htmlpage = """
 <!DOCTYPE HTML>
 <html>
 <head>
@@ -65,25 +66,26 @@ def errorpage(erroroutput, errval, emailaddress, outdir):
 
 <!-- include footer -->
 <?php
-$shareurl = "http://www.theonlinemcmc.com";
+$shareurl = "https://www.theonlinemcmc.com";
 include('../../footer.inc');
 ?>
 
 <!-- include Social Media sharing file -->
 <?php
-$shareurl = "http://www.theonlinemcmc.com";
+$shareurl = "https://www.theonlinemcmc.com";
 include('../../social.inc');
 ?>
 </div>
 </body>
 """
 
-  # the output php file
-  errfile = 'index.php'
-  fp = open(errfile, 'w')
-  fp.write(htmlpage.format(errormessage=errormessages[errval],erroroutput=erroroutput))
-  fp.close()
-  
-  # email the page
-  emailresponse(emailaddress, outdir, runerror=True)
-  
+    # the output php file
+    errfile = "index.php"
+    fp = open(errfile, "w")
+    fp.write(
+        htmlpage.format(errormessage=errormessages[errval], erroroutput=erroroutput)
+    )
+    fp.close()
+
+    # email the page
+    emailresponse(emailaddress, outdir, runerror=True)

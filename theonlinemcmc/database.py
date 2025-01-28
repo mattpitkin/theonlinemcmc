@@ -39,26 +39,33 @@ import json
                          nvariables TINYINT, \
                          success BOOLEAN);
 """
-def database_add_row(uid, mfunc, variables, nvars, success):
-  # get database info from a file specified by an environment variable
-  dbinf = open(os.environ['TOMDBFILE'], 'r')
-  dbdata = json.load(dbinf)
-  dbinf.close()
-  
-  # set database table
-  sucvar = 0
-  if success:
-    sucvar = 1
-  
-  # open connection to the database
-  con = mdb.connect('localhost', dbdata['user'], dbdata['password'], dbdata['database'])
-  
-  with con:
-    # add values into table
-    cur = con.cursor()
 
-    # insert into row
-    cur.execute("INSERT INTO %s (uid, modelfunction, variables, nvariables, success) VALUES('%s', '%s', '%s', '%d', '%d')" % (dbdata['table'], uid, mfunc, variables, nvars, sucvar))
-    con.commit()
-      
-  con.close()
+
+def database_add_row(uid, mfunc, variables, nvars, success):
+    # get database info from a file specified by an environment variable
+    dbinf = open(os.environ["TOMDBFILE"], "r")
+    dbdata = json.load(dbinf)
+    dbinf.close()
+
+    # set database table
+    sucvar = 0
+    if success:
+        sucvar = 1
+
+    # open connection to the database
+    con = mdb.connect(
+        "localhost", dbdata["user"], dbdata["password"], dbdata["database"]
+    )
+
+    with con:
+        # add values into table
+        cur = con.cursor()
+
+        # insert into row
+        cur.execute(
+            "INSERT INTO %s (uid, modelfunction, variables, nvariables, success) VALUES('%s', '%s', '%s', '%d', '%d')"
+            % (dbdata["table"], uid, mfunc, variables, nvars, sucvar)
+        )
+        con.commit()
+
+    con.close()
