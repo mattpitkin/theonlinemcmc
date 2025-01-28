@@ -23,7 +23,6 @@
 
 <td><div class="fb-share-button" data-href="<?php echo $shareurl;?>" data-layout="button_count"></div></td>
 <td><a href="https://twitter.com/share" class="twitter-share-button" data-url="<?php echo $shareurl;?>" data-via="theonlinemcmc">Tweet</a></td>
-<td><div class="g-plus" data-action="share" data-annotation="bubble" data-href="<?php echo $shareurl;?>"></div></td>
 </tr>
 
 

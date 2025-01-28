@@ -178,21 +178,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   </div>
 </nav>
 
-<div id="about" class="container-top bg-1 text-center">
+<div id="about" class="container-top bg-1 text-left">
   <h2 class="title">THE ONLINE MCMC</h2>
     <h2>Do you have some data and a model that you want to fit? Well here's the website for you (see <a href="#caveats">caveats</a>)!</h2><h3><br>
-On this website you can input a model function defined by a set of parameters, including those that you want fit, as well as your data, and it will run a statisical sampling algorithm to estimate the posterior probability distributions of those parameters.<br><br>
-This site makes use of the Bayesian inference Python package <a href="https://lscsoft.docs.ligo.org/bilby/index.html">Bilby</a> to access a selection of statistical samplers.
+On this website you can input a model function defined by a set of parameters, including those that you want fit, as well as your data, and it will run a statistical sampling algorithm to estimate the posterior probability distributions of those parameters.<br><br>
+This site makes use of the Bayesian inference Python package <a href="https://bilby-dev.github.io/bilby/">Bilby</a> to access a selection of statistical samplers.
 Beyond <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo">Markov chain Monte Carlo</a> (MCMC), users are able to select from a variety of statistical <a href="#id_sampler_input">samplers</a> and it is encouraged to trial a variety to achieve the best performance for your model.</h3>
 </div>
 
+<div id="examples" class="container-fluid bg-2">
+  <h3 class="text-center">EXAMPLES</h3>
+</div>
+
 <div id="examples" class="container-fluid bg-3 text-center">
-  <h3 class="margin">EXAMPLES</h3>
-  <br>
   <div class="row">
     <div class="col-sm-4">
       <p>
-        This site generates 2 plots: one of the marginalised posterior plots for each parameter that the user defines...
+        This site generates two plots: one of the marginalised posterior plots for each parameter that the user defines...
       </p>
       <img src="posterior_plots.png" class="img-responsive margin" style="width:100%" alt="Image">
     </div>
@@ -484,13 +486,13 @@ Beyond <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo">Markov c
         <li>choose to include the noise standard deviation as another parameter to be fit (i.e. if it is unknown). If you choose this option then a prior (as <a href="#prior">above</a>) is required.
       </ul>
       <li><strong>Student's <em>t</em></strong>: the <a href="https://en.wikipedia.org/wiki/Student%27s_t-distribution">Student's <em>t</em> likelihood</a> is similar to the Gaussian likelihood, but it does not require a noise standard deviation to be given (the noise is assumed to be <a href="https://en.wikipedia.org/wiki/Stationary_process">stationary</a> over the dataset and has been analytically <a href="https://en.wikipedia.org/wiki/Marginal_distribution">marginalised</a> over).
-      <li><strong>Poisson</strong>: the <a href="https://en.wikipedia.org/wiki/Poisson_distribution">Poisson distribution is similar to the Gaussian, however it deals with discrete random variables, such as counting a radioactive decay source. The data input therefore is required to be integer counts and only positive values.
+      <li><strong>Poisson</strong>: the <a href="https://en.wikipedia.org/wiki/Poisson_distribution">Poisson distribution</a> is similar to the Gaussian, however it deals with discrete random variables, such as counting a radioactive decay source. The data input therefore is required to be integer counts and only positive values.
     </ul>
   </p>
   <br>
 
-  <h3 class="text-left" id="id_sampler_input">Sampler Inputs</h2>
-  Through <a href="https://lscsoft.docs.ligo.org/bilby/index.html">Bilby</a> one can select from a variety of statistical samplers, each utilising a slightly different algorithm to sample from the posterior distribution of the parameter space. The samplers available are broken down into
+  <h3 class="text-left" id="id_sampler_input">Sampler Inputs</h3>
+  Through <a href="https://bilby-dev.github.io/bilby/">Bilby</a> one can select from a variety of statistical samplers, each utilising a slightly different algorithm to sample from the posterior distribution of the parameter space. The samplers available are broken down into
   two separate classes, <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo">Markov chain Monte Carlo</a> methods (see <a href="http://dan.iel.fm/emcee/">emcee</a> and <a href="https://docs.pymc.io/">PyMC3</a>) and <a href="https://en.wikipedia.org/wiki/Nested_sampling_algorithm">Nested Sampling algorithms</a> (see <a href="https://dynesty.readthedocs.io/en/latest/index.html">Dynesty</a> and <a href="http://kylebarbary.com/nestle/">Nestle</a>).
   <br>
   <br>
@@ -611,11 +613,11 @@ Beyond <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo">Markov c
     </ul>
 </div>
 
-<div id="caveats" class="container-fluid bg-3 text-center">
+<div id="caveats" class="container-fluid bg-3 text-left">
   <h2>CAVEATS</h2>
 
   <p>
-    The sampling algorithms provided are not guaranteed to produce sensible results every time, and your output may contain errors or look odd. Some information and trouble shooting for the samplers can be found <a href="https://lscsoft.docs.ligo.org/bilby/samplers.html">here</a>.
+    The sampling algorithms provided are not guaranteed to produce sensible results every time, and your output may contain errors or look odd. Some information and trouble shooting for the samplers can be found <a href="https://bilby-dev.github.io/bilby/samplers.html">here</a>.
   </p>
   <p>
     For very high <a href="https://en.wikipedia.org/wiki/Signal-to-noise_ratio">SNR</a> models, it is possible for MCMC solutions to converge very slowly as exploring the parameter space becomes difficult. For such cases, solutions will take longer to be produced.
@@ -627,13 +629,13 @@ Beyond <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo">Markov c
 
 <!-- include footer -->
 <?php
-$shareurl = "http://www.theonlinemcmc.com";
+$shareurl = "https://www.theonlinemcmc.com";
 include('footer.inc');
 ?>
 
 <!-- include Social Media sharing file -->
 <?php
-$shareurl = "http://www.theonlinemcmc.com";
+$shareurl = "https://www.theonlinemcmc.com";
 include('social.inc');
 ?>
 
