@@ -58,7 +58,8 @@ TheOnlineMCMC
     if edata["server"] == "localhost":
         server = smtplib.SMTP("localhost")
     else:
-        server = smtplib.SMTP_SSL(edata["server"])
+        server = smtplib.SMTP_SSL(edata["server"], 465)
+        server.ehlo()
         server.login(username, password)
     server.sendmail(fromaddr, [toaddr], msg.as_string())
-    server.quit()
+    server.close()
