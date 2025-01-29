@@ -584,7 +584,7 @@ errout = 0\n\
 \n\
 # Check for valid sigma\n\
 {sigmacheck}\
-# Caclulate likelihood\n\
+# Calculate likelihood\n\
 {runlikelihood}\
 \n\
 # Run sampler\n\
