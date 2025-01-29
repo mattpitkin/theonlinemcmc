@@ -146,7 +146,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   if(!empty($_POST['runcode'])){
     $errfile = 'err_code.txt';
     $pycommand = 'pyfile.py';
-    $pid = shell_exec(sprintf('cd %s; $THEONLINEMCMCPYTHON -m %s > %s 2>&1 & echo $!', $outdir, $pycommand, $errfile));
+    $pid = shell_exec(sprintf('cd %s; $THEONLINEMCMCPYTHON %s > %s 2>&1 & echo $!', $outdir, $pycommand, $errfile));
   }
 
   header('Location: https://'.$_SERVER['SERVER_NAME'].'/submitted.php');
