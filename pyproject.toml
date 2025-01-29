@@ -30,7 +30,7 @@ dependencies = [
     "mysqlclient",
     "numpy",
     "pymc3",
-    "scipy",
+    "scipy<1.15",
 ]
 
 version = "0.2.0"
