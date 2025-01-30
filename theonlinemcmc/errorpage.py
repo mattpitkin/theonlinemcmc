@@ -69,12 +69,6 @@ def errorpage(erroroutput, errval, emailaddress, outdir):
 $shareurl = "https://www.theonlinemcmc.com";
 include('../../footer.inc');
 ?>
-
-<!-- include Social Media sharing file -->
-<?php
-$shareurl = "https://www.theonlinemcmc.com";
-include('../../social.inc');
-?>
 </div>
 </body>
 """

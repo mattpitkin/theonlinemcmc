@@ -212,12 +212,6 @@ def postprocessing(postsamples, abscissa, abscissaname, data, email, outdir, evi
 $shareurl = "https://www.theonlinemcmc.com";
 include('../../footer.inc');
 ?>
-
-<!-- include social media sharing -->
-<?php
-$shareurl = "{outdir}";
-include('../../social.inc');
-?>
 </div>
 </body>
 """
