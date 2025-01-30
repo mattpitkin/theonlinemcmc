@@ -438,112 +438,6 @@ $(document).ready(function() {
     });
   }
 
-
-
-
-
-
-  
-  // random example generator - not currently in use
-  $("#id_randexample").click(function(){
-    // Generate random equation - id="modeleq"
-    document.getElementById("modeleq").value = "m*x+c"; // .value = randeq;
-    // un-hide the div element
-    $("#id_variables_div").css("display", ""); 
-    // un-hide conditions field
-    $("#id_conditions").prop("type", "text");
-    var variables = ['m','c','x'];
-    var tableel = document.getElementById("table_id");
-    var row = tableel.insertRow(0);
-    row.setAttribute("id","id_vartype_x",0); // Update abscissa 'x'
-    var cell = row.insertCell(0);
-    cell.innerHTML = "x";
-    var cell1 = row.insertCell(-1);
-    var idvartype = "id_vartype_x";
-    cell1.innerHTML = "<select id=\""+idvartype+"\" class=\"form-control\">\
-  <option value=\"\">--Type--</option>\
-  <option value=\"Constant\">Constant</option>\
-  <option value=\"Variable\">Variable</option>\
-  <option value=\"Abscissa\">Independent variable/abscissa</option>\
-</select>";
-    document.getElementById("id_vartype_x").value = "Abscissa";
-    var newcell = row.insertCell(-1);
-    var idabscissatype = "id_abscissa_x";
-    newcell.innerHTML = "<select id=\""+idabscissatype+"\" class=\"form-control\">\
-    <option value=\"\">--Input type--</option>\
-    <option value=\"Input\">Input</option>\
-    <option value=\"Upload\">Upload</option>\
-</select>";
-    document.getElementById("id_abscissa_x").value = "Input";
-    var cell = row.insertCell(-1);
-    cell.innerHTML = "<textarea rows=\"1\" cols=\"20\" id=\"id_abscissaval\" class=\"form-control\">1,2,3,4</textarea>";
-    for (index = 0; index < 2; index++){ // loop through 'm' and 'c' variables
-      var row = tableel.insertRow(0);
-      row.setAttribute("id", "id_"+variables[index], 0);
-      var cell = row.insertCell(0);
-      cell.innerHTML = variables[index];
-      var cell = row.insertCell(-1);
-      var idvartype = "id_vartype_"+variables[index];
-      cell.innerHTML = "<select id=\""+idvartype+"\" class=\"form-control\">\
-    <option value=\"\">--Type--</option>\
-    <option value=\"Constant\">Constant</option>\
-    <option value=\"Variable\">Variable</option>\
-    <option value=\"Abscissa\">Independent variable/abscissa</option>\
-  </select>";
-      var newcell = row.insertCell(-1);
-      var idpriortype = "id_priortype_"+variables[index];
-      newcell.innerHTML = "<select id=\""+idpriortype+"\" class=\"form-control\">\
-      <option value=\"\">--Prior--</option>\
-      <option value=\"Uniform\">Uniform</option>\
-      <option value=\"LogUniform\">Log(Uniform)</option>\
-      <option value=\"Gaussian\">Gaussian</option>\
-      <option value=\"Exponential\">Exponential</option>\
-  </select>";
-      document.getElementById("id_priortype_"+variables[index]).value = "Uniform";
-      var cell = row.insertCell(-1);
-      cell.innerHTML = "<input type=\"text\" id=\"minval_"+variables[index]+"\" value=\"-10\" class=\"form-control\">";
-      cell = row.insertCell(-1);
-      cell.innerHTML = "<input type=\"text\" id=\"maxval_"+variables[index]+"\" value=\"10\" class=\"form-control\">";
-    }
-    
-    
-    document.getElementById("id_vartype_m").value = "Variable";
-    document.getElementById("id_vartype_c").value = "Variable";
-    document.getElementById("data_input_type").value = "Input";
-    var input = document.getElementById("id_data_div");
-    //var cell = input.insertCell(-1);
-    //cell.innerHTML = "<textarea rows=\"1\" cols=\"20\" id=\"id_abscissaval\" class=\"form-control\">1,2,3,4</textarea>";
-
-    // Input data - same length as abscissa
-
-      // Add noise to the data
-    // Select Gaussian likelihood with fixed standard deviation of 0.1
-    document.getElementById("likelihood_input_type").value = "Gaussian";
-    var liketablerow = document.getElementById("like_row");
-    var newcell = liketablerow.insertCell(-1);
-    newcell.innerHTML = "<select id=\"id_gauss_like_type\" class=\"form-control\">\
-  <option value=\"\">--Type--</option>\
-  <option value=\"Known1\">Input &sigma; value</option>\
-  <option value=\"Known2\">Input &sigma; values</option>\
-  <option value=\"Fit\">Fit &sigma; value</option>\
-</select>";
-    document.getElementById("id_gauss_like_type").value = "Known1";
-    var newcell2 = liketablerow.insertCell(-1);
-    newcell2.innerHTML = "<input type=\"text\" id=\"id_gauss_known\" class=\"form-control\" value=\"&sigma;\">";
-    document.getElementById("id_gauss_known").value = 0.1;
-    // Select random sampler
-    var samplers = ["emcee","dynesty"];
-    var sampler = samplers[Math.floor(Math.random() * 2)];
-    document.getElementById("sampler_input_type").value = sampler;
-    $("#id_"+sampler+"_div").css("display", "");
-  });
-
-
-
-
-
-
-
   // form submission
   $("#id_submit_variables").click(function(){
     pyfile = ""; // clear global variable    
@@ -632,10 +526,10 @@ errout = 0\n\
           fitarray[variables[index]].maxval = minmaxvals[1];
             
           if ( priortype == "Uniform" ){
-            priordict += "  priors['"+variables[index]+"'] = bilby.core.prior.Uniform("+minmaxvals[0]+", "+minmaxvals[1]+", '"+variables[index]+"')\n";
+            priordict += "    priors['"+variables[index]+"'] = bilby.core.prior.Uniform("+minmaxvals[0]+", "+minmaxvals[1]+", '"+variables[index]+"')\n";
           }
           else{
-            priordict += "  priors['"+variables[index]+"'] = bilby.core.prior.LogUniform("+minmaxvals[0]+", "+minmaxvals[1]+", '"+variables[index]+"')\n";   
+            priordict += "    priors['"+variables[index]+"'] = bilby.core.prior.LogUniform("+minmaxvals[0]+", "+minmaxvals[1]+", '"+variables[index]+"')\n";   
           }
         }
 
@@ -651,7 +545,7 @@ errout = 0\n\
 
           fitarray[variables[index]].meanval = meanstdvals[0];
           fitarray[variables[index]].sigmaval = meanstdvals[1];
-          priordict += "  priors['"+variables[index]+"'] = bilby.core.prior.Gaussian("+meanstdvals[0]+", "+meanstdvals[1]+", '"+variables[index]+"')\n";
+          priordict += "    priors['"+variables[index]+"'] = bilby.core.prior.Gaussian("+meanstdvals[0]+", "+meanstdvals[1]+", '"+variables[index]+"')\n";
         }
         
         if ( priortype == "Exponential" ){
@@ -663,7 +557,7 @@ errout = 0\n\
           }
 
           fitarray[variables[index]].meanval = meanvals[0];
-          priordict += "  priors['"+variables[index]+"'] = bilby.core.prior.Exponential("+meanvals[0]+",'"+variables[index]+"')\n";
+          priordict += "    priors['"+variables[index]+"'] = bilby.core.prior.Exponential("+meanvals[0]+",'"+variables[index]+"')\n";
         }
       }
     }
@@ -696,7 +590,7 @@ errout = 0\n\
 
         fitarray["sigma"].minval = minmaxvals[0];
         fitarray["sigma"].maxval = minmaxvals[1];
-        priordict += "  priors['sigma'] = bilby.core.prior.Uniform("+minmaxvals[0]+", "+minmaxvals[1]+", 'sigma')\n";
+        priordict += "    priors['sigma'] = bilby.core.prior.Uniform("+minmaxvals[0]+", "+minmaxvals[1]+", 'sigma')\n";
       }
 
       if ( priortype == "Gaussian" ){
@@ -711,7 +605,7 @@ errout = 0\n\
 
         fitarray["sigma"].meanval = meanstdvals[0];
         fitarray["sigma"].sigmaval = meanstdvals[1];
-        priordict += "  priors['sigma'] = bilby.core.prior.Gaussian("+meanstdvals[0]+", "+meanstdvals[1]+", 'sigma')\n";
+        priordict += "    priors['sigma'] = bilby.core.prior.Gaussian("+meanstdvals[0]+", "+meanstdvals[1]+", 'sigma')\n";
       }
 
       if ( priortype == "Exponential" ){
@@ -723,12 +617,12 @@ errout = 0\n\
         }
 
         fitarray["sigma"].meanval = meanvals[0];
-        priordict += "  priors['sigma'] = bilby.core.prior.Exponential("+meanvals[0]+",'sigma')\n";
+        priordict += "    priors['sigma'] = bilby.core.prior.Exponential("+meanvals[0]+",'sigma')\n";
       } 
     }
     priordict += "except Exception as e:\n";
-    priordict += "  errval = PRIOR_INIT_ERR\n";
-    priordict += "  errout = e\n";
+    priordict += "    errval = PRIOR_INIT_ERR\n";
+    priordict += "    errout = e\n";
     outputStrings["priordict"] = priordict; // used in python file for bilby
     // write model function
     var modelfunction = "# import functions that can be used by the model\n\
@@ -737,9 +631,9 @@ from scipy.special import erf, factorial, gamma\n\
 import numpy as np\n\n\
 # define the model to fit to the data\n\
 def mymodel({arguments}):\n\
-  {conststring}\n\
-  \n\
-  return {outputstring}\n\n";
+    {conststring}\n\
+    \n\
+    return {outputstring}\n\n";
     var modelStrings = {};
     
     var conststring = "";
@@ -812,10 +706,10 @@ def mymodel({arguments}):\n\
     }
     // create log posterior function
     var posteriorfunction = "def lnprob(theta, " + abscissastring + gauss_like_sigma;   
-    posteriorfunction += ", data):\n  lp = lnprior(theta)\n\
-  if not np.isfinite(lp):\n\
-    return -np.inf\n\n\
-  return lp + lnlike(theta, " + abscissastring + gauss_like_sigma + ", data)\n\n";
+    posteriorfunction += ", data):\n    lp = lnprior(theta)\n\
+    if not np.isfinite(lp):\n\
+        return -np.inf\n\n\
+    return lp + lnlike(theta, " + abscissastring + gauss_like_sigma + ", data)\n\n";
 
     outputStrings["posteriorfunction"] = posteriorfunction;
     
@@ -966,31 +860,31 @@ def mymodel({arguments}):\n\
 
     // read in data
     var readdata = 'if errval == 0:\n';
-    readdata += '  try:\n';
-    readdata += '    data = np.loadtxt("' + datafile +'")\n';
-    readdata += '  except:\n';
     readdata += '    try:\n';
-    readdata += '      data = np.loadtxt("' + datafile + '", delimiter=",")\n';
-    readdata += '    except Exception as e:\n';
-    readdata += '      errval = DATA_READ_ERR\n';
-    readdata += '      errout = e\n\n';
+    readdata += '        data = np.loadtxt("' + datafile +'")\n';
+    readdata += '    except:\n';
+    readdata += '        try:\n';
+    readdata += '            data = np.loadtxt("' + datafile + '", delimiter=",")\n';
+    readdata += '        except Exception as e:\n';
+    readdata += '            errval = DATA_READ_ERR\n';
+    readdata += '            errout = e\n\n';
     
     outputStrings['readdata'] = readdata;
     
     // read in abscissa
     var readabscissa = 'if errval == 0:\n';
-    readabscissa += '  try:\n';
-    readabscissa += '    ' + abscissavar + ' = np.loadtxt("' + absfile + '")\n';
-    readabscissa += '  except:\n';
     readabscissa += '    try:\n';
-    readabscissa += '      ' + abscissavar + ' = np.loadtxt("' + absfile + '", delimiter=",")\n';
-    readabscissa += '    except Exception as e:\n';
-    readabscissa += '      errval = ABSCISSA_READ_ERR\n';
-    readabscissa += '      errout = e\n';
+    readabscissa += '        ' + abscissavar + ' = np.loadtxt("' + absfile + '")\n';
+    readabscissa += '    except:\n';
+    readabscissa += '        try:\n';
+    readabscissa += '            ' + abscissavar + ' = np.loadtxt("' + absfile + '", delimiter=",")\n';
+    readabscissa += '        except Exception as e:\n';
+    readabscissa += '            errval = ABSCISSA_READ_ERR\n';
+    readabscissa += '            errout = e\n';
     readabscissa += 'if errval == 0:\n';
-    readabscissa += '  if len('+ abscissavar + ') != len(data):\n';
-    readabscissa += '    errval = DATA_LENGTH_ERR\n';
-    readabscissa += '    errout = "The length of data is incorrect."\n\n';
+    readabscissa += '    if len('+ abscissavar + ') != len(data):\n';
+    readabscissa += '        errval = DATA_LENGTH_ERR\n';
+    readabscissa += '        errout = "The length of data is incorrect."\n\n';
     
     outputStrings['readabscissa'] = readabscissa;
     
@@ -1020,21 +914,21 @@ def mymodel({arguments}):\n\
       
       if ( $("#id_gauss_like_type").val() == "Known2" ){
         readsigma += 'if errval == 0:\n';
-        readsigma += '  try:\n';
-        readsigma += '    sigma_data = np.loadtxt("' + sigmafile + '")\n';
-        readsigma += '    sigma = sigma_data\n';
-        readsigma += '    if len(sigma_data) != len(data):\n';
-        readsigma += '      errval = DATA_LENGTH_ERR\n';
-        readsigma += '      errout = "The length of data is incorrect."\n';
-        readsigma += '  except:\n';
         readsigma += '    try:\n';
-        readsigma += '      sigma_data = np.loadtxt("' + sigmafile + '", delimiter=",")\n';
-        readsigma += '      if len(sigma_data) != len(data):\n';
-        readsigma += '        errval = DATA_LENGTH_ERR\n';
-        readsigma += '        errout = "The length of data is incorrect."\n';
-        readsigma += '    except Exception as e:\n';
-        readsigma += '      errval = SIGMA_READ_ERR\n';
-        readsigma += '      errout = e\n';
+        readsigma += '        sigma_data = np.loadtxt("' + sigmafile + '")\n';
+        readsigma += '        sigma = sigma_data\n';
+        readsigma += '        if len(sigma_data) != len(data):\n';
+        readsigma += '            errval = DATA_LENGTH_ERR\n';
+        readsigma += '            errout = "The length of data is incorrect."\n';
+        readsigma += '    except:\n';
+        readsigma += '        try:\n';
+        readsigma += '            sigma_data = np.loadtxt("' + sigmafile + '", delimiter=",")\n';
+        readsigma += '            if len(sigma_data) != len(data):\n';
+        readsigma += '                errval = DATA_LENGTH_ERR\n';
+        readsigma += '                errout = "The length of data is incorrect."\n';
+        readsigma += '        except Exception as e:\n';
+        readsigma += '            errval = SIGMA_READ_ERR\n';
+        readsigma += '            errout = e\n';
         sigmavar += "sigma_data";
 
         sigmavar += ",";
@@ -1049,10 +943,10 @@ def mymodel({arguments}):\n\
       if (sigmavar == ""){
         bilbysigmavar = ",sigma";
         sigmacheck += "try: # no fixed values of sigma given so attempting to generate normal random list between allowed values\n";
-        sigmacheck += " sigma = abs(np.random.normal((priors['sigma'].maximum+priors['sigma'].minimum)/2,priors['sigma'].maximum-priors['sigma'].minimum, len(" + abscissavar + ")))\n";
+        sigmacheck += "    sigma = abs(np.random.normal((priors['sigma'].maximum+priors['sigma'].minimum)/2,priors['sigma'].maximum-priors['sigma'].minimum, len(" + abscissavar + ")))\n";
         sigmacheck += "except Exception as e:\n";
-        sigmacheck += "  errval = SAMPLER_RUN_ERR\n";
-        sigmacheck += "  errout = e\n";
+        sigmacheck += "    errval = SAMPLER_RUN_ERR\n";
+        sigmacheck += "    errout = e\n";
         
       } // this is a botched job at the moment to try and make sure variable sigma can run in bilby
       else{
@@ -1077,45 +971,45 @@ def mymodel({arguments}):\n\
       bilbysigmavar = "";
       intcheck = "# Checking data values are all integers\n";
       intcheck += "if np.all(np.mod(data, 1) == 0) == True:\n";
-      intcheck += "  data = data.astype(int)\n";
+      intcheck += "    data = data.astype(int)\n";
       intcheck += "else:\n";
-      intcheck += "  errval = POIS_INT_ERR\n";
-      intcheck += "  errout = 'Data must be non-negative integers'\n\n";
+      intcheck += "    errval = POIS_INT_ERR\n";
+      intcheck += "    errout = 'Data must be non-negative integers'\n\n";
     }
     
     outputStrings["intcheck"] = intcheck;
     outputStrings["sigmacheck"] = sigmacheck;
     var runlikelihood = "if errval == 0:\n";
-    runlikelihood += "  try:\n";
-    runlikelihood += "    likelihood = bilby.likelihood."+bilbylikefunction+"Likelihood"+"("+ abscissavar +", data, mymodel "+bilbysigmavar+")\n";
-    runlikelihood += "  except Exception as e:\n";
-    runlikelihood += "    errval = SAMPLER_RUN_ERR\n";
-    runlikelihood += "    errout = e\n";
+    runlikelihood += "    try:\n";
+    runlikelihood += "        likelihood = bilby.likelihood."+bilbylikefunction+"Likelihood"+"("+ abscissavar +", data, mymodel "+bilbysigmavar+")\n";
+    runlikelihood += "    except Exception as e:\n";
+    runlikelihood += "        errval = SAMPLER_RUN_ERR\n";
+    runlikelihood += "        errout = e\n";
     outputStrings["runlikelihood"] = runlikelihood;
 
     var runsampler = "if errval == 0:\n";
-    runsampler += " try:\n";
-    runsampler += "   result = bilby.run_sampler(likelihood = likelihood,\n";
-    runsampler += "   priors=priors, "+bilbyinput+" sampler='"+samplertype+"')\n";
-    runsampler += "   result.plot_corner()\n";
-    runsampler += "   result.plot_with_data(mymodel,"+ abscissavar +",data)\n";
-    runsampler += " except Exception as e:\n";
-    runsampler += "   errval = SAMPLER_RUN_ERR\n";
-    runsampler += "   errout = e\n";
+    runsampler += "    try:\n";
+    runsampler += "        result = bilby.run_sampler(likelihood = likelihood,\n";
+    runsampler += "        priors=priors, "+bilbyinput+" sampler='"+samplertype+"')\n";
+    runsampler += "        result.plot_corner()\n";
+    runsampler += "        result.plot_with_data(mymodel,"+ abscissavar +",data)\n";
+    runsampler += "    except Exception as e:\n";
+    runsampler += "        errval = SAMPLER_RUN_ERR\n";
+    runsampler += "        errout = e\n";
     outputStrings['runsampler'] = runsampler;
 
     // output chain and log probabilities to gzipped file
     var postout = "";
     postout += " # output the posterior samples, likelihood and variables\n";
     postout += "if errval == 0:\n";
-    postout += " try:\n";
-    postout += "   np.savetxt('posterior_samples.txt.gz', result.posterior.values, fmt='%s')\n"; // fmt='%s' from https://stackoverflow.com/questions/48230230/typeerror-mismatch-between-array-dtype-object-and-format-specifier-18e
-    postout += "   fv = open('variables.txt', 'w')\n";
-    postout += "   fv.write(\",\".join(result.posterior.columns))\n";
-    postout += "   fv.close()\n";
-    postout += " except Exception as e:\n";
-    postout += "   errval = POST_OUTPUT_ERR\n";
-    postout += "   errout = e\n\n";
+    postout += "    try:\n";
+    postout += "        np.savetxt('posterior_samples.txt.gz', result.posterior.values, fmt='%s')\n"; // fmt='%s' from https://stackoverflow.com/questions/48230230/typeerror-mismatch-between-array-dtype-object-and-format-specifier-18e
+    postout += "        fv = open('variables.txt', 'w')\n";
+    postout += "        fv.write(\",\".join(result.posterior.columns))\n";
+    postout += "        fv.close()\n";
+    postout += "    except Exception as e:\n";
+    postout += "        errval = POST_OUTPUT_ERR\n";
+    postout += "        errout = e\n\n";
     
     outputStrings['postout'] = postout;
     
@@ -1131,17 +1025,17 @@ def mymodel({arguments}):\n\
     var lIndex = hrefloc.lastIndexOf('/'); // strip the current page off the href
     var postprocess = "# run post-processing script\n";
     postprocess += "if errval == 0:\n";
-    postprocess += " try:\n";
-    postprocess += "   postprocessing(result.posterior, " + abscissavar + ", \"" + abscissavar + "\", data, \"" + emailaddress + "\", \"" + hrefloc.substr(0, lIndex) + "/results/" + outdir + "\",result.log_evidence)\n";
-    postprocess += " except Exception as e:\n";
-    postprocess += "   errval = POST_PROCESS_ERR\n";
-    postprocess += "   errout = e\n\n";
+    postprocess += "    try:\n";
+    postprocess += "        postprocessing(result.posterior, " + abscissavar + ", \"" + abscissavar + "\", data, \"" + emailaddress + "\", \"" + hrefloc.substr(0, lIndex) + "/results/" + outdir + "\",result.log_evidence)\n";
+    postprocess += "    except Exception as e:\n";
+    postprocess += "        errval = POST_PROCESS_ERR\n";
+    postprocess += "        errout = e\n\n";
     
     postprocess += "success = True\n";
     postprocess += "if errval != 0:\n";
-    postprocess += "  # run different script in case error codes are encountered\n";
-    postprocess += "  errorpage(errout, errval, \"" + emailaddress + "\", \"" + hrefloc.substr(0, lIndex) + "/results/" + outdir + "\")\n";
-    postprocess += "  success = False\n\n";
+    postprocess += "    # run different script in case error codes are encountered\n";
+    postprocess += "    errorpage(errout, errval, \"" + emailaddress + "\", \"" + hrefloc.substr(0, lIndex) + "/results/" + outdir + "\")\n";
+    postprocess += "    success = False\n\n";
     
     outputStrings['postprocess'] = postprocess;
     var database = "# submit some information to a database\n";
