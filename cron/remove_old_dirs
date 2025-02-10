@@ -4,7 +4,7 @@
 # user created directories after 15 days
 
 # get environment variable with results directory location
-RESDIR=$ONLINEMCMC_RESULTS_DIR
+RESDIR=/var/www/html/theonlinemcmc
 
 # set 15 day limit on directory modificate (which should be the creation time)
 modlim=+15
