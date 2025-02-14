@@ -136,10 +136,10 @@ def postprocessing(postsamples, abscissa, abscissaname, data, email, outdir, evi
       <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#margpos" type="button" role="tab" aria-controls="margpos" aria-selected="true">MARGINALISED POSTERIORS</button>
     </li>
     <li class="nav-item" role="presentation">
-      <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#bestfit" type="button" role="tab" aria-controls="bestfit" aria-selected="false">BEST FIT VALUES & DISTRIBUTION</button>
+      <button class="nav-link" data-bs-toggle="tab" data-bs-target="#bestfit" type="button" role="tab" aria-controls="bestfit" aria-selected="false">BEST FIT VALUES & DISTRIBUTION</button>
     </li>
     <li class="nav-item" role="presentation">
-      <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#links" type="button" role="tab" aria-controls="links" aria-selected="false">LINKS</button>
+      <button class="nav-link" data-bs-toggle="tab" data-bs-target="#links" type="button" role="tab" aria-controls="links" aria-selected="false">LINKS</button>
     </li>
   </ul>
 
