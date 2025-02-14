@@ -175,7 +175,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </nav>
 
 <div id="about" class="container-top bg-1 text-left">
-    <h3>Do you have some data and a model that you want to fit? Well here's the website for you (see <a href="#caveats">caveats</a>)!<br>
+    <h3>Do you have some data and a model that you want to fit? Well here's the website for you (see <a href="#caveats">caveats</a>)!<br><br>
 On this website you can input a model function defined by a set of parameters, including those that you want fit, as well as your data, and it will run a statistical sampling algorithm to estimate the posterior probability distributions of those parameters.<br><br>
 This site makes use of the Bayesian inference Python package <a href="https://bilby-dev.github.io/bilby/">Bilby</a> to access a selection of statistical samplers.
 Beyond <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo">Markov chain Monte Carlo</a> (MCMC), users are able to select from a variety of statistical <a href="#id_sampler_input">samplers</a> and it is encouraged to trial a variety to achieve the best performance for your model.</h3>
