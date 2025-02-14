@@ -166,7 +166,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="#">THE ONLINE MCMC</a>
+      <a class="navbar-brand" href="#">
+        <img src="logo.png" width="40" height="40" class="d-inline-block align-top" alt="">
+        THE ONLINE MCMC
+      </a>
     </div>
     <div class="collapse navbar-collapse" id="myNavbar">
       <ul class="nav navbar-nav navbar-right">
