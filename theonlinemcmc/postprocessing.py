@@ -122,13 +122,6 @@ def postprocessing(postsamples, abscissa, abscissaname, data, email, outdir, evi
     <div class="navbar-header">
       <a class="navbar-brand" href="#"><img src="../../logo.png" width="40" height="40" alt=""/> THE ONLINE MCMC</a>
     </div>
-    <div class="navbar-nav-scroll" id="myNavbar">
-      <ul class="navbar-nav mr-auto flex-row">
-        <li class="nav-item"><a class="nav-link" href="#margpos">MARGINALISED POSTERIORS</a></li>
-        <li class="nav-item"><a class="nav-link" href="#bestfit">BEST FIT VALUES & DISTRIBUTION</a></li>        
-        <li class="nav-item"><a class="nav-link" href="#links">LINKS</a></li>
-      </ul>
-    </div>
   </div>
 </nav>
 
@@ -138,25 +131,29 @@ def postprocessing(postsamples, abscissa, abscissaname, data, email, outdir, evi
 </div>
 
 <div class="container">
-  <ul class="nav nav-pills">
-    <li class="active"><a data-toggle="pill" href="#margpos">MARGINALISED POSTERIORS</a></li>
-    <li><a data-toggle="pill" href="#bestfit">BEST FIT VALUES & DISTRIBUTION</a></li>
-    <li><a data-toggle="pill" href="#links">LINKS</a></li>
+  <ul class="nav nav-tabs" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#margpos" type="button" role="tab" aria-controls="margpos" aria-selected="true">MARGINALISED POSTERIORS</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#bestfit" type="button" role="tab" aria-controls="bestfit" aria-selected="false">BEST FIT VALUES & DISTRIBUTION</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#links" type="button" role="tab" aria-controls="links" aria-selected="false">LINKS</button>
+    </li>
   </ul>
 
    <div class="tab-content">
-
-
-    <div id="margpos" class="tab-pane fade in active">
-      <h3 class="text-center" id="instructions">MARGINALISED POSTERIORS</h3>
+    <div id="margpos" class="tab-pane fade show active" role="tabpanel" aria-labelledby="margpos-tab">
+      <h3 class="text-center" id="margpos">MARGINALISED POSTERIORS</h3>
       <p>
         The diagonal plots show the <a style="color: #BD5D38" href="https://en.wikipedia.org/wiki/Marginal_distribution">marginal</a> <a style="color: #BD5D38" href="https://en.wikipedia.org/wiki/Posterior_probability">posterior probability</a> distributions for each of your fitted parameters. The off-diagonal plots show 1 and 2&sigma; probability contours for the <a style="color: #BD5D38" href="https://en.wikipedia.org/wiki/Joint_probability_distribution">joint</a> marginal posterior probability distributions of pairs of parameters. This has been produced with <a style="color: #BD5D38" href="https://github.com/dfm/corner.py">corner.py</a>.
       </p>
       {posteriorfig}
     </div>
 
-    <div id="bestfit" class="tab-pane fade">
-      <h3 class="text-center" id="functions">BEST FIT VALUES</h3>
+    <div id="bestfit" class="tab-pane fade" role="tabpanel" aria-labelledby="bestfit-tab">
+      <h3 class="text-center" id="values">BEST FIT VALUES</h3>
       
       The <a href="https://en.wikipedia.org/wiki/Mean">mean</a> and <a href="https://en.wikipedia.org/wiki/Median">median</a> of the probability distributions for each parameter are displayed in the table below. Also given are the <a href="https://en.wikipedia.org/wiki/Standard_deviation">standard deviation</a> of the distributions and minimal 68% and 95% <a href="https://en.wikipedia.org/wiki/Credible_interval">credible intervals</a> (CI).
       <div>
@@ -169,12 +166,11 @@ def postprocessing(postsamples, abscissa, abscissaname, data, email, outdir, evi
       <div>
         {corrcoeftable}
       </div>
-    
 
     {evidencevalue}
 
     <div class="container-fluid bg-1 text-left">
-      <h3 class="text-center" id="instructions">BEST FIT MODEL DISTRIBUTION</h3>
+      <h3 class="text-center" id="distribution">BEST FIT MODEL DISTRIBUTION</h3>
       <p>
         This plot shows the distribution of 100 models drawn randomly from the posterior distribution. The best fitting models will be clustered over each other.
       </p>
@@ -182,7 +178,7 @@ def postprocessing(postsamples, abscissa, abscissaname, data, email, outdir, evi
     </div>
     </div>
 
-    <div id="links" class="tab-pane fade">
+    <div id="links" class="tab-pane fade" role="tabpanel" aria-labelledby="links-tab">
       <h2 class="text-center">LINKS</h2>
       <h3>Code links</h3>
       The <a href="https://www.python.org/">Python</a> files for running the analysis are provided below. These use the <a href="https://pypi.org/project/bilby/">bilby</a> Python module.

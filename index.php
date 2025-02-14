@@ -162,7 +162,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </div>
     <div class="" id="myNavbar">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0 navbar-nav-scroll">
-	<li class="nav-item"><a class="nav-link" aria-current="page" href="#about">ABOUT</a></li>
+	<li class="nav-item"><a class="nav-link" href="#about">ABOUT</a></li>
         <li class="nav-item"><a class="nav-link" href="#examples">EXAMPLES</a></li>
         <li class="nav-item"><a class="nav-link" href="#input">INPUT</a></li>
         <li class="nav-item"><a class="nav-link" href="#instructions">INSTRUCTIONS</a></li>
