@@ -31,6 +31,9 @@
 <!-- custom CSS file -->
 <link rel="stylesheet" type="text/css" href="simple.css"/>
 
+<!-- icon -->
+<link rel="icon" type="image/png" href="logo.png"/>
+
 <title>The Online MCMC</title>
 </head>
 

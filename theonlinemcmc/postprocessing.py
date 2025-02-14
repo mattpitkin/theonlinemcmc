@@ -113,6 +113,9 @@ def postprocessing(postsamples, abscissa, abscissaname, data, email, outdir, evi
 <!-- Make sure text is readable with previous css formatting -->
 <style>body{{color:dimgrey}}</style> 
 
+<!-- icon -->
+<link rel="icon" type="image/png" href="../../logo.png"/>
+
 <title>The Online MCMC: Results page</title>
 </head>
 
