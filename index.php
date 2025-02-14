@@ -7,8 +7,7 @@
 <meta name="keywords" content="MCMC, Markov chain Monte Carlo, Bayesian, emcee, python, data analysis, probability">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 
 <!-- Include theme font -->
 <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
@@ -17,13 +16,12 @@
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
 
+<!-- Include JQuery and bootstrap -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
 <!-- Include script to create the input data table and output the python script -->
 <script type="text/javascript" src="createdata.js?ver<%=DateTime.Now.Ticks.ToString()%"></script>
-
-<!-- Include script to create tabs - https://www.w3schools.com/bootstrap/bootstrap_tabs_pills.asp -->
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
 <!-- custom CSS file -->
 <link rel="stylesheet" type="text/css" href="simple.css"/>
@@ -162,9 +160,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <img src="logo.png" width="40" height="40"   alt=""/> THE ONLINE MCMC
       </a>
     </div>
-    <div class="navbar-nav-scroll" id="myNavbar">
-      <ul class="navbar-nav mr-auto flex-row">
-	<li class="nav-item"><a class="nav-link" href="#about">ABOUT</a></li>
+    <div class="" id="myNavbar">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0 navbar-nav-scroll">
+	<li class="nav-item"><a class="nav-link" aria-current="page" href="#about">ABOUT</a></li>
         <li class="nav-item"><a class="nav-link" href="#examples">EXAMPLES</a></li>
         <li class="nav-item"><a class="nav-link" href="#input">INPUT</a></li>
         <li class="nav-item"><a class="nav-link" href="#instructions">INSTRUCTIONS</a></li>
@@ -488,23 +486,28 @@ Beyond <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo">Markov c
 
   <h3 class="text-left" id="id_sampler_input">Sampler Inputs</h3>
   Through <a href="https://bilby-dev.github.io/bilby/">Bilby</a> one can select from a variety of statistical samplers, each utilising a slightly different algorithm to sample from the posterior distribution of the parameter space. The samplers available are broken down into
-  two separate classes, <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo">Markov chain Monte Carlo</a> methods (see <a href="http://dan.iel.fm/emcee/">emcee</a> and <a href="https://docs.pymc.io/">PyMC3</a>) and <a href="https://en.wikipedia.org/wiki/Nested_sampling_algorithm">Nested Sampling algorithms</a> (see <a href="https://dynesty.readthedocs.io/en/latest/index.html">Dynesty</a> and <a href="http://kylebarbary.com/nestle/">Nestle</a>).
+  two separate classes, <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo">Markov chain Monte Carlo</a> methods (see <a href="https://emcee.readthedocs.io/en/stable">emcee</a> and <a href="https://docs.pymc.io/">PyMC3</a>) and <a href="https://en.wikipedia.org/wiki/Nested_sampling_algorithm">Nested Sampling algorithms</a> (see <a href="https://dynesty.readthedocs.io/en/latest/index.html">Dynesty</a> and <a href="http://kylebarbary.com/nestle/">Nestle</a>).
   <br>
   <br>
   <div class="container" width="80px">
-    <ul class="nav nav-pills">
-    <li class="nav-item active"><a class="nav-link active" data-toggle="pill" href="#mcmc">emcee</a></li>
-    <li class="nav-item"><a class="nav-link" data-toggle="pill" href="#dynesty">Dynesty</a></li>
-    <li class="nav-item"><a class="nav-link" data-toggle="pill" href="#nestle">Nestle</a></li>
-    <li class="nav-item"><a class="nav-link" data-toggle="pill" href="#pymc3">PyMC3</a></li>
+    <ul class="nav nav-tabs" role="tablist">
+    <li class="nav-item" role="presentation"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#mcmc" type="button" role="tab" aria-controls="emcee" aria-selected="true">emcee</button></li>
+    <li class="nav-item" role="presentation">
+    <button class="nav-link" type="button" role="tab" data-bs-toggle="tab" data-bs-target="#dynesty" aria-controls="dynesty" aria-selected="false">dynesty</button></li>
+    <li class="nav-item" role="presentation">
+    <button class="nav-link" type="button" role="tab" data-bs-toggle="tab" data-bs-target="#nestle" aria-controls="nestle" aria-selected="false">nestle</button>
+    </li>
+    <li class="nav-item" role="presentation">
+    <button class="nav-link" type="button" role="tab" data-bs-toggle="tab" data-bs-target="#pymc3" aria-controls="pymc3" aria-selected="false">PyMC3</button>
+    </li>
     </ul>
 
     <div class="tab-content" style="max-width:80%">
-      <div id="mcmc" class="tab-pane active">
+      <div id="mcmc" class="tab-pane fade show active" role="tabpanel" aria-labelledby="emcee-tab">
         <p>
-<a href="http://dan.iel.fm/emcee/current">emcee</a> is an MCMC algorithm that aims to draw samples (a chain of points) from the posterior probability distributions of the parameters. You need to tell it how many points to draw. There are three inputs required:
+<a href="https://emcee.readthedocs.io/en/stable">emcee</a> is an MCMC algorithm that aims to draw samples (a chain of points) from the posterior probability distributions of the parameters. You need to tell it how many points to draw. There are three inputs required:
     <ul>
-      <li><em>No. of ensemble points ("walkers")</em>: this is essentially the <a href="http://dan.iel.fm/emcee/current/user/faq/#what-are-walkers">number of independent chains</a> within the MCMC. This needs to be an even number and in general should be at least twice the number of fitting parameters that you have. Using a large value (e.g. 100) should be fine, but you could run into lack-of-memory issues if the number is too high (1000s);
+      <li><em>No. of ensemble points ("walkers")</em>: this is essentially the <a href="https://emcee.readthedocs.io/en/stable/user/faq/#what-are-walkers">number of independent chains</a> within the MCMC. This needs to be an even number and in general should be at least twice the number of fitting parameters that you have. Using a large value (e.g. 100) should be fine, but you could run into lack-of-memory issues if the number is too high (1000s);
       <li><em>No. of iterations</em>: this is the number of points per chain for each of the ensemble points. The product of this number and the number of ensemble points will be the total number of samples that you have for the posterior;
       <li><em>No. of <a href="http://support.sas.com/documentation/cdl/en/statug/63033/HTML/default/viewer.htm#statug_introbayes_sect007.htm">burn-in iterations</a></em>: this is the number of iterations (for each "walker") that are thrown away from the start of the chain (the iteration points above come after the burn-in points). This allows time for the MCMC to converge on the bulk of the posterior and for points sampled away from that to not be included in the final results.
     </ul>
@@ -513,20 +516,20 @@ Beyond <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo">Markov c
     Does your data have little noise(<a href="https://en.wikipedia.org/wiki/Signal-to-noise_ratio">SNR</a>)? Try increasing the number of burn in iterations!<br>
   </p>
       </div>
-      <div id="dynesty" class="tab-pane fade">
+      <div id="dynesty" class="tab-pane fade" role="tabpanel" aria-labelledby="dynesty-tab">
       <a href="https://dynesty.readthedocs.io/en/latest">Dynesty</a> provides an implementation of the <a href="https://en.wikipedia.org/wiki/Nested_sampling_algorithm">Nested Sampling</a> algorithm, with access to a variety of different sampling method (although here it is currently fixed to used a <a href="https://arxiv.org/abs/0809.3437">MultiNest</a>-based sampling method). Nested sampling is similar to the MCMC method, however the nature of the sampling allows one to calculate the integral of the probability distribution, and as a by-product can produce samples from the marginal posterior distributions. For Dynesty, only one input is required:
       <ul>
         <li><em>No. of live points </em>: this is described in greater detail <a href="https://dynesty.readthedocs.io/en/latest/faq.html#live-point-questions">here</a>. This needs to be a positive integer and in general should be at least 1 greater than the number of fitting parameters that exist.
     </ul>
       </div>
-      <div id="nestle" class="tab-pane fade">
+      <div id="nestle" class="tab-pane fade" role="tabpanel" aria-labelledby="nestle-tab">
       <a href="http://kylebarbary.com/nestle/">Nestle</a> provides an implementation of the <a href="https://en.wikipedia.org/wiki/Nested_sampling_algorithm">Nested Sampling</a> algorithm, with access to a couple of different sampling method (although here it is currently fixed to used a <a href="https://arxiv.org/abs/0809.3437">MultiNest</a>-based sampling method). Nested sampling is similar to the MCMC method, however the nature of the sampling allows one to calculate the integral of the probability distribution, and as a by-product can produce samples from the marginal posterior distributions.  For Nestle, two inputs are required:
       <ul>
           <li><em>No. of live points </em>: the number of active points, a positive interger at least one greater than the number of fitting parameters that exist. </li>
           <li><em>Method</em> : How the sampler chooses new points within the target parameter space. Currently can choose from 'Classic', 'Single' or 'Multi'. Further information can be found <a href="http://kylebarbary.com/nestle/">here</a></li>
         </ul>
       </div>
-      <div id="pymc3" class="tab-pane fade">
+      <div id="pymc3" class="tab-pane fade" role="tabpanel" aria-labelledby="pymc3-tab">
         <a href="https://docs.pymc.io/">PyMC3</a> is another MCMC sampler, which can uses a variety of efficient sampling algorithms. The output is a chain of points drawn from the posterior probability distributions of the parameters. For PyMC3, three inputs are required:
         <ul>
           <li><em>No. of draws </em>: The number of sample draws from the posterior per chain. </li>
