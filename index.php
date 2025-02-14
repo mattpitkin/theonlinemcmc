@@ -6,13 +6,9 @@
 <meta name="description" content="The Online MCMC">
 <meta name="keywords" content="MCMC, Markov chain Monte Carlo, Bayesian, emcee, python, data analysis, probability">
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.css">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
-<!-- Include jQuery -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
 <!-- Include theme font -->
 <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
@@ -25,8 +21,9 @@
 <script type="text/javascript" src="createdata.js?ver<%=DateTime.Now.Ticks.ToString()%"></script>
 
 <!-- Include script to create tabs - https://www.w3schools.com/bootstrap/bootstrap_tabs_pills.asp -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
 <!-- custom CSS file -->
 <link rel="stylesheet" type="text/css" href="simple.css"/>
@@ -158,34 +155,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 ?>
 
 <!-- Navbar -->
-<nav class="navbar navbar-default navbar-fixed-top">
+<nav class="navbar navbar-expand-lg navbar-fixed-top">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
       <a class="navbar-brand" href="#">
-        <img src="logo.png" width="40" height="40" class="d-inline-block align-top" alt="">
-        THE ONLINE MCMC
+        <img src="logo.png" width="40" height="40"   alt=""/> THE ONLINE MCMC
       </a>
     </div>
-    <div class="collapse navbar-collapse" id="myNavbar">
-      <ul class="nav navbar-nav navbar-right">
-        <li><a href="#about">ABOUT</a></li>
-        <li><a href="#examples">EXAMPLES</a></li>
-        <li><a href="#input">INPUT</a></li>
-        <li><a href="#instructions">INSTRUCTIONS</a></li>
-        <li><a href="#caveats">CAVEATS</a></li>
+    <div class="navbar-nav-scroll" id="myNavbar">
+      <ul class="navbar-nav mr-auto flex-row">
+	<li class="nav-item"><a class="nav-link" href="#about">ABOUT</a></li>
+        <li class="nav-item"><a class="nav-link" href="#examples">EXAMPLES</a></li>
+        <li class="nav-item"><a class="nav-link" href="#input">INPUT</a></li>
+        <li class="nav-item"><a class="nav-link" href="#instructions">INSTRUCTIONS</a></li>
+        <li class="nav-item"><a class="nav-link" href="#caveats">CAVEATS</a></li>
       </ul>
     </div>
   </div>
 </nav>
 
 <div id="about" class="container-top bg-1 text-left">
-  <h2 class="title">THE ONLINE MCMC</h2>
-    <h2>Do you have some data and a model that you want to fit? Well here's the website for you (see <a href="#caveats">caveats</a>)!</h2><h3><br>
+    <h3>Do you have some data and a model that you want to fit? Well here's the website for you (see <a href="#caveats">caveats</a>)!<br>
 On this website you can input a model function defined by a set of parameters, including those that you want fit, as well as your data, and it will run a statistical sampling algorithm to estimate the posterior probability distributions of those parameters.<br><br>
 This site makes use of the Bayesian inference Python package <a href="https://bilby-dev.github.io/bilby/">Bilby</a> to access a selection of statistical samplers.
 Beyond <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo">Markov chain Monte Carlo</a> (MCMC), users are able to select from a variety of statistical <a href="#id_sampler_input">samplers</a> and it is encouraged to trial a variety to achieve the best performance for your model.</h3>
@@ -420,13 +410,13 @@ Beyond <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo">Markov c
   -->
   <div class="container-fixed">
     <ul class="nav nav-pills fixed-top-2">
-      <li class="active"><a href="#themodel">The Model</a></li>
-      <li><a href="#thetypes">Parameter Types</a></li>
-      <li><a href="#prior">Priors</a></li>
-      <li><a href="#id_data_input">Data Input</a></li>
-      <li><a href="#id_likelihood_header">Likelihood Input</a></li>
-      <li><a href="#id_sampler_input">Sampler Input</a></li>
-      <li><a href="#functions">Functions</a></li>
+      <li class="nav-item"><a class="nav-link active" href="#themodel">The Model</a></li>
+      <li class="nav-item"><a class="nav-link" href="#thetypes">Parameter Types</a></li>
+      <li class="nav-item"><a class="nav-link" href="#prior">Priors</a></li>
+      <li class="nav-item"><a class="nav-link" href="#id_data_input">Data Input</a></li>
+      <li class="nav-item"><a class="nav-link" href="#id_likelihood_header">Likelihood Input</a></li>
+      <li class="nav-item"><a class="nav-link" href="#id_sampler_input">Sampler Input</a></li>
+      <li class="nav-item"><a class="nav-link" href="#functions">Functions</a></li>
     </ul>   
   </div>
 
@@ -503,14 +493,14 @@ Beyond <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo">Markov c
   <br>
   <div class="container" width="80px">
     <ul class="nav nav-pills">
-    <li class="active"><a data-toggle="pill" href="#mcmc">emcee</a></li>
-    <li><a data-toggle="pill" href="#dynesty">Dynesty</a></li>
-    <li><a data-toggle="pill" href="#nestle">Nestle</a></li>
-    <li><a data-toggle="pill" href="#pymc3">PyMC3</a></li>
+    <li class="nav-item active"><a class="nav-link active" data-toggle="pill" href="#mcmc">emcee</a></li>
+    <li class="nav-item"><a class="nav-link" data-toggle="pill" href="#dynesty">Dynesty</a></li>
+    <li class="nav-item"><a class="nav-link" data-toggle="pill" href="#nestle">Nestle</a></li>
+    <li class="nav-item"><a class="nav-link" data-toggle="pill" href="#pymc3">PyMC3</a></li>
     </ul>
 
     <div class="tab-content" style="max-width:80%">
-      <div id="mcmc" class="tab-pane fade in active" >
+      <div id="mcmc" class="tab-pane active">
         <p>
 <a href="http://dan.iel.fm/emcee/current">emcee</a> is an MCMC algorithm that aims to draw samples (a chain of points) from the posterior probability distributions of the parameters. You need to tell it how many points to draw. There are three inputs required:
     <ul>
